@@ -1,0 +1,65 @@
+<html>
+<head>
+    <base target="_parent">
+    <title>View sensor array linked to {{ sensors_array_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <style type="text/css">
+        .selected_sensor {
+        }
+
+        .non-selected_sensor {
+            color: black;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .sensors_array_name {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 400px){
+            .sensors_array_name {
+                font-size: 0.9em;
+            }
+        }
+
+        #sensor-array-map {
+        }
+    </style>
+</head>
+<body>
+<div></div>
+<div class="dashboard-sales-breakdown-chart" id="sensor-array-map">
+    <div class="subway-map" data-columns="26" data-rows="11" data-cellsize="36"
+         data-legendid="legend" data-textclass="text" data-gridnumbers="true" data-grid="false"
+         data-linewidth="8" data-reversemarkers="false">
+
+        <ul data-color="#3058a9" data-label="Places">
+            <li data-css-class="sensors_array_name badge badge-primary" data-coords="1,1" data-marker="interchange" data-labelpos="E">
+                {{ sensors_array_name }}
+            </li>
+
+            {% for sensor in sensors %}
+                {% if sensor == selected_sensor %}
+                    <li data-css-class="selected_sensor badge badge-danger" data-coords="1,{{ loop.index + 1 }}" data-marker="station" data-labelpos="e">{{ sensor }}</li>
+                {% else %}
+                    <li data-css-class="non-selected_sensor" data-coords="1,{{ loop.index + 1 }}" data-marker="@station" data-labelpos="e"><a target="_parent" href="{{ url_for('room_overview', selected_sensor=sensor) }}">{{ sensor }}</a></li>
+                {% endif %}
+            {% endfor %}
+            <li data-coords="1,{{ sensors|length + 1 }}"></li>
+        </ul>
+
+    </div>
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.subwayMap-0.5.0.js') }}"></script>
+<script type="text/javascript">
+    $(".subway-map").subwayMap({ debug: true , n_elements: {{ sensors | length }} });
+</script>
+</body>
+</html>

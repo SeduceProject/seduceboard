@@ -1,0 +1,13 @@
+
+.seduce_logo {
+    width: 40px;
+    margin-right: 5px;
+    position: relative;
+    left: -5px;
+    top: -2px;
+}
+
+li.active > a, li.active > a:hover {
+    background-color: #52BCD3 !important;
+    color: #ffffff !important;
+}

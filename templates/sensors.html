@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block navbar %}
+<ul class="sidebar-menu metismenu" id="sidebar-menu">
+    <li>
+        <a href="/">
+            <i class="fa fa-home"></i> Dashboard </a>
+    </li>
+    <li class="active">
+        <a href="/sensors.html">
+            <i class="fa fa-cog"></i> Sensors
+        </a>
+    </li>
+    <li>
+        <a href="/room_overview.html">
+            <i class="fa fa-map"></i> Room overview
+        </a>
+    </li>
+    <li>
+        <a href="/">
+            <i class="fa fa-bar-chart"></i> Measurements
+            <i class="fa arrow"></i>
+        </a>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+            </li>
+            <li>
+                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+            </li>
+            <li>
+                <a href="/"> Socometers </a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a id="seduce_api_link" href="http://localhost:5000/apidocs/#/">
+            <i class="fa fa-rocket"></i> API
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<article class="content static-tables-page">
+    <div class="title-block">
+        <h1 class="title"> Sensors</h1>
+        <p class="title-description"> Display all the sensors and their more recent data</p>
+    </div>
+
+    {% for sensors_array in sensors_arrays_with_children %}
+    <section class="section">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-title-block">
+                            <h3 class="title"> {{ sensors_array.name }} </h3> <a href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">view</a>
+                        </div>
+                        <section class="example">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Sensor type</th>
+                                    <th>Location</th>
+                                    <th>Last update</th>
+                                    <th>Last value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for sensor in sensors_array.children %}
+                                <tr>
+                                <th scope="row"><a href="{{ url_for('room_overview', selected_sensor=sensor.name) }}">{{ sensor.name }}</a></th>
+                                <td>{{ sensor.sensor_type }}</td>
+                                <td>{{ sensor.location }}</td>
+                                <td>{{ sensor.last_update.time }}</td>
+                                <td>{{ sensor.last_update.last_value }} {{ sensor.last_update.unit }}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+
+</article>
+{% endblock %}

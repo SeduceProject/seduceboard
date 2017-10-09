@@ -1,0 +1,247 @@
+{% extends "layout.html" %}
+
+{% block navbar %}
+<ul class="sidebar-menu metismenu" id="sidebar-menu">
+    <li>
+        <a href="/">
+            <i class="fa fa-home"></i> Dashboard </a>
+    </li>
+    <li>
+        <a href="/sensors.html">
+            <i class="fa fa-cog"></i> Sensors
+        </a>
+    </li>
+    <li class="active">
+        <a href="/room_overview.html">
+            <i class="fa fa-map"></i> Room overview
+        </a>
+    </li>
+    <li>
+        <a href="/">
+            <i class="fa fa-bar-chart"></i> Measurements
+            <i class="fa arrow"></i>
+        </a>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+            </li>
+            <li>
+                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+            </li>
+            <li>
+                <a href="/"> Socometers </a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a id="seduce_api_link" href="http://localhost:5000/apidocs/#/">
+            <i class="fa fa-rocket"></i> API
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<article class="content static-tables-page">
+    <div class="title-block">
+        <h1 class="title"> Room overview</h1>
+        <p class="title-description"> Display an overview of the room and its sensors</p>
+    </div>
+    <section class="section">
+        <div class="row">
+
+            <div class="col-xl-8">
+                <div class="row">
+                    <div class="col-xl-12" style="padding: 0px; padding-right: 5px;">
+                        <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg">
+                        <div class="card-header">
+                            <div class="header-block">
+                                <h3 class="title"> Room overview </h3>
+                            </div>
+                        </div>
+                        <div class="card-block">
+                            <div class="dashboard-sales-breakdown-chart" id="room-map" style="position: relative;">
+                                <img style="width: 100%; position: relative;" src="{{ url_for('static', filename='assets/room.png') }}">
+
+                                </img>
+
+                                <div style="position: absolute; width: 100%; height: 100%; top: 0px;">
+                                    <svg width="100%" height="100%" style="overflow: visible; position: absolute; top: 0px;">
+                                        {% for sensors_array in sensors_arrays %}
+                                            <a href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">
+                                                {% if sensors_array.name == selected_sensors_array.name %}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="4.5%" fill="rgb(218, 74, 41)" />
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="white" />
+                                                {% else %}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3%" fill="rgb(74, 179, 193)" />
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="white" />
+                                                {% endif %}
+                                            </a>
+                                        {% endfor %}
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if selected_sensor is not none %}
+                <div class="row">
+                    <div class="col-xl-12" style="padding: 0px; padding-right: 5px;">
+                        <div class="card">
+                            <div class="card-block">
+                                <div class="card-title-block">
+                                    <h3 class="title"> Socomecs data </h3>
+                                </div>
+                                <section class="example">
+                                    <div id="sensor-container" style="height: 100%;"/>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if selected_sensors_array is not none %}
+                <div class="row">
+                    <div class="col-xl-6" style="padding: 0px; padding-right: 5px;">
+                        <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg">
+                            <div class="card-header">
+                                <div class="header-block">
+                                    <h3 class="title"> Sensor array information</h3>
+                                </div>
+                            </div>
+                            <div class="card-block">
+                                <table class="table">
+                                    <tr>
+                                        <th>name</th>
+                                        <td>{{ selected_sensors_array.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>info</th>
+                                        <td>{{ selected_sensors_array.info }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>location</th>
+                                        <td>{{ selected_sensors_array.location }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if selected_sensor is not none %}
+                    <div class="col-xl-6" style="padding: 0px; padding-left: 5px;">
+                        <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg">
+                            <div class="card-header">
+                                <div class="header-block">
+                                    <h3 class="title"> Sensor information</h3>
+                                </div>
+                            </div>
+                            <div class="card-block">
+                                <div class="card-block">
+                                    <table class="table">
+                                        <tr>
+                                            <th>name</th>
+                                            <td>{{ selected_sensor.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>info</th>
+                                            <td>{{ selected_sensor.info }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>type</th>
+                                            <td>{{ selected_sensor.sensor_type }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>index</th>
+                                            <td>{{ selected_sensor.index }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+
+            <div class="col-xl-4">
+                <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg">
+                    <div class="card-header">
+                        <div class="header-block">
+                            {% if selected_sensors_array is not none %}
+                            <h3 class="title"> {{ selected_sensors_array.name }} </h3>
+                            {% else %}
+                            <h3 class="title"> Select an array of sensors on the Map </h3>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <div class="dashboard-sales-breakdown-chart" id="sensor-array-map" class="width: 850px;">
+                            <script type="text/javascript">
+                              function iframeLoaded() {
+                                  var iFrameID = document.getElementById('mapIframe');
+                                  if(iFrameID) {
+                                        // here you can make the height, I delete it first, then I make it again
+                                        iFrameID.height = "";
+                                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 50 + "px";
+                                  }
+                              }
+                            </script>
+                            {% if selected_sensors_array is not none %}
+                                {% if selected_sensor is not none %}
+                            <iframe style="border: none; width: 100%;" id="mapIframe" src="{{ url_for('sensors_array', sensors_array_name=selected_sensors_array.name, selected_sensor=selected_sensor.name) }}" onload="iframeLoaded()"></iframe>
+                                {% else %}
+                            <iframe style="border: none; width: 100%;" id="mapIframe" src="{{ url_for('sensors_array', sensors_array_name=selected_sensors_array.name) }}" onload="iframeLoaded()"></iframe>
+                                {% endif %}
+                            {% else %}
+                            <iframe style="border: none; width: 100%;" id="mapIframe" src="" onload="iframeLoaded()"></iframe>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.subwayMap-0.5.0.js') }}"></script>
+<script type="text/javascript">
+    $(".subway-map").subwayMap({ debug: true });
+</script>
+{% endblock %}
+
+{% block end_document %}
+{% if selected_sensor is not none %}
+<script src="{{ url_for('static', filename='js/data_visualization.js') }} "></script>
+<script>
+    setTimeout(function() {
+        setSameHeights();
+    }, 1000);
+
+    let hc_options = {
+        div_id: "sensor-container",
+        title: "{{ selected_sensor.name }}",
+        subtitle: "Displaying data from {{ selected_sensor.name }}",
+        {% if selected_sensor.sensor_type == "temperature" %}
+		sensor_type: "temp",
+		navigator_data_url: "/ui/data/navigation/temp/hourly",
+		{% else %}
+		sensor_type: "{{ selected_sensor.sensor_type }}",
+		navigator_data_url: "/ui/data/navigation/{{ selected_sensor.sensor_type }}/hourly",
+		{% endif %}
+		{% if selected_sensor.sensor_type == "temperature" %}
+		selected_sensor: "temp_ext_{{ selected_sensor.name }}"
+		{% else %}
+		selected_sensor: "{{ selected_sensor.name }}"
+		{% endif %}
+    }
+    hc_create_chart(hc_options);
+</script>
+{% endif %}
+{% endblock %}

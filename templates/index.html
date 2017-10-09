@@ -1,0 +1,346 @@
+{% extends "layout.html" %}
+
+{% block navbar %}
+<ul class="sidebar-menu metismenu" id="sidebar-menu">
+    <li class="active">
+        <a href="/">
+            <i class="fa fa-home"></i> Dashboard </a>
+    </li>
+    <li>
+        <a href="/sensors.html">
+            <i class="fa fa-cog"></i> Sensors
+        </a>
+    </li>
+    <li>
+        <a href="/room_overview.html">
+            <i class="fa fa-map"></i> Room overview
+        </a>
+    </li>
+    <li>
+        <a href="/">
+            <i class="fa fa-bar-chart"></i> Measurements
+            <i class="fa arrow"></i>
+        </a>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+            </li>
+            <li>
+                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+            </li>
+            <li>
+                <a href="/measurements/socomecs.html"> Socomecs </a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a id="seduce_api_link" href="http://localhost:5000/apidocs/#/">
+            <i class="fa fa-rocket"></i> API
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<article class="content dashboard-page">
+    <div class="title-block">
+        <h1 class="title"> Dashboard </h1>
+        <p class="title-description"> Provides an an overview of the Seduce infrastructure</p>
+    </div>
+    <section class="section">
+        <div class="row sameheight-container">
+            <div class="col col-12 col-sm-12 col-md-6 col-xl-5 stats-col">
+                <div class="card sameheight-item stats" data-exclude="xs">
+                    <div class="card-block">
+                        <div class="title-block">
+                            <h4 class="title"> General Statistics </h4>
+                            <p class="title-description"> Metrics for Seduce infrastructure</p>
+                        </div>
+                        <div class="row row-sm stats-container">
+                            <div class="col-12 col-sm-6 stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-thermometer-three-quarters"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value"> 33.9 °C</div>
+                                    <div class="name"> Temperature (inside)</div>
+                                </div>
+                                <div class="progress stat-progress">
+                                    <div class="progress-bar" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-thermometer-three-quarters"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value"> 23.3 °C</div>
+                                    <div class="name"> Temperature (outside)</div>
+                                </div>
+                                <div class="progress stat-progress">
+                                    <div class="progress-bar" style="width: 25%;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6  stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value"> 10500 W</div>
+                                    <div class="name"> Today's consumption</div>
+                                </div>
+                                <div class="progress stat-progress">
+                                    <div class="progress-bar" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6  stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value"> 58</div>
+                                    <div class="name"> Total users</div>
+                                </div>
+                                <div class="progress stat-progress">
+                                    <div class="progress-bar" style="width: 34%;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6  stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-microchip"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value"> 39</div>
+                                    <div class="name"> Sensors</div>
+                                </div>
+                                <div class="progress stat-progress">
+                                    <div class="progress-bar" style="width: 49%;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-cogs"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value"> 3562</div>
+                                    <div class="name"> API calls</div>
+                                </div>
+                                <div class="progress stat-progress">
+                                    <div class="progress-bar" style="width: 15%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-7">
+                <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg" style="height: 400px;">
+                    <div class="card-header">
+                        <div class="header-block">
+                            <h3 class="title"> Servers usage </h3>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <div>
+                            <canvas id="chart-area" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="row sameheight-container">
+            <div class="col col-12 col-sm-12 col-md-6 col-xl-12 history-col">
+                <div class="card sameheight-item" data-exclude="xs" id="dashboard-history">
+                    <div class="card-header card-header-sm bordered">
+                        <div class="header-block">
+                            <h3 class="title">History</h3>
+                        </div>
+                        <ul class="nav nav-tabs pull-right" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#wattmeters" role="tab"
+                                   data-toggle="tab">Wattmeters</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#thermometers" role="tab"
+                                   data-toggle="tab">Thermometers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#socomecs" role="tab"
+                                   data-toggle="tab">Socomecs</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-block">
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active fade show" id="wattmeters">
+                                <div id="wattmeters-container"></div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="thermometers">
+                                <div id="thermometers-container"></div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="socomecs">
+                                <div id="socometers-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+{% endblock %}
+
+{% block end_document %}
+<script src="{{ url_for('static', filename='js/data_visualization.js') }} "></script>
+<script>
+    let hc_wattmeters_options = {
+        div_id: "wattmeters-container",
+        title: "Aggregated wattmeters consumption",
+        subtitle: "Displaying data from Flukso",
+        sensor_type: "wattmeters",
+        aggregated: true,
+        show_range: false,
+		navigator_data_url: "/ui/data/navigation/wattmeter/hourly"
+    }
+    hc_create_chart(hc_wattmeters_options);
+
+    let hc_thermometers_options = {
+        div_id: "thermometers-container",
+        title: "Average temperature",
+        subtitle: "Displaying data from thermometers",
+        sensor_type: "external_temperature",
+        aggregated: true,
+        show_range: false,
+		navigator_data_url: "/ui/data/navigation/temp/hourly"
+    }
+    hc_create_chart(hc_thermometers_options);
+
+    let hc_socomecs_options = {
+        div_id: "socometers-container",
+        title: "Aggregated socometers consumption",
+        subtitle: "Displaying data from socometers",
+        sensor_type: "socomecs",
+        aggregated: true,
+        show_range: false,
+		navigator_data_url: "/ui/data/navigation/socomec/hourly"
+    }
+    hc_create_chart(hc_socomecs_options);
+</script>
+
+<script src="http://www.chartjs.org/dist/2.7.0/Chart.bundle.js"></script>
+<script src="http://www.chartjs.org/samples/latest/utils.js"></script>
+<script>
+    var randomScalingFactor = function() {
+        return Math.round(Math.random() * 100);
+    };
+
+    var config = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [
+                    10,
+                    35,
+                    3,
+                ],
+                backgroundColor: [
+                    window.chartColors.blue,
+                    window.chartColors.green,
+                    window.chartColors.red,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                "Running",
+                "Shutdown",
+                "Maintenance",
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'bouillonnantes.grid5000.fr'
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    };
+
+    window.onload = function() {
+        var ctx = document.getElementById("chart-area").getContext("2d");
+        window.myDoughnut = new Chart(ctx, config);
+    };
+
+    document.getElementById('randomizeData').addEventListener('click', function() {
+        config.data.datasets.forEach(function(dataset) {
+            dataset.data = dataset.data.map(function() {
+                return randomScalingFactor();
+            });
+        });
+
+        window.myDoughnut.update();
+    });
+
+    var colorNames = Object.keys(window.chartColors);
+    document.getElementById('addDataset').addEventListener('click', function() {
+        var newDataset = {
+            backgroundColor: [],
+            data: [],
+            label: 'New dataset ' + config.data.datasets.length,
+        };
+
+        for (var index = 0; index < config.data.labels.length; ++index) {
+            newDataset.data.push(randomScalingFactor());
+
+            var colorName = colorNames[index % colorNames.length];;
+            var newColor = window.chartColors[colorName];
+            newDataset.backgroundColor.push(newColor);
+        }
+
+        config.data.datasets.push(newDataset);
+        window.myDoughnut.update();
+    });
+
+    document.getElementById('addData').addEventListener('click', function() {
+        if (config.data.datasets.length > 0) {
+            config.data.labels.push('data #' + config.data.labels.length);
+
+            var colorName = colorNames[config.data.datasets[0].data.length % colorNames.length];;
+            var newColor = window.chartColors[colorName];
+
+            config.data.datasets.forEach(function(dataset) {
+                dataset.data.push(randomScalingFactor());
+                dataset.backgroundColor.push(newColor);
+            });
+
+            window.myDoughnut.update();
+        }
+    });
+
+    document.getElementById('removeDataset').addEventListener('click', function() {
+        config.data.datasets.splice(0, 1);
+        window.myDoughnut.update();
+    });
+
+    document.getElementById('removeData').addEventListener('click', function() {
+        config.data.labels.splice(-1, 1); // remove the label first
+
+        config.data.datasets.forEach(function(dataset) {
+            dataset.data.pop();
+            dataset.backgroundColor.pop();
+        });
+
+        window.myDoughnut.update();
+    });
+</script>
+{% endblock %}
