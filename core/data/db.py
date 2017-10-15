@@ -330,17 +330,11 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
             maxs.append(point['max'])
 
     # Add a last empty point to enable streaming on the webapp
-    last_empty_date = None
-
-    if end_date != -1:
-        if how == "daily":
-            last_empty_date = parser.parse(end_date) + timedelta(days=1)
-        elif how == "hourly":
-            last_empty_date = parser.parse(end_date) + timedelta(hours=1)
-        else:
-            last_empty_date = parser.parse(end_date) + timedelta(minutes=1)
-    if last_empty_date:
-        timestamps.append(last_empty_date.isoformat())
+    query = "SELECT last(*) from sensors where sensor_type='%s'" % (sensor_type)
+    points = list(db_client.query(query).get_points())
+    if points:
+        last_empty_date = points[0]['time']
+        timestamps.append(last_empty_date)
         sums.append(None)
         means.append(None)
         medians.append(None)
@@ -474,3 +468,12 @@ def db_last_sensors_updates():
         }]
 
     return result
+
+
+def db_get_running_queries():
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    query = "show queries"
+    points = db_client.query(query).get_points()
+
+    return points

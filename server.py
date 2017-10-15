@@ -149,6 +149,14 @@ def get_navigation_data(sensor_type, how="daily"):
     return jsonify(_navigation_data)
 
 
+@app.route("/monitoring/queries")
+def queries():
+    from core.data.db import db_get_running_queries
+
+    queries = db_get_running_queries()
+    return jsonify(queries)
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
