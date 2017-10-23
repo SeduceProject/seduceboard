@@ -3,9 +3,8 @@
 echo "Launching the Web application for monitoring moteinos"
 
 SCREEN_NAME="webapp_moteinos"
-INFLUX_PATH="/root/influxdb-1.3.4-1/usr/bin"
-INFLUX_BIN="/$INFLUX_PATH/influx"
-INFLUX_DAEMON="$INFLUX_PATH/influxd"
+INFLUX_BIN="influx"
+INFLUX_DAEMON="influxd"
 
 ##########################################################
 # Cleaning existing screens
@@ -29,10 +28,10 @@ if [ "$1" != "kill" ]; then
     # Launching InfluxDB
     ##########################################################
     if [ "$1" == "drop_db" ]; then
-        $INFLUX_EXECUTABLE -execute "DROP DATABASE pidiou"
-        $INFLUX_EXECUTABLE -execute "CREATE DATABASE pidiou"
+        $INFLUX_BIN -execute "DROP DATABASE pidiou"
+        $INFLUX_BIN -execute "CREATE DATABASE pidiou"
     fi
-    screen $COMMON_SCREEN_ARGS -t influxdb bash -c "$INFLUX_DAEMON_EXECUTABLE"
+    screen $COMMON_SCREEN_ARGS -t influxdb bash -c "$INFLUX_DAEMON"
 
     sleep 10 # The DB needs some time to startup
 
