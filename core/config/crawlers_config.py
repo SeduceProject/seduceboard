@@ -56,30 +56,30 @@ SOCOMEC_CONFIG = [
         "ip": "10.44.160.15",
         "unit_id": 4,
         "address": 18476,
-        "name": "socomec_servers",
-        "info": "Socomec servers",
+        "name": "wattmeter_servers",
+        "info": "wattmeter servers",
         "unit": "W",
-        "sensor_type": "socomec",
+        "sensor_type": "wattmeter",
         "location": "B232"
     },
     {
         "ip": "10.44.160.15",
         "unit_id": 4,
         "address": 20524,
-        "name": "socomec_cooling",
-        "info": "Socomec cooling",
+        "name": "wattmeter_cooling",
+        "info": "wattmeter cooling",
         "unit": "W",
-        "sensor_type": "socomec",
+        "sensor_type": "wattmeter",
         "location": "B232"
     },
     {
         "ip": "10.44.160.15",
         "unit_id": 3,
         "address": 18476,
-        "name": "socomec_capacitor",
-        "info": "Socomec capacitor",
+        "name": "wattmeter_capacitor",
+        "info": "wattmeter capacitor",
         "unit": "W",
-        "sensor_type": "socomec",
+        "sensor_type": "wattmeter",
         "location": "B232"
     }
 ]
