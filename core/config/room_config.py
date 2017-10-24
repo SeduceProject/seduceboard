@@ -89,8 +89,8 @@ ROOM_CONFIG = [
         "index": 1
     },
     {
-        "name": "socomec_capacitor",
-        "info": "Socomec capacitor",
+        "name": "socomec_condensator",
+        "info": "Socomec condensator",
         "unit": "W",
         "sensor_type": "socomec",
         "parent": "socomec_b232",

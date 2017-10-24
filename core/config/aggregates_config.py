@@ -8,7 +8,7 @@ AGGREGATES_CONFIG = {
     },
     "socomecs": {
         "type": "socomec",
-        "filter_expression": "sensor='wattmeter_capacitor' or sensor='wattmeter_servers' or sensor='wattmeter_cooling'",
+        "filter_expression": "sensor='wattmeter_condensator' or sensor='wattmeter_servers' or sensor='wattmeter_cooling'",
         "aggregate_function_level1": "sum",
         "aggregate_function_level2": "mean",
         "aggregate_frequency": "30s"

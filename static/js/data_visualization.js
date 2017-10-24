@@ -220,6 +220,9 @@ function hc_create_chart(hc_options) {
 
             if (! streaming) {
                 chart.hideLoading();
+            } else {
+                var extremes = chart.xAxis[0].getExtremes();
+                chart.xAxis[0].setExtremes(extremes.min, extremes.dataMax);
             }
         });
     }
@@ -308,7 +311,6 @@ function hc_create_chart(hc_options) {
                         values = temperature_obj["means"];
                     }
 
-//                    var yMax = undefined;
                     let temperature_data = timestamps.map(function (e, i) {
                         let timestamp = Date.parse(e);
                         if (yMax == undefined || values[i] > yMax) {
@@ -344,6 +346,9 @@ function hc_create_chart(hc_options) {
                         if (update_count == sensors.length || selected_sensor != undefined) {
                             chart.hideLoading();
                         }
+                    } else {
+                        var extremes = chart.xAxis[0].getExtremes();
+                        chart.xAxis[0].setExtremes(extremes.min, extremes.dataMax);
                     }
                 });
             }
@@ -480,17 +485,12 @@ function hc_create_chart(hc_options) {
         downsample_scale = "minutely";
 
         chart.hideLoading();
-
-//        return;
         load_data(chart);
 
         // Streaming function
         setInterval(function() {
             if (hc_snap_to_right_edge) {
                 load_data(chart, true);
-                let current_extremes = chart.xAxis[0].getExtremes();
-
-                chart.xAxis[0].setExtremes(current_extremes.min, current_extremes.max + 3 * 1000);
             }
         }, 5000);
 

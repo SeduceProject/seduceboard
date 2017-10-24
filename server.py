@@ -33,23 +33,21 @@ def validate(date_text):
 def sensor_data(sensor_name):
     from core.data.db import db_sensor_data
 
+    start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
         if validate(start_date):
             start_date = "'%s'" % start_date
         else:
             raise Exception("Invalid 'start_date' parameter: %s" % (start_date))
-    else:
-        start_date = "now()-3600s"
 
+    end_date = None
     if "end_date" in request.args:
         end_date = request.args["end_date"]
         if validate(end_date):
             end_date = "'%s'" % end_date
         else:
             raise Exception("Invalid 'end_date' parameter: %s" % (end_date))
-    else:
-        end_date = "now()"
 
     zoom_ui = "zoom_ui" in request.args
 

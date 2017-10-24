@@ -76,8 +76,8 @@ SOCOMEC_CONFIG = [
         "ip": "10.44.160.15",
         "unit_id": 3,
         "address": 18476,
-        "name": "wattmeter_capacitor",
-        "info": "wattmeter capacitor",
+        "name": "wattmeter_condensator",
+        "info": "wattmeter condensator",
         "unit": "W",
         "sensor_type": "wattmeter",
         "location": "B232"

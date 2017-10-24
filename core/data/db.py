@@ -3,16 +3,16 @@ from dateutil import parser
 from datetime import timedelta
 
 # DB_HOST = "192.168.1.8"
-DB_PORT = 8086
+# DB_PORT = 8086
 DB_HOST = "127.0.0.1"
-# DB_PORT = 8096
+DB_PORT = 8096
 DB_USER = 'root'
 DB_PASSWORD = 'root'
 DB_NAME = 'pidiou'
 OUTPUT_FILE = 'temperatures.json'
 
 
-def db_sensor_data(sensor_name, start_date, end_date, zoom_ui=False):
+def db_sensor_data(sensor_name, start_date=None, end_date=None, zoom_ui=False):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     if zoom_ui:
@@ -22,13 +22,24 @@ def db_sensor_data(sensor_name, start_date, end_date, zoom_ui=False):
         points = list(db_client.query(extended_start_time_query).get_points())
         if points:
             start_date = "'%s'" % (points[0]["time"])
-
+        end_date = "now()"
         extended_end_time_query = "SELECT first(*) " \
                                   "FROM sensors " \
                                   "WHERE sensor = '%s' and time > %s " % (sensor_name, end_date)
         points = list(db_client.query(extended_end_time_query).get_points())
         if points:
             end_date = "'%s'" % (points[0]["time"])
+
+    if start_date is None and end_date is None:
+        start_date = "now() - 3600s"
+        start_date_query = "SELECT last(*) " \
+                                  "FROM sensors " \
+                                  "WHERE sensor = '%s'" % (sensor_name)
+        points = list(db_client.query(start_date_query ).get_points())
+        if points:
+            start_date = "'%s' - 3600s" % (points[0]["time"])
+        end_date = "now()"
+        pass
 
     query = "SELECT * " \
             "FROM sensors " \
@@ -335,13 +346,13 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
     if points:
         last_empty_date = points[0]['time']
         timestamps.append(last_empty_date)
-        sums.append(None)
-        means.append(None)
-        medians.append(None)
-        stddevs.append(None)
-        counts.append(None)
-        mins.append(None)
-        maxs.append(None)
+        sums.append(sums[-1])
+        means.append(means[-1])
+        medians.append(medians[-1])
+        stddevs.append(stddevs[-1])
+        counts.append(counts[-1])
+        mins.append(mins[-1])
+        maxs.append(maxs[-1])
 
     result = {
         "range": {
