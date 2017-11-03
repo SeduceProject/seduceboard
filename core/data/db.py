@@ -127,7 +127,7 @@ def db_aggregated_sensor_data(sensor_name, start_date=None, how="daily"):
 
     serie_name = _get_aggregate_serie_name(how)
 
-    if not start_date:
+    if not start_date or start_date == "undefined":
         query = "SELECT * from %s where sensor='%s'" % (serie_name, sensor_name)
     else:
         query = "SELECT * from %s where time >= %s and sensor='%s'" % (serie_name, start_date, sensor_name)
@@ -343,6 +343,7 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
     # Add a last empty point to enable streaming on the webapp
     query = "SELECT last(*) from sensors where sensor_type='%s'" % (sensor_type)
     points = list(db_client.query(query).get_points())
+    last_empty_date = None
     if points:
         last_empty_date = points[0]['time']
         timestamps.append(last_empty_date)

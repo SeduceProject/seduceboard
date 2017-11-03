@@ -229,14 +229,14 @@
         title: "{{ selected_sensor.name }}",
         subtitle: "Displaying data from {{ selected_sensor.name }}",
         {% if selected_sensor.sensor_type == "temperature" %}
-		sensor_type: "temp",
+		sensor_type: "temperature",
 		navigator_data_url: "/ui/data/navigation/temp/hourly",
 		{% else %}
 		sensor_type: "{{ selected_sensor.sensor_type }}",
 		navigator_data_url: "/ui/data/navigation/{{ selected_sensor.sensor_type }}/hourly",
 		{% endif %}
 		{% if selected_sensor.sensor_type == "temperature" %}
-		selected_sensor: "temp_ext_{{ selected_sensor.name }}"
+		selected_sensor: "{{ selected_sensor.name }}"
 		{% else %}
 		selected_sensor: "{{ selected_sensor.name }}"
 		{% endif %}

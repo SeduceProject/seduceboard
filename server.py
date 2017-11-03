@@ -82,6 +82,36 @@ def sensor_types():
     return jsonify(_sensor_types)
 
 
+@app.route("/multitree/root")
+def multitree_root_nodes():
+    from core.data.multitree import get_root_nodes
+    return jsonify(get_root_nodes())
+
+
+@app.route("/multitree/query/tree/<node_id>")
+def multitree_tree_query(node_id):
+    from core.data.multitree import get_node_by_id
+    from core.data.multitree import get_tree
+    starting_node = get_node_by_id(node_id)
+    if starting_node is not None:
+        tree = get_tree(starting_node)
+        return jsonify(tree)
+    else:
+        return jsonify({"status": "failure", "cause": "'%s' is not a valid node id :-(" % (node_id)})
+
+
+@app.route("/multitree/query/sensors/<node_id>")
+def multitree_sensors_query(node_id):
+    from core.data.multitree import get_node_by_id
+    from core.data.multitree import get_sensors_tree
+    starting_node = get_node_by_id(node_id)
+    if starting_node is not None:
+        sensors = get_sensors_tree(starting_node)
+        return jsonify(sensors)
+    else:
+        return jsonify({"status": "failure", "cause": "'%s' is not a valid node id :-(" % (node_id)})
+
+
 @app.route("/locations")
 def locations():
     from core.data.db import db_locations
@@ -247,7 +277,7 @@ def sensors_array(sensors_array_name, selected_sensor=None):
 
 
 if __name__ == "__main__":
-    from core.data.cq_aggregates import cqs_recreate_all, cqs_recompute_data
+    from core.data.cq_aggregates import cqs_recreate_all, cqs_recompute_data, cq_multitree_recreate_all
 
     logging.basicConfig(level=logging.DEBUG)
 
@@ -257,6 +287,8 @@ if __name__ == "__main__":
     if continuous_queries_updated:
         print("Recomputing data of continuous queries")
         cqs_recompute_data()
+    # cq_multitree_recreate_all(True)
+    # cq_multitree_recreate_all(False)
 
     print("Running the \"API/Web\" program")
     app.jinja_env.auto_reload = DEBUG

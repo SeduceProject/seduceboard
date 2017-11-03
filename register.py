@@ -25,34 +25,34 @@ app = Flask(__name__)
 
 influx_lock = threading.Lock()
 
-
-@app.route("/register.php")
-def register():
-    db_client = InfluxDBClient('localhost', 8086, DB_USER, DB_PASSWORD, DB_NAME)
-
-    rack = request.args.get("rack")
-    temp_sensors = natsorted(filter(lambda k: "temp" in k, request.args))
-
-    if temp_sensors:
-        for temp_sensor in temp_sensors:
-            value = request.args.get(temp_sensor)
-            data = [{
-                "measurement": "sensors",
-                "fields": {
-                    "value": value
-                },
-                "tags": {
-                    "location": rack,
-                    "sensor": temp_sensor,
-                    "unit": "celsius",
-                    "sensor_type": "temp"
-                }
-            }]
-            try:
-                db_client.write_points(data)
-            except:
-                return jsonify({"status": "failure", "reason": "could not write in the DB"})
-    return jsonify({"status": "success", "update_count": len(temp_sensors)})
+#
+# @app.route("/register.php")
+# def register():
+#     db_client = InfluxDBClient('localhost', 8086, DB_USER, DB_PASSWORD, DB_NAME)
+#
+#     rack = request.args.get("rack")
+#     temp_sensors = natsorted(filter(lambda k: "temp" in k, request.args))
+#
+#     if temp_sensors:
+#         for temp_sensor in temp_sensors:
+#             value = request.args.get(temp_sensor)
+#             data = [{
+#                 "measurement": "sensors",
+#                 "fields": {
+#                     "value": value
+#                 },
+#                 "tags": {
+#                     "location": rack,
+#                     "sensor": temp_sensor,
+#                     "unit": "celsius",
+#                     "sensor_type": "temperature"
+#                 }
+#             }]
+#             try:
+#                 db_client.write_points(data)
+#             except:
+#                 return jsonify({"status": "failure", "reason": "could not write in the DB"})
+#     return jsonify({"status": "success", "update_count": len(temp_sensors)})
 
 
 @app.route("/new_temp_reading", methods=['POST'])
@@ -63,6 +63,9 @@ def new_temp_reading():
         if not key in request.json:
             return jsonify({"status": "failure", "reason": "missing \"%s\" parameter" % (key)})
 
+    sensor_name = request.json["sensor"]
+    filtered_sensor_name = sensor_name.replace(":", "")
+
     data = [{
         "measurement": "sensors",
         "fields": {
@@ -70,7 +73,8 @@ def new_temp_reading():
         },
         "tags": {
             "location": "room exterior",
-            "sensor": "temp_ext_%s" % (request.json["sensor"]),
+            # "sensor": "temp_ext_%s" % (request.json["sensor"]),
+            "sensor": filtered_sensor_name,
             "unit": "celsius",
             "sensor_type": "temp"
         }

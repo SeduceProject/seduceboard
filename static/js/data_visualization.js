@@ -426,6 +426,9 @@ function hc_create_chart(hc_options) {
                     data: navigator_data
                 }
             },
+            legend: {
+                enabled: true,
+            },
             scrollbar: {
                 liveRedraw: false
             },
@@ -473,7 +476,7 @@ function hc_create_chart(hc_options) {
                 },
                 tooltip: {
                     pointFormat: ''
-                }
+                },
             });
 
             // show last hour of data
