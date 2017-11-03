@@ -76,7 +76,7 @@ def new_temp_reading():
             # "sensor": "temp_ext_%s" % (request.json["sensor"]),
             "sensor": filtered_sensor_name,
             "unit": "celsius",
-            "sensor_type": "temp"
+            "sensor_type": "temperature"
         }
     }]
 

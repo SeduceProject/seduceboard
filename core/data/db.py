@@ -347,13 +347,13 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
     if points:
         last_empty_date = points[0]['time']
         timestamps.append(last_empty_date)
-        sums.append(sums[-1])
-        means.append(means[-1])
-        medians.append(medians[-1])
-        stddevs.append(stddevs[-1])
-        counts.append(counts[-1])
-        mins.append(mins[-1])
-        maxs.append(maxs[-1])
+        sums.append(sums[-1] if sums else -1)
+        means.append(means[-1] if means else -1)
+        medians.append(medians[-1] if medians else -1)
+        stddevs.append(stddevs[-1] if stddevs else -1)
+        counts.append(counts[-1] if counts else -1)
+        mins.append(mins[-1] if mins else -1)
+        maxs.append(maxs[-1] if maxs else -1)
 
     result = {
         "range": {
