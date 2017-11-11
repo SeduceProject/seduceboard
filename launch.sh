@@ -15,6 +15,7 @@ screen -X -S $SCREEN_NAME quit || true
 # Cleaning existing screens
 ##########################################################
 ps aux | grep "python *sensors_crawler.py" | grep -v "grep" | awk '{ print $2 }' | xargs kill -9
+ps aux | grep "python *pdus_crawler.py" | grep -v "grep" | awk '{ print $2 }' | xargs kill -9
 
 if [ "$1" != "kill" ]; then
 
@@ -55,6 +56,14 @@ if [ "$1" != "kill" ]; then
     # Launching sensors crawler (crawler)
     ##########################################################
     screen $COMMON_SCREEN_ARGS -t crawler bash -c "python sensors_crawler.py"
+
+    ##########################################################
+    # Launching sensors crawler (PDU crawler)
+    ##########################################################
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py"
+    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_2 bash -c "python pdus_crawler.py"
+    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_3 bash -c "python pdus_crawler.py"
+    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_4 bash -c "python pdus_crawler.py"
 fi
 
 exit 0
