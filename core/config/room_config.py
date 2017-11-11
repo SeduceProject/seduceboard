@@ -212,7 +212,7 @@ if not CSV_TEMPERATURE_SENSORS_INITIALIZED:
         }]
 
         # Add each sensor of the sensor array
-        sorted_sensors_id = [sensor_array_obj["positions_index"][x] for x in sorted(sensor_array_obj["positions_index"].keys())]
+        sorted_sensors_id = [sensor_array_obj["positions_index"][x] for x in sorted(sensor_array_obj["positions_index"].keys(), reverse=True)]
         for sensor_id in sorted_sensors_id:
             ROOM_CONFIG += [{
                 "name": sensor_id,
@@ -223,40 +223,6 @@ if not CSV_TEMPERATURE_SENSORS_INITIALIZED:
                 "index": 1
             }]
 
-if not CSV_TEMPERATURE_SENSORS_INITIALIZED:
-    CSV_TEMPERATURE_SENSORS_INITIALIZED = True
-
-    temperature_infrastructure = get_temperature_sensors_infrastructure()
-    for sensor_array_name in temperature_infrastructure:
-        if sensor_array_name not in SENSOR_ARRAYS_COORDINATES:
-            continue
-        sensor_array_obj = temperature_infrastructure[sensor_array_name]
-        if len(sensor_array_obj["positions_index"]) == 0:
-            continue
-        coordinate = SENSOR_ARRAYS_COORDINATES[sensor_array_name]
-        ROOM_CONFIG += [{
-            "name": "temp.%s" % sensor_array_name,
-            "info": "An array of temperature sensors watching servers of rack %s" % sensor_array_name,
-            "unit": "T",
-            "sensor_type": "temperature",
-            "location": "B232",
-            "coordinates": {
-                "x": coordinate["x"],
-                "y": coordinate["y"]
-            }
-        }]
-
-        # Add each sensor of the sensor array
-        sorted_sensors_id = [sensor_array_obj["positions_index"][x] for x in sorted(sensor_array_obj["positions_index"].keys())]
-        for sensor_id in sorted_sensors_id:
-            ROOM_CONFIG += [{
-                "name": sensor_id,
-                "info": "Temperature sensor %s" % sensor_id,
-                "unit": "T",
-                "sensor_type": "temperature",
-                "parent": "temp.%s" % sensor_array_name,
-                "index": 1
-            }]
 
 PDUS_SENSORS_INITIALIZED = False
 
@@ -286,12 +252,12 @@ if not PDUS_SENSORS_INITIALIZED:
         }]
 
         outlets = get_outlets(pdu_id)
-        for outlet_num in outlets:
-            outlet_ressource_name = outlets[outlet_num]
+        for outlet_num in sorted(outlets, key=lambda x: int(x)):
+            outlet_ressource_name = outlets[outlet_num]+"-"+rack_name.upper()
+            outlet_ressource_plouf = outlets[outlet_num]+"_pdu-"+rack_name.upper()
             pdu_name = "%s.%s" % (outlet_ressource_name, pdu_id)
-            print(pdu_name)
             ROOM_CONFIG += [{
-                "name": outlet_ressource_name,
+                "name": outlet_ressource_plouf,
                 "info": "PDU outlet #%s of PDU %s" % (outlet_num, pdu_id),
                 "unit": "W",
                 "sensor_type": "wattmeter",
