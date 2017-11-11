@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+
+
+    <!--<link rel="stylesheet" type="text/css" href="/css/result-light.css">-->
+
+
+    <style type="text/css">
+html {
+  font: 10px sans-serif;
+}
+
+body {
+    margin: 0px;
+}
+
+svg {
+  border: 1px solid silver;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.link {
+  fill: none;
+  stroke: lightgray;
+  stroke-width: 1.5px;
+}
+
+.tree {
+    width: 100%;
+    height: 100%;
+}
+
+
+    </style>
+
+    <title>Tree Chart - D3js</title>
+
+
+    <script type="text/javascript" src="{{url_for('static', filename='js/weighted_tree_consumption.js')}}"></script>
+
+
+</head>
+
+<body>
+<div id="tree"></div>
+
+
+<script>
+  // tell the embed parent frame the height of the content
+  if (window.parent && window.parent.parent){
+    window.parent.parent.postMessage(["resultsFrame", {
+      height: document.body.getBoundingClientRect().height,
+      slug: "6zhsLmke"
+    }], "*")
+  }
+
+</script>
+
+</body>
+
+</html>
+

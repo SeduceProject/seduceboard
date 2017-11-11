@@ -17,6 +17,11 @@
         </a>
     </li>
     <li>
+        <a href="/rack_temperature_overview.html">
+            <i class="fa fa-map"></i> Rack temperatures
+        </a>
+    </li>
+    <li>
         <a href="/">
             <i class="fa fa-bar-chart"></i> Measurements
             <i class="fa arrow"></i>
@@ -70,11 +75,15 @@
                                         {% for sensors_array in sensors_arrays %}
                                             <a href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">
                                                 {% if sensors_array.name == selected_sensors_array.name %}
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="4.5%" fill="rgb(218, 74, 41)" />
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="white" />
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="rgb(218, 74, 41)" />
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2.5%" fill="white" />
                                                 {% else %}
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3%" fill="rgb(74, 179, 193)" />
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="white" />
+                                                {% if sensors_array.sensor_type == "wattmeter" %}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="rgb(74, 179, 193)" />
+                                                {% else %}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="orange" />
+                                                {% endif%}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="1.25%" fill="white" />
                                                 {% endif %}
                                             </a>
                                         {% endfor %}
@@ -209,7 +218,6 @@
     </section>
 </article>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.subwayMap-0.5.0.js') }}"></script>
 <script type="text/javascript">
     $(".subway-map").subwayMap({ debug: true });
@@ -230,7 +238,7 @@
         subtitle: "Displaying data from {{ selected_sensor.name }}",
         {% if selected_sensor.sensor_type == "temperature" %}
 		sensor_type: "temperature",
-		navigator_data_url: "/ui/data/navigation/temp/hourly",
+		navigator_data_url: "/ui/data/navigation/temperature/hourly",
 		{% else %}
 		sensor_type: "{{ selected_sensor.sensor_type }}",
 		navigator_data_url: "/ui/data/navigation/{{ selected_sensor.sensor_type }}/hourly",

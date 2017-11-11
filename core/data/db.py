@@ -464,7 +464,7 @@ def db_wattmeters_data(sensor_type, start_date=None, how="daily"):
 def db_last_sensors_updates():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    query = "select last(*), location, unit, sensor_type, sensor from sensors group by sensor"
+    query = "SELECT last(*), *, sensor from sensors group by sensor"
     points = db_client.query(query).get_points()
 
     result = []
@@ -480,6 +480,41 @@ def db_last_sensors_updates():
         }]
 
     return result
+
+
+def db_last_temperature_values():
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    query = """SELECT last(*), *, sensor from sensors WHERE sensor_type = 'temperature' group by sensor"""
+    points = list(db_client.query(query).get_points())
+
+    result = []
+
+    for point in points:
+        result += [{
+            "time": point["time"],
+            "last_value": point["last_value"],
+            "location": point["location"],
+            "unit": point["unit"],
+            "sensor_type": point["sensor_type"],
+            "sensor": point["sensor"],
+        }]
+
+    return result
+
+
+def db_multitree_last_wattmeter_value(multitree_node):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    cq_name = "cq_%s_1m" % (multitree_node["id"])
+
+    query = "SELECT last(*) from %s" % (cq_name)
+    points = db_client.query(query).get_points()
+
+    for point in points:
+        return point["last_mean"]
+
+    return 0
 
 
 def db_get_running_queries():

@@ -57,3 +57,46 @@ def get_sensors_tree(root_node, level=0, use_simplified_children=True):
                 result += sensors
 
     return result
+
+
+def _get_last_node_consumption(node_id):
+    from core.data.db import db_multitree_last_wattmeter_value
+    return db_multitree_last_wattmeter_value(node_id)
+
+
+def _get_weighted_tree_consumption_data(root_node, level=0, total_consumption=None):
+
+    current_node_consumption = _get_last_node_consumption(root_node)
+    if total_consumption is None:
+        total_consumption = current_node_consumption
+
+    radius = (current_node_consumption / total_consumption) * 100
+    if radius < 5:
+        radius = 5
+    if radius > 100:
+        radius = 100
+    result = {
+        "node": root_node,
+        "name": root_node["name"],
+        "id": root_node["id"],
+        "level": level,
+        # "h": 100 / (level + 1),
+        "h": radius,
+        "children": []
+    }
+
+    if "children" in root_node:
+        for child in root_node["children"]:
+            child_node = get_node_by_id(child)
+            child_tree = _get_weighted_tree_consumption_data(child_node, level+1, total_consumption=total_consumption)
+            result["children"] += [child_tree]
+
+    return result
+
+
+def get_datacenter_weighted_tree_consumption_data():
+    datacenter_root_node = [rn for rn in get_root_nodes() if rn["id"] == "datacenter"]
+
+    if len(datacenter_root_node) > 0:
+        return _get_weighted_tree_consumption_data(root_node=datacenter_root_node[0])
+    return {}

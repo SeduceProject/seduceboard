@@ -8,7 +8,9 @@ import logging
 def cqs_recreate_all(force_creation=False):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    cqs = list(db_client.query("show continuous queries", database=DB_NAME).get_points())
+    query = "show continuous queries"
+    print(query)
+    cqs = list(db_client.query(query, database=DB_NAME).get_points())
     cqs_names = map(lambda x: x["name"], cqs)
 
     if force_creation:
@@ -16,8 +18,10 @@ def cqs_recreate_all(force_creation=False):
         for cq_name in cqs_names:
             query = """DROP CONTINUOUS QUERY %s ON %s""" % (cq_name, DB_NAME)
             logging.debug("Dropping all continuous queries")
+            print(query)
             db_client.query(query, database=DB_NAME)
             query = """DROP SERIES from %s""" % (cq_name)
+            print(query)
             logging.debug("Dropping all continuous queries' series")
             db_client.query(query, database=DB_NAME)
 
@@ -29,8 +33,9 @@ def cqs_recreate_all(force_creation=False):
         logging.debug("Computing '%s' continuous query" % ("cq_measurement_downsample_1m"))
         query = """CREATE CONTINUOUS QUERY "cq_measurement_downsample_1m" ON "pidiou"
         BEGIN
-            SELECT %s INTO "measurement_downsample_1m" FROM "sensors" GROUP BY time(1m), sensor
+            SELECT %s, mean("value") as value INTO "measurement_downsample_1m" FROM "sensors" GROUP BY time(1m), sensor
         END""" % (aggregated_fields)
+        print(query)
         db_client.query(query, database=DB_NAME)
         cqs_updated = True
 
@@ -38,8 +43,9 @@ def cqs_recreate_all(force_creation=False):
         logging.debug("Computing '%s' continuous query" % ("cq_measurement_downsample_1h"))
         query = """CREATE CONTINUOUS QUERY "cq_measurement_downsample_1h" ON "pidiou"
         BEGIN
-            SELECT %s INTO "measurement_downsample_1h" FROM "measurement_downsample_1m" GROUP BY time(1h), sensor
+            SELECT %s, mean("mean") as value INTO "measurement_downsample_1h" FROM "measurement_downsample_1m" GROUP BY time(1h), sensor
         END""" % (aggregated_fields)
+        print(query)
         db_client.query(query, database=DB_NAME)
         cqs_updated = True
 
@@ -47,8 +53,9 @@ def cqs_recreate_all(force_creation=False):
         logging.debug("Computing '%s' continuous query" % ("cq_measurement_downsample_1d"))
         query = """CREATE CONTINUOUS QUERY "cq_measurement_downsample_1d" ON "pidiou"
         BEGIN
-            SELECT %s INTO "measurement_downsample_1d" FROM "measurement_downsample_1h" GROUP BY time(1d), sensor
+            SELECT %s, mean("mean") as value INTO "measurement_downsample_1d" FROM "measurement_downsample_1h" GROUP BY time(1d), sensor
         END""" % (aggregated_fields)
+        print(query)
         db_client.query(query, database=DB_NAME)
         cqs_updated = True
 
@@ -56,8 +63,9 @@ def cqs_recreate_all(force_creation=False):
         logging.debug("Computing '%s' continuous query" % ("cq_measurement_downsample_all_1m"))
         query = """CREATE CONTINUOUS QUERY "cq_measurement_downsample_all_1m" ON "pidiou"
         BEGIN
-            SELECT %s INTO "measurement_downsample_all_1m" FROM "sensors" GROUP BY time(1m), sensor_type
+            SELECT %s, mean("value") as value INTO "measurement_downsample_all_1m" FROM "sensors" GROUP BY time(1m), sensor_type
         END""" % (aggregated_fields)
+        print(query)
         db_client.query(query, database=DB_NAME)
         cqs_updated = True
 
@@ -65,8 +73,9 @@ def cqs_recreate_all(force_creation=False):
         logging.debug("Computing '%s' continuous query" % ("cq_measurement_downsample_all_1h"))
         query = """CREATE CONTINUOUS QUERY "cq_measurement_downsample_all_1h" ON "pidiou"
         BEGIN
-            SELECT %s INTO "measurement_downsample_all_1h" FROM "measurement_downsample_all_1m" GROUP BY time(1h), sensor_type
+            SELECT %s, mean("mean") as value INTO "measurement_downsample_all_1h" FROM "measurement_downsample_all_1m" GROUP BY time(1h), sensor_type
         END""" % (aggregated_fields)
+        print(query)
         db_client.query(query, database=DB_NAME)
         cqs_updated = True
 
@@ -74,8 +83,9 @@ def cqs_recreate_all(force_creation=False):
         logging.debug("Computing '%s' continuous query" % ("cq_measurement_downsample_all_1d"))
         query = """CREATE CONTINUOUS QUERY "cq_measurement_downsample_all_1d" ON "pidiou"
         BEGIN
-            SELECT %s INTO "measurement_downsample_all_1d" FROM "measurement_downsample_all_1h" GROUP BY time(1d), sensor_type
+            SELECT %s, mean("mean") as value INTO "measurement_downsample_all_1d" FROM "measurement_downsample_all_1h" GROUP BY time(1d), sensor_type
         END""" % (aggregated_fields)
+        print(query)
         db_client.query(query, database=DB_NAME)
         cqs_updated = True
 
@@ -109,6 +119,7 @@ def cqs_recreate_all(force_creation=False):
                       filter_expression,
                       aggregate_frequency,
                       aggregate_frequency)
+            print(query)
             db_client.query(query, database=DB_NAME)
             cqs_updated = True
 
@@ -123,6 +134,7 @@ def cqs_recreate_all(force_creation=False):
                       aggregated_fields,
                       cq_name_1m,
                       cq_name)
+            print(query)
             db_client.query(query, database=DB_NAME)
             cqs_updated = True
 
@@ -137,6 +149,7 @@ def cqs_recreate_all(force_creation=False):
                       aggregated_fields,
                       cq_name_1h,
                       cq_name)
+            print(query)
             db_client.query(query, database=DB_NAME)
             cqs_updated = True
 
@@ -151,6 +164,7 @@ def cqs_recreate_all(force_creation=False):
                       aggregated_fields,
                       cq_name_1d,
                       cq_name)
+            print(query)
             db_client.query(query, database=DB_NAME)
             cqs_updated = True
 
@@ -170,51 +184,57 @@ def cqs_recompute_data():
     aggregated_fields = """sum("value"), mean("value"), stddev("value"), count("value"), median("value"), min("value"), max("value")"""
 
     logging.debug("Recomputing '%s' continuous query" % ("measurement_downsample_1m"))
-    query = """SELECT %s
+    query = """SELECT %s, mean("value") as value
     INTO "measurement_downsample_1m"
     FROM "sensors"
     WHERE time >= '%s'
     GROUP BY time(1m), sensor""" % (aggregated_fields, oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     logging.debug("Recomputing '%s' continuous query" % ("measurement_downsample_1h"))
-    query = """SELECT %s
+    query = """SELECT %s, mean("mean") as value
     INTO "measurement_downsample_1h"
     FROM "measurement_downsample_1m"
     WHERE time >= '%s'
     GROUP BY time(1h), sensor""" % (aggregated_fields, oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     logging.debug("Recomputing '%s' continuous query" % ("measurement_downsample_1d"))
-    query = """SELECT %s
+    query = """SELECT %s, mean("mean") as value
     INTO "measurement_downsample_1d"
     FROM "measurement_downsample_1h"
     WHERE time >= '%s'
     GROUP BY time(1d), sensor""" % (aggregated_fields, oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     logging.debug("Recomputing '%s' continuous query" % ("measurement_downsample_all_1m"))
-    query = """SELECT %s
+    query = """SELECT %s, mean("value") as value
     INTO "measurement_downsample_all_1m"
     FROM "sensors"
     WHERE time >= '%s'
     GROUP BY time(1m), sensor_type""" % (aggregated_fields, oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     logging.debug("Recomputing '%s' continuous query" % ("measurement_downsample_all_1h"))
-    query = """SELECT %s
+    query = """SELECT %s, mean("mean") as value
     INTO "measurement_downsample_all_1h"
     FROM "measurement_downsample_all_1m"
     WHERE time >= '%s'
     GROUP BY time(1h), sensor_type""" % (aggregated_fields, oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     logging.debug("Recomputing '%s' continuous query" % ("measurement_downsample_all_1d"))
-    query = """SELECT %s
+    query = """SELECT %s, mean("mean") as value
     INTO "measurement_downsample_all_1d"
     FROM "measurement_downsample_all_1h"
     WHERE time >= '%s'
     GROUP BY time(1d), sensor_type""" % (aggregated_fields, oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     for aggregate_name in AGGREGATES_CONFIG:
@@ -245,6 +265,7 @@ def cqs_recompute_data():
                                 aggregate_frequency,
                                 oldest_timestamp,
                                 aggregate_frequency)
+        print(query)
         db_client.query(query, database=DB_NAME)
 
         # CQ for aggregating data from cq_measurement_wattmeters_aggregate_10s view
@@ -258,6 +279,7 @@ def cqs_recompute_data():
                                              aggregate_name,
                                              cq_name,
                                              oldest_timestamp)
+        print(query)
         db_client.query(query, database=DB_NAME)
 
         cq_name_1h = "cq_measurement_%s_aggregate_1h" % (aggregate_name)
@@ -270,6 +292,7 @@ def cqs_recompute_data():
                                              aggregate_name,
                                              cq_name,
                                              oldest_timestamp)
+        print(query)
         db_client.query(query, database=DB_NAME)
 
         cq_name_1d = "cq_measurement_%s_aggregate_1d" % (aggregate_name)
@@ -282,6 +305,7 @@ def cqs_recompute_data():
                                              aggregate_name,
                                              cq_name,
                                              oldest_timestamp)
+        print(query)
         db_client.query(query, database=DB_NAME)
 
     return True
@@ -291,7 +315,7 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     # Generate a a criterion
-    filter_expression = " and ".join(map(lambda x: """sensor='%s' """ % (x), sub_query_sets))
+    filter_expression = " or ".join(map(lambda x: """sensor='%s' """ % (x), sub_query_sets))
 
     aggregate_frequency = "30s"
     aggregate_function_level1 = "sum"
@@ -299,7 +323,7 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
     aggregated_fields = """sum("value"), mean("value"), stddev("value"), count("value"), median("value"), min("value"), max("value")"""
 
     # CQ for summing data collected periodically according to a sensor type
-    cq_name = "%s_%s" % (cq_name, aggregate_frequency)
+    cq_name_freq = "%s_%s" % (cq_name, aggregate_frequency)
     logging.debug("Computing '%s' continuous query" % (cq_name))
     query = """CREATE CONTINUOUS QUERY "%s" ON "pidiou"
             BEGIN
@@ -312,14 +336,15 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
                     group by time(%s), sensor
                     )
                 group by time(%s)
-            END""" % (cq_name,
+            END""" % (cq_name_freq,
                       aggregate_function_level1,
                       aggregate_function_level2,
-                      cq_name,
+                      cq_name_freq,
                       aggregate_function_level2,
                       filter_expression,
                       aggregate_frequency,
                       aggregate_frequency)
+    print(query)
     db_client.query(query, database=DB_NAME)
     cqs_updated = True
 
@@ -332,7 +357,8 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
             END""" % (cq_name_1m,
                       aggregated_fields,
                       cq_name_1m,
-                      cq_name)
+                      cq_name_freq)
+    print(query)
     db_client.query(query, database=DB_NAME)
     cqs_updated = True
 
@@ -345,7 +371,8 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
             END""" % (cq_name_1h,
                       aggregated_fields,
                       cq_name_1h,
-                      cq_name)
+                      cq_name_freq)
+    print(query)
     db_client.query(query, database=DB_NAME)
     cqs_updated = True
 
@@ -358,7 +385,8 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
             END""" % (cq_name_1d,
                       aggregated_fields,
                       cq_name_1d,
-                      cq_name)
+                      cq_name_freq)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     return True
@@ -368,7 +396,7 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     # Generate a a criterion
-    filter_expression = " and ".join(map(lambda x: """sensor='%s' """ % (x), sub_query_sets))
+    filter_expression = " or ".join(map(lambda x: """sensor='%s' """ % (x), sub_query_sets))
 
     first_value_candidates = list(db_client.query("select first(value) from sensors", database=DB_NAME).get_points())
     if len(first_value_candidates) == 0:
@@ -382,7 +410,7 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
     aggregated_fields = """sum("value"), mean("value"), stddev("value"), count("value"), median("value"), min("value"), max("value")"""
 
     # CQ for making an average data periodically collected for the current aggregate
-    cq_name = "%s_%s" % (cq_name, aggregate_frequency)
+    cq_name_freq = "%s_%s" % (cq_name, aggregate_frequency)
     logging.debug("Recomputing '%s' continuous query" % (cq_name))
     query = """select %s(%s) as value
             INTO "%s"
@@ -395,13 +423,14 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
             where time > '%s'
             group by time(%s)""" % (aggregate_function_level1,
                                     aggregate_function_level2,
-                                    cq_name,
+                                    cq_name_freq,
                                     aggregate_function_level2,
                                     filter_expression,
                                     oldest_timestamp,
                                     aggregate_frequency,
                                     oldest_timestamp,
                                     aggregate_frequency)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     # CQ for aggregating data from cq_measurement_wattmeters_aggregate_10s view
@@ -413,8 +442,9 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
             WHERE time >= '%s'
             GROUP BY time(1m), sensor_type""" % (aggregated_fields,
                                                  cq_name,
-                                                 cq_name,
+                                                 cq_name_freq,
                                                  oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     cq_name_1h = "%s_1h" % (cq_name)
@@ -425,8 +455,9 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
             WHERE time >= '%s'
             GROUP BY time(1h), sensor_type""" % (aggregated_fields,
                                                  cq_name,
-                                                 cq_name,
+                                                 cq_name_freq,
                                                  oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     cq_name_1d = "%s_1d" % (cq_name)
@@ -437,8 +468,9 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
             WHERE time >= '%s'
             GROUP BY time(1d), sensor_type""" % (aggregated_fields,
                                                  cq_name,
-                                                 cq_name,
+                                                 cq_name_freq,
                                                  oldest_timestamp)
+    print(query)
     db_client.query(query, database=DB_NAME)
 
     return True

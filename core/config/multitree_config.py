@@ -18,7 +18,7 @@ MULTITREE_CONFIG = [
     {
         "id": "cooling_cluster",
         "name": "Cooling cluster",
-        "children": ["cluster_cooling", "cluster_hardware", "cluster_condensator"]
+        "children": ["cluster_cooling", "cluster_condensator"]
     },
     {
         "id": "cooling_room",
@@ -84,3 +84,5 @@ MULTITREE_CONFIG = [
     #     "target": "socomec_condensator"
     # }
 ]
+
+

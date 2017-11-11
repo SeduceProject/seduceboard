@@ -2,6 +2,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
+from flask import redirect
+from flask import url_for
 from influxdb import InfluxDBClient
 import time
 from dateutil import parser
@@ -243,6 +245,142 @@ def measurements_socomecs():
     return render_template("measurements_socomecs.html")
 
 
+@app.route("/weighted_tree_consumption_data")
+def weighted_tree_consumption_data():
+    # return jsonify({
+    #   "name": "DataCenter",
+    #   "h": 200,
+    #   "children": [{
+    #     "name": "Clusteur A",
+    #     "h": 30,
+    #     "children": [{
+    #       "name": "Serveur 1",
+    #       "h": 15,
+    #       "children": [{
+    #         "name": "VM 1",
+    #         "h": 1
+    #       }, {
+    #         "name": "VM 2",
+    #         "h": 5
+    #       }, {
+    #         "name": "VM 2",
+    #         "h": 5
+    #       }, {
+    #         "name": "VM 2",
+    #         "h": 5
+    #       }, {
+    #         "name": "VM 21",
+    #         "h": 5
+    #       }, {
+    #         "name": "VM 22",
+    #         "h": 5
+    #       }, {
+    #        "name": "VM 3",
+    #         "h": 7
+    #       }]
+    #     }, {
+    #       "name": "Serveur 2",
+    #       "h": 5,
+    #       "children": [{
+    #         "name": "VM 4",
+    #         "h": 3
+    #       }, {
+    #         "name": "VM 5",
+    #         "h": 3
+    #       }, {
+    #         "name": "VM 6",
+    #         "h": 3
+    #       }]
+    #     }]
+    #   }, {
+    #     "name": "Clusteur B",
+    #     "h": 80,
+    #
+    #     "children": [{
+    #       "name": "Serveur 3",
+    #       "h": 60,
+    #       "children": [{
+    #         "name": "VM 7",
+    #         "h": 30
+    #       }, {
+    #         "name": "VM 8",
+    #         "h": 20
+    #       }, {
+    #         "name": "VM 9",
+    #         "h": 10
+    #       }]
+    #     }, {
+    #       "name": "Serveur 4",
+    #       "h": 20,
+    #       "children": [{
+    #         "name": "VM 10",
+    #         "h": 10
+    #       }, {
+    #         "name": "VM 11",
+    #         "h": 5
+    #       }, {
+    #         "name": "VM 12",
+    #         "h": 5
+    #       }]
+    #     }]
+    #   }]
+    # })
+    from core.data.multitree import get_datacenter_weighted_tree_consumption_data
+    return jsonify(get_datacenter_weighted_tree_consumption_data())
+
+@app.route("/weighted_tree_consumption")
+def weighted_tree_consumption():
+    return render_template("weighted_tree_consumption.html")
+
+
+@app.route("/check")
+def check():
+    from core.config.room_config import get_temperature_sensors_from_csv_files
+    from core.data.db import db_sensors
+    sensors_extracted_from_csv = get_temperature_sensors_from_csv_files()
+    sensors = db_sensors("now()-3600s", sensor_type="temperature")
+    return "OK"
+
+
+@app.route("/rack_temperature/sensors")
+def rack_temperature_sensors():
+    from core.config.room_config import get_temperature_sensors_infrastructure
+    temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
+
+    return jsonify(temperature_sensors_infrastructure)
+
+
+@app.route("/rack_temperature/sensors/last_values")
+def rack_temperature_sensors_last_values():
+    from core.config.room_config import get_temperature_sensors_infrastructure
+    from core.data.db import db_last_temperature_values
+    temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
+    last_temperature_values = db_last_temperature_values()
+
+    for sensor_array_name in temperature_sensors_infrastructure:
+        sensor_array = temperature_sensors_infrastructure[sensor_array_name]
+        sensor_array["last_temperatures"] = \
+                [x for x in last_temperature_values if x["sensor"] in sensor_array["sensors"]]
+
+    return jsonify(temperature_sensors_infrastructure)
+
+
+@app.route("/rack_temperature_overview.html")
+def rack_temperature_overview():
+    from core.config.room_config import get_temperature_sensors_infrastructure
+    from core.data.db import db_last_temperature_values
+    temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
+    last_temperature_values = db_last_temperature_values()
+
+    for sensor_array_name in temperature_sensors_infrastructure:
+        sensor_array = temperature_sensors_infrastructure[sensor_array_name]
+        sensor_array["last_temperatures"] = \
+            [x for x in last_temperature_values if x["sensor"] in sensor_array["sensors"]]
+
+    return render_template("rack_temperature_overview.html",
+                           temperature_sensors_infrastructure=temperature_sensors_infrastructure)
+
+
 @app.route("/room_overview.html")
 @app.route("/room_overview.html/<sensors_array_name>")
 @app.route("/room_overview.html/<sensors_array_name>/<selected_sensor>")
@@ -277,18 +415,7 @@ def sensors_array(sensors_array_name, selected_sensor=None):
 
 
 if __name__ == "__main__":
-    from core.data.cq_aggregates import cqs_recreate_all, cqs_recompute_data, cq_multitree_recreate_all
-
     logging.basicConfig(level=logging.DEBUG)
-
-    # Will check if continuous queries have already been created
-    print("Checking continuous queries")
-    continuous_queries_updated = cqs_recreate_all(force_creation=False)
-    if continuous_queries_updated:
-        print("Recomputing data of continuous queries")
-        cqs_recompute_data()
-    # cq_multitree_recreate_all(True)
-    # cq_multitree_recreate_all(False)
 
     print("Running the \"API/Web\" program")
     app.jinja_env.auto_reload = DEBUG
