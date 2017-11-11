@@ -7,8 +7,8 @@ from influxdb import InfluxDBClient
 from pysnmp.hlapi.asyncore import *
 import time
 
-DB_HOST = "192.168.1.8"
-# DB_HOST = "localhost"
+#DB_HOST = "192.168.1.8"
+DB_HOST = "localhost"
 DB_USER = 'root'
 DB_PASSWORD = 'root'
 DB_NAME = 'pidiou'
@@ -23,11 +23,13 @@ def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
 
     # outlet_name = cbCtx["outlet_id"]
     outlet_oid = cbCtx["pdu_oid"]+"."+outlet_num
+
     matching_outlet_value_binding = [x for x in varBinds if str(x[0][0]) == outlet_oid]
 
     if len(matching_outlet_value_binding) > 0:
+        value_binding = matching_outlet_value_binding[0]
         outlet_unit = "W"
-        outlet_value = x[0][1]
+        outlet_value = value_binding[0][1]
         outlet_location = outlet_name
         outlet_sensor_name = outlet_name+"_"+cbCtx["pdu_id"]
         outlet_sensor_type = "wattmeter"
