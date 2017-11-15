@@ -18,7 +18,12 @@
     </li>
     <li>
         <a href="/rack_temperature_overview.html">
-            <i class="fa fa-map"></i> Rack temperatures
+            <i class="fa fa-thermometer-half"></i> Rack temperatures
+        </a>
+    </li>
+    <li>
+        <a href="/weighted_tree_consumption">
+            <i class="fa fa-sitemap"></i> Consumption tree
         </a>
     </li>
     <li class="open">
@@ -72,7 +77,6 @@
 {% endblock %}
 
 {% block end_document %}
-<script type="text/javascript" src="https://www.highcharts.com/samples/data/three-series-1000-points.js"></script>
 <script src="{{ url_for('static', filename='js/data_visualization.js') }} "></script>
 <script>
     setTimeout(function() {

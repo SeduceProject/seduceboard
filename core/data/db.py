@@ -205,6 +205,104 @@ def db_aggregated_sensor_data(sensor_name, start_date=None, how="daily"):
     return result
 
 
+def _get_aggregate_multitree_serie_name(name, how):
+    if how == "daily":
+        return "cq_%s_1d" % name
+    elif how == "hourly":
+        return "cq_%s_1h" % name
+    return "cq_%s_1m" % name
+
+
+def db_aggregated_multitree_sensor_data(sensor_name, start_date=None, end_date=None, how="daily"):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    serie_name = _get_aggregate_multitree_serie_name(sensor_name, how)
+
+    time_range_criterion = ""
+    if (start_date is not None and start_date != "undefined") or (end_date is not None and end_date != "undefined"):
+        time_range_criterion = " where "
+        time_criterions = []
+        if start_date is not None:
+            time_criterions += [" time >= %s " % start_date]
+        if end_date is not None:
+            time_criterions += [" time <= %s " % end_date]
+        time_range_criterion += " and ".join(time_criterions)
+
+    query = "SELECT * from %s %s" % (serie_name, time_range_criterion)
+    points = db_client.query(query).get_points()
+
+    start_date = -1
+    end_date = -1
+
+    timestamps = []
+    sums = []
+    means = []
+    medians = []
+    stddevs = []
+    counts = []
+    mins = []
+    maxs = []
+
+    points_as_list = list(points)
+    for point in points_as_list:
+        timestamp = point['time']
+        if point['mean'] is not None:
+            if start_date == -1 or start_date > timestamp:
+                start_date = timestamp
+            if end_date == -1 or end_date < timestamp:
+                end_date = timestamp
+
+    for point in points_as_list:
+        timestamp = point['time']
+        if timestamp >= start_date and timestamp <= end_date:
+            timestamps.append(point['time'])
+            sums.append(point['sum'])
+            means.append(point['mean'])
+            medians.append(point['median'])
+            stddevs.append(point['stddev'])
+            counts.append(point['count'])
+            mins.append(point['min'])
+            maxs.append(point['max'])
+
+    # Add a last empty point to enable streaming on the webapp
+    last_empty_date = None
+
+    if end_date != -1:
+        if how == "daily":
+            last_empty_date = parser.parse(end_date) + timedelta(days=1)
+        elif how == "hourly":
+            last_empty_date = parser.parse(end_date) + timedelta(hours=1)
+        else:
+            last_empty_date = parser.parse(end_date) + timedelta(minutes=1)
+    if last_empty_date:
+        timestamps.append(last_empty_date.isoformat())
+        sums.append(None)
+        means.append(None)
+        medians.append(None)
+        stddevs.append(None)
+        counts.append(None)
+        mins.append(None)
+        maxs.append(None)
+
+    result = {
+        "start_date": start_date,
+        "end_date": end_date,
+        "last_empty_timestamp": end_date if last_empty_date is None else last_empty_date,
+        "timestamps": timestamps,
+        "sums": sums,
+        "means": means,
+        "medians": medians,
+        "stddevs": stddevs,
+        "mins": mins,
+        "maxs": maxs,
+        "counts": counts,
+        "is_downsampled": True,
+        "sensor_name": sensor_name
+    }
+
+    return result
+
+
 def _get_datainfo_serie_name(how):
     if how == "daily":
         return "measurement_downsample_all_1d"
@@ -506,9 +604,13 @@ def db_last_temperature_values():
 def db_multitree_last_wattmeter_value(multitree_node):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
+    if multitree_node is None:
+        print("ici")
+
     cq_name = "cq_%s_1m" % (multitree_node["id"])
 
     query = "SELECT last(*) from %s" % (cq_name)
+    print(query)
     points = db_client.query(query).get_points()
 
     for point in points:

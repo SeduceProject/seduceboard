@@ -16,7 +16,7 @@ def get_node_by_id(node_id):
     return None
 
 
-def get_tree(root_node, level=0, use_simplified_children=True):
+def get_tree(root_node, level=0, use_simplified_children=False):
     result = {
         "node": root_node,
         "level": level,
@@ -29,9 +29,11 @@ def get_tree(root_node, level=0, use_simplified_children=True):
             child_tree = get_tree(child_node, level+1, use_simplified_children)
             result["children"] += [child_tree]
     else:
+        if root_node is None:
+            print("ici")
         if "children" in root_node:
             for child in root_node["children"]:
-                child_node = get_node_by_id(child)
+                child_node = get_node_by_id(child.replace("-", "_"))
                 child_tree = get_tree(child_node, level+1, use_simplified_children)
                 result["children"] += [child_tree]
 
@@ -70,7 +72,10 @@ def _get_weighted_tree_consumption_data(root_node, level=0, total_consumption=No
     if total_consumption is None:
         total_consumption = current_node_consumption
 
-    radius = (current_node_consumption / total_consumption) * 100
+    if total_consumption > 0:
+        radius = (100.0 * current_node_consumption) / total_consumption
+    else:
+        radius = 5
     if radius < 5:
         radius = 5
     if radius > 100:
@@ -80,14 +85,15 @@ def _get_weighted_tree_consumption_data(root_node, level=0, total_consumption=No
         "name": root_node["name"],
         "id": root_node["id"],
         "level": level,
-        # "h": 100 / (level + 1),
+        "consumption": current_node_consumption,
+        "total_consumption": total_consumption,
         "h": radius,
         "children": []
     }
 
     if "children" in root_node:
         for child in root_node["children"]:
-            child_node = get_node_by_id(child)
+            child_node = get_node_by_id(child.replace("-", "_"))
             child_tree = _get_weighted_tree_consumption_data(child_node, level+1, total_consumption=total_consumption)
             result["children"] += [child_tree]
 

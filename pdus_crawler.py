@@ -29,7 +29,7 @@ def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
     if len(matching_outlet_value_binding) > 0:
         value_binding = matching_outlet_value_binding[0]
         outlet_unit = "W"
-        outlet_value = value_binding[0][1]
+        outlet_value = (1.0 * value_binding[0][1]) / 10.0
         outlet_location = outlet_name
         outlet_sensor_name = outlet_name+"_"+cbCtx["pdu_id"]
         outlet_sensor_type = "wattmeter"
@@ -111,6 +111,9 @@ def read_outlets_of_given_pdu(pdu_id):
     return False
 
 
+NO_PAUSE = -1
+
+
 def set_interval(f, args, interval_secs):
     class StoppableThread(threading.Thread):
 
@@ -129,7 +132,8 @@ def set_interval(f, args, interval_secs):
                     traceback.print_exc()
                     print("Something bad happened here :-(")
                     pass
-                # time.sleep(self.interval)
+                if interval_secs != NO_PAUSE:
+                    time.sleep(self.interval)
 
         def stop(self):
             self.stop_execution = True
@@ -146,7 +150,7 @@ if __name__ == "__main__":
     last_pdu_reader = None
     for pdu_id in get_pdus():
         # read_outlets_of_given_pdu(pdu_id)
-        pdu_reader = set_interval(read_outlets_of_given_pdu, (pdu_id), 1)
+        pdu_reader = set_interval(read_outlets_of_given_pdu, (pdu_id), NO_PAUSE)
 
         # Add a pause to prevent PDU to get all requests at the same time
         time.sleep(2)

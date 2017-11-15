@@ -3,6 +3,7 @@ from core.config.multitree_config import MULTITREE_CONFIG
 from core.data.db import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
 from influxdb import InfluxDBClient
 import logging
+from influxdb.exceptions import InfluxDBClientError as InfluxDBClientError
 
 
 def cqs_recreate_all(force_creation=False):
@@ -311,6 +312,64 @@ def cqs_recompute_data():
     return True
 
 
+def multitree_get_cqs_and_series_names(cq_name):
+
+    series = []
+    cqs = []
+
+    aggregate_frequency = "30s"
+
+    # CQ for summing data collected periodically according to a sensor type
+    cq_name_freq = "%s_%s" % (cq_name, aggregate_frequency)
+    cqs += [cq_name_freq]
+    series += [cq_name_freq]
+
+    # CQ for aggregating data from cq_measurement_wattmeters_aggregate_10s view (aggregate every minute)
+    cq_name_1m = "%s_1m" % (cq_name)
+    cqs += [cq_name_1m]
+    series += [cq_name_1m]
+
+    # CQ for aggregating data from cq_measurement_wattmeters_aggregate_10s view (aggregate every hour)
+    cq_name_1h = "%s_1h" % (cq_name)
+    cqs += [cq_name_1h]
+    series += [cq_name_1h]
+
+    # CQ for aggregating data from cq_measurement_wattmeters_aggregate_10s view (aggregate every day)
+    cq_name_1d = "%s_1d" % (cq_name)
+    cqs += [cq_name_1d]
+    series += [cq_name_1d]
+
+    return {
+        "cqs": cqs,
+        "series": series
+    }
+
+
+def multitree_drop_cqs_and_series_names(cq_name):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    multitree_data = multitree_get_cqs_and_series_names(cq_name)
+    series = multitree_data["series"]
+    cqs = multitree_data["cqs"]
+
+    for cq_name in cqs:
+        query = """DROP CONTINUOUS QUERY %s ON %s""" % (cq_name, DB_NAME)
+        logging.debug("Dropping all continuous queries")
+        print(query)
+        try:
+            db_client.query(query, database=DB_NAME)
+        except InfluxDBClientError:
+            print("cq \"%s\" was already destroyed" % (cq_name))
+    for serie_name in series:
+        query = """DROP SERIES from %s""" % (serie_name)
+        print(query)
+        logging.debug("Dropping all continuous queries' series")
+        try:
+            db_client.query(query, database=DB_NAME)
+        except InfluxDBClientError:
+            print("serie %s was already destroyed" % (serie_name))
+
+
 def multitree_create_continuous_query(cq_name, sub_query_sets):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
@@ -487,7 +546,7 @@ def multitree_build_nested_query_and_dependencies(node, recreate_all):
     if "target" in current_node:
         sub_query_sets = [current_node["target"]]
     else:
-        if "simplified_children" in current_node:
+        if False and "simplified_children" in current_node:
             for child in current_node["simplified_children"]:
                 child_node = get_node_by_id(child)
                 infos = multitree_build_nested_query_and_dependencies(child_node, recreate_all)
@@ -508,8 +567,41 @@ def multitree_build_nested_query_and_dependencies(node, recreate_all):
     return {"query_name": cq_name, "sub_query_sets": sub_query_sets}
 
 
+def multitree_drop_nested_query_and_dependencies(node, recreate_all):
+    from core.data.multitree import get_root_nodes, get_tree, get_node_by_id
+
+    current_node = node["node"] if "node" in node else node
+    current_tree = get_tree(current_node)
+    cq_name = "cq_%s" % (current_node["id"])
+    sub_query_sets = []
+
+    if "target" in current_node:
+        sub_query_sets = [current_node["target"]]
+    else:
+        if "simplified_children" in current_node:
+            for child in current_node["simplified_children"]:
+                child_node = get_node_by_id(child)
+                infos = multitree_drop_nested_query_and_dependencies(child_node, recreate_all)
+                sub_query_sets += infos["sub_query_sets"]
+        else:
+            for child in current_tree["children"]:
+                infos = multitree_drop_nested_query_and_dependencies(child, recreate_all)
+                sub_query_sets += infos["sub_query_sets"]
+
+    pseudo_query = "drop %s *" % (cq_name)
+    print(pseudo_query)
+
+    multitree_drop_cqs_and_series_names(cq_name)
+
+    return {"query_name": cq_name, "sub_query_sets": sub_query_sets}
+
+
 def cq_multitree_recreate_all(recreate_all=False):
     from core.data.multitree import get_root_nodes
+
+    if recreate_all:
+        for root_node in get_root_nodes():
+            multitree_drop_nested_query_and_dependencies(root_node, recreate_all)
 
     for root_node in get_root_nodes():
         multitree_build_nested_query_and_dependencies(root_node, recreate_all)

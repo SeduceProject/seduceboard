@@ -18,7 +18,12 @@
     </li>
     <li class="active">
         <a href="/rack_temperature_overview.html">
-            <i class="fa fa-map"></i> Rack temperatures
+            <i class="fa fa-thermometer-half"></i> Rack temperatures
+        </a>
+    </li>
+    <li>
+        <a href="/weighted_tree_consumption">
+            <i class="fa fa-sitemap"></i> Consumption tree
         </a>
     </li>
     <li>
@@ -55,20 +60,39 @@
 
     .table-rack tr {
         border: solid 1px black;
-        height: 8px;
+        height: 10px;
         font-size: 8px;
+    }
+
+    .table-rack th {
+        text-align: center;
+        border: solid 1px black;
+        height: 10px;
+        font-size: 14px;
     }
 
     .table-rack td {
         border: solid 1px black;
-        height: 8px;
-        font-size: 8px;
+        height: 10px;
+        font-size: 10px;
         padding: 0px;
+        width: 20%;
+        min-width: 170px;
     }
 
     .temperature_div {
-        height: 10px;
+        height: 12px;
         width: 100%;
+    }
+
+    .sensor_a_link {
+        position: relative;
+        color: blue;
+        right: 0px;
+        color: #FFFFFF;
+        text-decoration: none;
+        font-size: 8px;
+        bottom: 2px;
     }
 
 </style>
@@ -202,7 +226,7 @@
                     let temperature_div = document.getElementById(div_id);
                     let hsl_color = temperature_to_hsl_color(temperature);
                     $(temperature_div).css("background-color", "hsl("+hsl_color+", 76%, 55%)");
-                    $(temperature_div).html(temperature+"°C ("+sensor_name+")");
+                    $(temperature_div).html(temperature+"°C ("+sensor_name+") <a class=\"sensor_a_link\" href=\"http://localhost:8081/room_overview.html/by_selected/"+sensor_name+"\">view</a>");
                 }
             }
         });

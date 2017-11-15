@@ -96,7 +96,7 @@ def multitree_tree_query(node_id):
     from core.data.multitree import get_tree
     starting_node = get_node_by_id(node_id)
     if starting_node is not None:
-        tree = get_tree(starting_node)
+        tree = get_tree(starting_node, False)
         return jsonify(tree)
     else:
         return jsonify({"status": "failure", "cause": "'%s' is not a valid node id :-(" % (node_id)})
@@ -104,6 +104,18 @@ def multitree_tree_query(node_id):
 
 @app.route("/multitree/query/sensors/<node_id>")
 def multitree_sensors_query(node_id):
+    from core.data.multitree import get_node_by_id
+    from core.data.multitree import get_sensors_tree
+    starting_node = get_node_by_id(node_id)
+    if starting_node is not None:
+        sensors = get_sensors_tree(starting_node)
+        return jsonify(sensors)
+    else:
+        return jsonify({"status": "failure", "cause": "'%s' is not a valid node id :-(" % (node_id)})
+
+
+@app.route("/multitree/query/sensors/<node_id>/data")
+def multitree_sensors_data_query(node_id):
     from core.data.multitree import get_node_by_id
     from core.data.multitree import get_sensors_tree
     starting_node = get_node_by_id(node_id)
@@ -134,6 +146,27 @@ def aggregated_sensor_data(sensor_name, how="daily"):
             start_date = "'%s'" % start_date
 
     _aggregated_sensor_data = db_aggregated_sensor_data(sensor_name=sensor_name, start_date=start_date, how=how)
+    return jsonify(_aggregated_sensor_data)
+
+
+@app.route("/multitree_sensor_data/<sensor_name>/aggregated")
+@app.route("/multitree_sensor_data/<sensor_name>/aggregated/<how>")
+def aggregated_multitree_sensor_data(sensor_name, how="daily"):
+    from core.data.db import db_aggregated_multitree_sensor_data
+
+    start_date = None
+    if "start_date" in request.args:
+        start_date = request.args["start_date"]
+        if validate(start_date):
+            start_date = "'%s'" % start_date
+
+    end_date = None
+    if "end_date" in request.args:
+        end_date = request.args["end_date"]
+        if validate(end_date):
+            end_date = "'%s'" % end_date
+
+    _aggregated_sensor_data = db_aggregated_multitree_sensor_data(sensor_name=sensor_name, start_date=start_date, end_date=end_date, how=how)
     return jsonify(_aggregated_sensor_data)
 
 
@@ -247,84 +280,6 @@ def measurements_socomecs():
 
 @app.route("/weighted_tree_consumption_data")
 def weighted_tree_consumption_data():
-    # return jsonify({
-    #   "name": "DataCenter",
-    #   "h": 200,
-    #   "children": [{
-    #     "name": "Clusteur A",
-    #     "h": 30,
-    #     "children": [{
-    #       "name": "Serveur 1",
-    #       "h": 15,
-    #       "children": [{
-    #         "name": "VM 1",
-    #         "h": 1
-    #       }, {
-    #         "name": "VM 2",
-    #         "h": 5
-    #       }, {
-    #         "name": "VM 2",
-    #         "h": 5
-    #       }, {
-    #         "name": "VM 2",
-    #         "h": 5
-    #       }, {
-    #         "name": "VM 21",
-    #         "h": 5
-    #       }, {
-    #         "name": "VM 22",
-    #         "h": 5
-    #       }, {
-    #        "name": "VM 3",
-    #         "h": 7
-    #       }]
-    #     }, {
-    #       "name": "Serveur 2",
-    #       "h": 5,
-    #       "children": [{
-    #         "name": "VM 4",
-    #         "h": 3
-    #       }, {
-    #         "name": "VM 5",
-    #         "h": 3
-    #       }, {
-    #         "name": "VM 6",
-    #         "h": 3
-    #       }]
-    #     }]
-    #   }, {
-    #     "name": "Clusteur B",
-    #     "h": 80,
-    #
-    #     "children": [{
-    #       "name": "Serveur 3",
-    #       "h": 60,
-    #       "children": [{
-    #         "name": "VM 7",
-    #         "h": 30
-    #       }, {
-    #         "name": "VM 8",
-    #         "h": 20
-    #       }, {
-    #         "name": "VM 9",
-    #         "h": 10
-    #       }]
-    #     }, {
-    #       "name": "Serveur 4",
-    #       "h": 20,
-    #       "children": [{
-    #         "name": "VM 10",
-    #         "h": 10
-    #       }, {
-    #         "name": "VM 11",
-    #         "h": 5
-    #       }, {
-    #         "name": "VM 12",
-    #         "h": 5
-    #       }]
-    #     }]
-    #   }]
-    # })
     from core.data.multitree import get_datacenter_weighted_tree_consumption_data
     return jsonify(get_datacenter_weighted_tree_consumption_data())
 
