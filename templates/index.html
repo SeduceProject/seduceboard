@@ -72,7 +72,7 @@
                                     <i class="fa fa-thermometer-three-quarters"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> 33.9 °C</div>
+                                    <div class="value"> {{ last_temperature_mean  | round(2) }} °C</div>
                                     <div class="name"> Temperature (inside)</div>
                                 </div>
                                 <div class="progress stat-progress">
@@ -84,7 +84,7 @@
                                     <i class="fa fa-thermometer-three-quarters"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> 23.3 °C</div>
+                                    <div class="value"> {{ last_temperature_mean | round(2) }} °C</div>
                                     <div class="name"> Temperature (outside)</div>
                                 </div>
                                 <div class="progress stat-progress">
@@ -96,8 +96,8 @@
                                     <i class="fa fa-bolt"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> 10500 W</div>
-                                    <div class="name"> Today's consumption</div>
+                                    <div class="value"> {{datacenter_consumption  | round(2) }} W</div>
+                                    <div class="name"> Instant consumption</div>
                                 </div>
                                 <div class="progress stat-progress">
                                     <div class="progress-bar" style="width: 60%;"></div>
@@ -108,8 +108,8 @@
                                     <i class="fa fa-users"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> 58</div>
-                                    <div class="name"> Total users</div>
+                                    <div class="value"> {{ pue_ratio  | round(2) }} </div>
+                                    <div class="name"> PUE </div>
                                 </div>
                                 <div class="progress stat-progress">
                                     <div class="progress-bar" style="width: 34%;"></div>
@@ -120,7 +120,7 @@
                                     <i class="fa fa-microchip"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> 39</div>
+                                    <div class="value"> 198 </div>
                                     <div class="name"> Sensors</div>
                                 </div>
                                 <div class="progress stat-progress">
@@ -148,7 +148,7 @@
                 <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg" style="height: 400px;">
                     <div class="card-header">
                         <div class="header-block">
-                            <h3 class="title"> Servers usage </h3>
+                            <h3 class="title"> Energy consumption </h3>
                         </div>
                     </div>
                     <div class="card-block">
@@ -178,10 +178,6 @@
                                 <a class="nav-link" href="#thermometers" role="tab"
                                    data-toggle="tab">Thermometers</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#socomecs" role="tab"
-                                   data-toggle="tab">Socomecs</a>
-                            </li>
                         </ul>
                     </div>
                     <div class="card-block">
@@ -191,9 +187,6 @@
                             </div>
                             <div role="tabpanel" class="tab-pane fade" id="thermometers">
                                 <div id="thermometers-container"></div>
-                            </div>
-                            <div role="tabpanel" class="tab-pane fade" id="socomecs">
-                                <div id="socometers-container"></div>
                             </div>
                         </div>
                     </div>
@@ -228,17 +221,6 @@
 		navigator_data_url: "/ui/data/navigation/temperature/hourly"
     }
     hc_create_chart(hc_thermometers_options);
-
-    let hc_socomecs_options = {
-        div_id: "socometers-container",
-        title: "Aggregated socometers consumption",
-        subtitle: "Displaying data from socometers",
-        sensor_type: "socomecs",
-        aggregated: true,
-        show_range: false,
-		navigator_data_url: "/ui/data/navigation/socomec/hourly"
-    }
-    hc_create_chart(hc_socomecs_options);
 </script>
 
 <script src="http://www.chartjs.org/dist/2.7.0/Chart.bundle.js"></script>
@@ -253,21 +235,18 @@
         data: {
             datasets: [{
                 data: [
-                    10,
-                    35,
-                    3,
+                    {{ datacenter_consumption -  cluster_hardware_consumption}},
+                    {{ cluster_hardware_consumption}},
                 ],
                 backgroundColor: [
-                    window.chartColors.blue,
-                    window.chartColors.green,
                     window.chartColors.red,
+                    window.chartColors.blue
                 ],
                 label: 'Dataset 1'
             }],
             labels: [
-                "Running",
-                "Shutdown",
-                "Maintenance",
+                "Non IT equipment",
+                "IT equipment",
             ]
         },
         options: {
@@ -277,7 +256,7 @@
             },
             title: {
                 display: true,
-                text: 'bouillonnantes.grid5000.fr'
+                text: 'ecotype.nantes.grid5000.fr ({{ datacenter_consumption }} W)'
             },
             animation: {
                 animateScale: true,

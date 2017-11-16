@@ -62,7 +62,7 @@ def db_sensor_data(sensor_name, start_date=None, end_date=None, zoom_ui=False):
     return result
 
 
-def db_sensors(start_date, sensor_type=None):
+def db_sensors(sensor_type=None):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     query = "show tag values from sensors with key = sensor"
@@ -72,7 +72,6 @@ def db_sensors(start_date, sensor_type=None):
     points = db_client.query(query).get_points()
 
     result = {
-        "since": start_date,
         "sensors": []
     }
 
@@ -601,22 +600,59 @@ def db_last_temperature_values():
     return result
 
 
-def db_multitree_last_wattmeter_value(multitree_node):
+def db_last_temperature_mean():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    if multitree_node is None:
-        print("ici")
+    query = """SELECT last(*), *, sensor from sensors WHERE sensor_type = 'temperature' group by sensor"""
+    points = list(db_client.query(query).get_points())
+
+    temperatures = [x["value"] for x in points if x["value"] < 84]
+    result = sum(temperatures) / len(temperatures)
+
+    return result
+
+
+def db_multitree_last_wattmeter_value(multitree_node):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     cq_name = "cq_%s_1m" % (multitree_node["id"])
 
     query = "SELECT last(*) from %s" % (cq_name)
-    print(query)
     points = db_client.query(query).get_points()
 
     for point in points:
         return point["last_mean"]
 
     return 0
+
+
+def db_multitree_last_wattmeter_query(multitree_node):
+    cq_name = "cq_%s_1m" % (multitree_node["id"])
+
+    query = "SELECT last(*) from %s" % (cq_name)
+
+    return query
+
+
+def db_multitree_last_wattmeter_all_in_one_query(queries):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+    all_in_one_query = ";".join(queries)
+
+    result = {}
+
+    for result_set in db_client.query(all_in_one_query):
+        points = result_set.get_points()
+
+        # If there was no data in the requested serie, the resultSet is empty
+        if not "series" in result_set._raw:
+            continue
+
+        serie_name = result_set._raw["series"][0]["name"]
+
+        for point in points:
+            result[serie_name] = point["last_mean"]
+
+    return result
 
 
 def db_get_running_queries():

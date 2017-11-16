@@ -45,7 +45,7 @@ MULTITREE_CONFIG = [
     {
         "id": "room_cooling_roof_unit",
         "name": "Roof cooling generator unit",
-        "target": "watt_cooler_232_1"
+        "target": "watt_cooler_b232_1"
     },
     {
         "id": "room_cooling_fan",
@@ -84,6 +84,10 @@ MULTITREE_CONFIG = [
     #     "target": "socomec_condensator"
     # }
 ]
+
+MULTITREE_INDEX = {
+
+}
 
 PDUS_SENSORS_INITIALIZED = False
 
@@ -135,3 +139,7 @@ if not PDUS_SENSORS_INITIALIZED:
                 servers_node["children"] += [hardware_resource_name]
 
     PDUS_SENSORS_INITIALIZED = True
+
+    # Create an Index of nodes that are members of the multitree
+    for node in MULTITREE_CONFIG:
+        MULTITREE_INDEX[node["id"]] = node

@@ -62,16 +62,7 @@ def sensor_data(sensor_name):
 @app.route("/sensors/<sensor_type>")
 def sensors(sensor_type=None):
     from core.data.db import db_sensors
-
-    if "start_date" in request.args:
-        start_date = request.args["start_date"]
-        if validate(start_date):
-            start_date = "'%s'" % start_date
-    else:
-        last_week_epoch = time.time() - (7 * 24 * 3600)
-        start_date = "%s" % last_week_epoch
-
-    _sensors = db_sensors(start_date, sensor_type=sensor_type)
+    _sensors = db_sensors(sensor_type=sensor_type)
     return jsonify(_sensors)
 
 
@@ -222,7 +213,22 @@ def queries():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    from core.data.multitree import get_node_by_id, _get_last_node_consumption
+    from core.data.db import db_last_temperature_mean
+    datacenter_node = get_node_by_id("datacenter")
+    cluster_hardware = get_node_by_id("hardware_cluster")
+    datacenter_consumption = _get_last_node_consumption(datacenter_node)
+    cluster_hardware_consumption = _get_last_node_consumption(cluster_hardware)
+
+    pue_ratio = datacenter_consumption / cluster_hardware_consumption
+
+    last_temperature_mean = db_last_temperature_mean()
+
+    return render_template("index.html",
+                           pue_ratio=pue_ratio,
+                           datacenter_consumption=datacenter_consumption,
+                           cluster_hardware_consumption=cluster_hardware_consumption,
+                           last_temperature_mean=last_temperature_mean)
 
 
 @app.route("/wattmeters_all.html")
@@ -247,16 +253,46 @@ def last_sensors_updates():
     return jsonify(last_updates)
 
 
+intervals = (
+    ('weeks', 604800),  # 60 * 60 * 24 * 7
+    ('days', 86400),    # 60 * 60 * 24
+    ('hours', 3600),    # 60 * 60
+    ('minutes', 60),
+    ('seconds', 1),
+    )
+
+
+def _display_time(seconds, granularity=2):
+    result = []
+
+    for name, count in intervals:
+        value = seconds // count
+        if value:
+            seconds -= value * count
+            if value == 1:
+                name = name.rstrip('s')
+            result.append("{} {}".format(value, name))
+    return ', '.join(result[:granularity])
+
+
 @app.route("/sensors.html")
 def web_sensors():
     from core.data.sensors import get_sensors_arrays_with_children
     from core.data.db import db_last_sensors_updates
+    import time
+
     last_updates = db_last_sensors_updates()
     sensors_arrays_with_children = get_sensors_arrays_with_children()
+    now_time = time.time()
+    
     for sensors_array in sensors_arrays_with_children:
         for child in sensors_array["children"]:
             child_last_update = filter(lambda x: x["sensor"] == child["name"], last_updates)
             if len(child_last_update) > 0:
+                last_update_since_epoch = int(time.mktime(parser.parse(child_last_update[0]["time"]).timetuple())) - time.timezone
+                time_since_last_update_secs = now_time - last_update_since_epoch
+                displayed_time_text = _display_time(time_since_last_update_secs)
+                child_last_update[0]["nice_last_udpate_text"] = displayed_time_text
                 child["last_update"] = child_last_update[0]
             else:
                 child["last_update"] = None
@@ -283,6 +319,7 @@ def weighted_tree_consumption_data():
     from core.data.multitree import get_datacenter_weighted_tree_consumption_data
     return jsonify(get_datacenter_weighted_tree_consumption_data())
 
+
 @app.route("/weighted_tree_consumption")
 def weighted_tree_consumption():
     return render_template("weighted_tree_consumption.html")
@@ -293,7 +330,7 @@ def check():
     from core.config.room_config import get_temperature_sensors_from_csv_files
     from core.data.db import db_sensors
     sensors_extracted_from_csv = get_temperature_sensors_from_csv_files()
-    sensors = db_sensors("now()-3600s", sensor_type="temperature")
+    sensors = db_sensors(sensor_type="temperature")
     return "OK"
 
 

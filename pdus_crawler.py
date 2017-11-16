@@ -29,7 +29,7 @@ def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
     if len(matching_outlet_value_binding) > 0:
         value_binding = matching_outlet_value_binding[0]
         outlet_unit = "W"
-        outlet_value = (1.0 * value_binding[0][1]) / 10.0
+        outlet_value = (1.0 * value_binding[0][1])
         outlet_location = outlet_name
         outlet_sensor_name = outlet_name+"_"+cbCtx["pdu_id"]
         outlet_sensor_type = "wattmeter"
@@ -38,7 +38,6 @@ def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
             float(outlet_value)
         except:
             print("something wrong happened here :-(")
-            pass
 
         data = [{
             "measurement": "sensors",

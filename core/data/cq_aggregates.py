@@ -378,7 +378,7 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
 
     aggregate_frequency = "30s"
     aggregate_function_level1 = "sum"
-    aggregate_function_level2 = "sum"
+    aggregate_function_level2 = "mean"
     aggregated_fields = """sum("value"), mean("value"), stddev("value"), count("value"), median("value"), min("value"), max("value")"""
 
     # CQ for summing data collected periodically according to a sensor type
@@ -465,7 +465,7 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
     oldest_timestamp = first_value["time"]
     aggregate_frequency = "30s"
     aggregate_function_level1 = "sum"
-    aggregate_function_level2 = "sum"
+    aggregate_function_level2 = "mean"
     aggregated_fields = """sum("value"), mean("value"), stddev("value"), count("value"), median("value"), min("value"), max("value")"""
 
     # CQ for making an average data periodically collected for the current aggregate
@@ -583,10 +583,10 @@ def multitree_drop_nested_query_and_dependencies(node, recreate_all):
                 child_node = get_node_by_id(child)
                 infos = multitree_drop_nested_query_and_dependencies(child_node, recreate_all)
                 sub_query_sets += infos["sub_query_sets"]
-        else:
-            for child in current_tree["children"]:
-                infos = multitree_drop_nested_query_and_dependencies(child, recreate_all)
-                sub_query_sets += infos["sub_query_sets"]
+
+        for child in current_tree["children"]:
+            infos = multitree_drop_nested_query_and_dependencies(child, recreate_all)
+            sub_query_sets += infos["sub_query_sets"]
 
     pseudo_query = "drop %s *" % (cq_name)
     print(pseudo_query)
