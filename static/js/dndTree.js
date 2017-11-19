@@ -193,11 +193,15 @@ function load_weighted_tree_consumption(select_function, unselect_function) {
 
         // Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
 
-        function centerNode(source) {
+        function centerNode(source, only_horizontal_centering) {
             scale = zoomListener.scale();
             x = -source.y0;
             y = -source.x0;
-            x = x * scale + viewerWidth / 2;
+            if (! only_horizontal_centering) {
+                x = x * scale + viewerWidth / 2;
+            } else {
+                x = 100;
+            }
             y = y * scale + viewerHeight / 2;
             d3.select('g').transition()
                 .duration(duration)
@@ -225,7 +229,7 @@ function load_weighted_tree_consumption(select_function, unselect_function) {
             if (d3.event.defaultPrevented) return; // click suppressed
             d = toggleChildren(d);
             update(d);
-            centerNode(d);
+            centerNode(d, true);
         }
 
         function update(source) {
@@ -438,6 +442,6 @@ function load_weighted_tree_consumption(select_function, unselect_function) {
 
         // Layout the tree initially and center on the root node.
         update(root);
-        centerNode(root);
+        centerNode(root, true);
     });
 }

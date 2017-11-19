@@ -23,7 +23,8 @@ def get_node_by_id(node_id):
 def get_tree(root_node, level=0, use_simplified_children=False):
     result = {
         "node": root_node,
-        "level": level,
+        "level": int(level),
+        "root_node": level==0,
         "children": []
     }
 

@@ -424,7 +424,7 @@ swagger = Swagger(app)
 
 @app.route('/sensors')
 def sensors():
-    """Endpoint returning IDs of all sensors of the seduce infrastructure.
+    """Endpoint returning IDs of all sensors of the Seduce infrastructure.
     This is using data entered in the Seduce configuration.
     ---
     tags:
@@ -469,7 +469,7 @@ def sensors():
 
 @app.route('/sensors_types')
 def sensors_types():
-    """Endpoint returning what kind of sensors are part of the seduce infrastructure.
+    """Endpoint returning what kind of sensors are part of the Seduce infrastructure.
     This is using data entered in the Seduce configuration.
     ---
     tags:
@@ -484,7 +484,7 @@ def sensors_types():
               type: string
     responses:
       200:
-        description: A object containing what kind of sensors are part of the seduce infrastructure.
+        description: A object containing what kind of sensors are part of the Seduce infrastructure.
         schema:
           $ref: '#/definitions/SensorsTypesDict'
         examples:
@@ -524,7 +524,7 @@ def sensors_of_specified_sensors_type(sensor_type):
               type: string
     responses:
       200:
-        description: A object containing what kind of sensors are part of the seduce infrastructure.
+        description: A object containing what kind of sensors are part of the Seduce infrastructure.
         schema:
           $ref: '#/definitions/SensorsDict'
         examples:
@@ -567,7 +567,7 @@ def measurements(sensor_id):
         type: int
     responses:
       200:
-        description: A object containing what kind of sensors are part of the seduce infrastructure.
+        description: A object containing what kind of sensors are part of the Seduce infrastructure.
         schema:
           $ref: '#/definitions/SensorsDict'
         examples:
@@ -584,5 +584,99 @@ def measurements(sensor_id):
     result = db_sensor_data(sensor_id, start_date=start_date, end_date=end_date)
     return jsonify(result)
 
+
+@app.route('/infrastructure/description/tree')
+def infrastructure_tree_description():
+    """Endpoint returning an hierarchical description of the Seduce infrastructure.
+    ---
+    tags:
+      - infrastructure
+    definitions:
+      TreeDict:
+        type: object
+        properties:
+          level:
+            type: int
+          node:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              root:
+                type: boolean
+              target:
+                type: string
+                required: false
+              children:
+                type: array
+                items:
+                  type: string
+                required: false
+          children:
+            type: array
+            items:
+              type: TreeDict
+    responses:
+      200:
+        description: A JSON object describing the Seduce infrastructure.
+        schema:
+          $ref: '#/definitions/TreeDict'
+        examples:
+          response: {
+            "level": 0,
+            "children": [
+              {
+                "level": 1,
+                "children": [
+                  # a list of children nodes
+                ],
+                "node": {
+                  "children": [
+                    "cooling_room"
+                  ],
+                  "id": "room",
+                  "name": "Room",
+                   "root": false
+                  }
+                },
+                {
+                "level": 1,
+                "children": [
+                  # a list of children nodes
+                ],
+                "node": {
+                  "children": [
+                    "cooling_cluster",
+                    "hardware_cluster"
+                  ],
+                  "id": "cluster",
+                  "name": "Cluster",
+                   "root": false
+                  }
+                }
+            ],
+            "node": {
+              "children": [
+                "cluster",
+                "room"
+              ],
+              "id": "datacenter",
+              "name": "Datacenter",
+               "root": true
+              }
+            }
+    """
+
+    from core.data.multitree import get_node_by_id
+    from core.data.multitree import get_tree
+    root_node_id = "datacenter"
+    starting_node = get_node_by_id(root_node_id)
+    if starting_node is not None:
+        tree = get_tree(starting_node, False)
+        return jsonify(tree)
+    else:
+        return jsonify({"status": "failure", "cause": "'%s' is not a valid node id :-(" % (root_node_id)})
 
 app.run(host="0.0.0.0", debug=True)

@@ -202,11 +202,12 @@
 <script>
     let hc_wattmeters_options = {
         div_id: "wattmeters-container",
-        title: "Aggregated wattmeters consumption",
-        subtitle: "Displaying data from Flukso",
-        sensor_type: "wattmeters",
-        aggregated: true,
-        show_range: false,
+        title: "Datacenter consumption",
+        subtitle: "Displaying data from wattmeters",
+		sensor_type: "multitree_consumptions",
+		multitree_selected_sensors_getter: function() {
+		    return ["datacenter"];
+        },
 		navigator_data_url: "/ui/data/navigation/wattmeter/hourly"
     }
     hc_create_chart(hc_wattmeters_options);

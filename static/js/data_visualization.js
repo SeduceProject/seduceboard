@@ -68,6 +68,7 @@ function hc_create_chart(hc_options) {
             chart.showLoading('Loading data from server...');
         }
 
+        let update_count = 0;
         for (let serie_name of series_names) {
 
             if (selected_sensor !== undefined && selected_sensor !== serie_name) {
@@ -81,7 +82,6 @@ function hc_create_chart(hc_options) {
             let hc_time_range = compute_time_range(serie_name, streaming, chart);
 
             let data_url = compute_data_url_func(serie_name, hc_time_range, downsample_scale, enable_data_downsample);
-            let update_count = 0;
 
             $.getJSON(data_url, function (temperature_obj) {
 
@@ -112,12 +112,14 @@ function hc_create_chart(hc_options) {
                 hc_last_successful_update = new Date();
 
                 if (!streaming) {
-                    if (update_count === series_names.length || selected_sensor !== undefined) {
-                        chart.hideLoading();
-                    }
                 } else {
                     let extremes = chart.xAxis[0].getExtremes();
                     chart.xAxis[0].setExtremes(extremes.min, extremes.dataMax);
+                }
+
+                console.log("update_count: "+update_count+"/"+series_names.length);
+                if (update_count === series_names.length || selected_sensor !== undefined) {
+                    chart.hideLoading();
                 }
             });
         }
@@ -422,7 +424,10 @@ function hc_create_chart(hc_options) {
         downsample_scale = "minutely";
 
         chart.hideLoading();
-        load_data(chart);
+
+        setTimeout(function (){
+            load_data(chart);
+        }, 200);
 
         // Streaming function
         setInterval(function () {
