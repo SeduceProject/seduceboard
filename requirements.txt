@@ -7,3 +7,4 @@ pyModbusTCP
 flasgger
 pysnmp==4.4.2
 exscript
+docopt

@@ -2,10 +2,19 @@ from __future__ import absolute_import, unicode_literals
 
 import threading
 import traceback
+import sys
 
 from influxdb import InfluxDBClient
 from pysnmp.hlapi.asyncore import *
 import time
+import threading
+from core.data.pdus import get_outlets
+from core.data.pdus import get_connection_info_for_pdu
+from core.data.pdus import get_outlets
+from threading import Timer
+
+from docopt import docopt
+from core.data.pdus import get_pdus
 
 #DB_HOST = "192.168.1.8"
 DB_HOST = "localhost"
@@ -17,10 +26,11 @@ OUTPUT_FILE = 'temperatures.json'
 DEBUG = True
 LAST_TIMESTAMP_INSERTED = {}
 
+RECORDS = []
 
-def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
-    db_client = InfluxDBClient(DB_HOST, 8086, DB_USER, DB_PASSWORD, DB_NAME)
+influx_lock = threading.Lock()
 
+def process_one_outlet(outlet_num, outlet_name, timestamp, varBinds, cbCtx):
     # outlet_name = cbCtx["outlet_id"]
     outlet_oid = cbCtx["pdu_oid"]+"."+outlet_num
 
@@ -42,8 +52,9 @@ def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
         data = [{
             "measurement": "sensors",
             "fields": {
-                "value": float(outlet_value)
+                "value": float(outlet_value),
             },
+            "time": timestamp,
             "tags": {
                 "location": outlet_location,
                 "sensor": outlet_sensor_name,
@@ -52,36 +63,53 @@ def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
             }
         }]
 
-        try:
-            failure = not db_client.write_points(data, time_precision="s")
-        except :
-            traceback.print_exc()
-            failure = True
-
-        db_client.close()
-
-        insertion_count = 0
-        if failure:
-            print("[%s] failed to insert rows in the database" % (outlet_name))
-            return {"status": "failure", "reason": "could not write in the DB"}
-        else:
-            insertion_count += 1
-
-        print("[%s] %s rows have been inserted in the database" % (outlet_name, insertion_count))
-        return {"status": "success", "update_count": insertion_count}
+        insertion_count = 1
+        return data
 
     else:
         print("[%s] PDU returned no matching value for OID='%s' (%s)" % (outlet_name, outlet_oid, cbCtx))
-        return {"status": "failure", "reason": "PDU returned no matching value for OID='%s' (%s)" % (outlet_oid, cbCtx)}
+        return []
 
 
 def process_outlets_readings(snmpEngine, sendRequestHandle, errorIndication, errorStatus, errorIndex, varBinds, cbCtx):
-    from core.data.pdus import get_outlets
+    global influx_lock
+    global RECORDS
 
     pdu_id = cbCtx["pdu_id"]
+    timestamp = int(time.time())
 
+    data = []
     for (outlet_num, outlet_name) in get_outlets(pdu_id).iteritems():
-        process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx)
+        data += process_one_outlet(outlet_num, outlet_name, timestamp, varBinds, cbCtx)
+
+    print("[%s] %s rows have been fetch" % (pdu_id, len(data)))
+
+    influx_lock.acquire()
+    RECORDS += data
+    influx_lock.release()
+
+    return False
+
+
+def flush_records(args):
+    global RECORDS
+    db_client = InfluxDBClient(DB_HOST, 8086, DB_USER, DB_PASSWORD, DB_NAME)
+
+    flush_data = None
+
+    influx_lock.acquire()
+    flush_data = RECORDS
+    RECORDS = []
+    influx_lock.release()
+
+    try:
+        failure = not db_client.write_points(flush_data, time_precision="s")
+        print("[influx] %s rows have been inserted in the database" % (len(flush_data)))
+    except :
+        traceback.print_exc()
+        failure = True
+
+    db_client.close()
 
     return False
 
@@ -109,12 +137,9 @@ def read_outlets_of_given_pdu(pdu_id):
     snmpEngine.transportDispatcher.runDispatcher()
     return False
 
-
-def build_outlets_power_reading_cmd():
-    from core.data.pdus import get_connection_info_for_pdu
+def read_outlets_of_all_pdus(pdus):
     snmpEngine = SnmpEngine()
-
-    for pdu_id in get_pdus():
+    for pdu_id in pdus:
         connection_info = get_connection_info_for_pdu(pdu_id)
         pdu_ip = connection_info["pdu_ip"]
         pdu_oid = connection_info["pdu_oid"]
@@ -138,7 +163,7 @@ def build_outlets_power_reading_cmd():
 NO_PAUSE = -1
 
 
-def set_interval(f, args, interval_secs):
+def set_interval(f, args, interval_secs, task_name=None):
     class StoppableThread(threading.Thread):
 
         def __init__(self, f, args, interval):
@@ -149,15 +174,20 @@ def set_interval(f, args, interval_secs):
             self.stop_execution = False
 
         def run(self):
-            while not self.stop_execution:
-                try:
-                    self.f(self.args)
-                except:
-                    traceback.print_exc()
-                    print("Something bad happened here :-(")
-                    pass
-                if interval_secs != NO_PAUSE:
-                    time.sleep(self.interval)
+            start_task_time = time.time()
+            try:
+                self.f(self.args)
+            except:
+                traceback.print_exc()
+                print("Something bad happened here :-(")
+                pass
+            end_task_time = time.time()
+            print("[sched:%s] took %f seconds to execute the task (starting: %f)" % (task_name, (end_task_time - start_task_time), start_task_time))
+            time_to_sleep = (self.interval) - (end_task_time - start_task_time)
+            if interval_secs != NO_PAUSE and time_to_sleep > 0:
+                Timer(time_to_sleep, self.run).start()
+            else:
+                self.run()
 
         def stop(self):
             self.stop_execution = True
@@ -168,16 +198,38 @@ def set_interval(f, args, interval_secs):
 
 
 if __name__ == "__main__":
-    from core.data.pdus import get_pdus
 
-    print("I will start crawling PDUs")
-    last_pdu_reader = None
-    for pdu_id in get_pdus():
-        # read_outlets_of_given_pdu(pdu_id)
-        pdu_reader = set_interval(read_outlets_of_given_pdu, (pdu_id), NO_PAUSE)
+    help = """PDUs crawler
 
-        # Add a pause to prevent PDU to get all requests at the same time
-        time.sleep(2)
+Usage:
+  pdus_crawler.py --pdu=<pdu>
+  pdus_crawler.py -l
 
-    if last_pdu_reader is not None:
-        last_pdu_reader.join()
+Options:
+  -h --help          Show this message and exit.
+  -l --list          List PDUs that can be crawled.
+"""
+    arguments = docopt(help)
+    pdus = get_pdus()
+
+    if arguments["--list"]:
+        print("Available pdus:")
+        for pdu_name in pdus:
+            print("  %s" % pdu_name)
+        pass
+        sys.exit(0)
+    else:
+        pdu_candidate = arguments["--pdu"]
+        if pdu_candidate in pdus:
+            print("I will start crawling '%s'" % pdu_candidate)
+            last_pdu_reader = None
+            set_interval(flush_records, (pdus), 30, task_name="influx")
+            time.sleep(0.1)
+            set_interval(read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
+
+            if last_pdu_reader is not None:
+                last_pdu_reader.join()
+        else:
+            print("Could not find a pdu called '%s'" % pdu_candidate)
+            sys.exit(1)
+

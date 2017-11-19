@@ -60,10 +60,21 @@ if [ "$1" != "kill" ]; then
     ##########################################################
     # Launching sensors crawler (PDU crawler)
     ##########################################################
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py"
-    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_2 bash -c "python pdus_crawler.py"
-    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_3 bash -c "python pdus_crawler.py"
-    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_4 bash -c "python pdus_crawler.py"
+    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py"
+    # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_2 bash -c "python pdus_crawler.py"
+    # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_3 bash -c "python pdus_crawler.py"
+    # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_4 bash -c "python pdus_crawler.py"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.10"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.11"
+
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.20"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.21"
+
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.40"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.41"
+
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.50"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.51"
 fi
 
 exit 0
