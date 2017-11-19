@@ -19,6 +19,9 @@ LAST_TIMESTAMP_INSERTED = {}
 
 
 def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
+    db_client = InfluxDBClient(DB_HOST, 8086, DB_USER, DB_PASSWORD, DB_NAME)
+
+    # outlet_name = cbCtx["outlet_id"]
     outlet_oid = cbCtx["pdu_oid"]+"."+outlet_num
 
     matching_outlet_value_binding = [x for x in varBinds if str(x[0][0]) == outlet_oid]
@@ -49,31 +52,38 @@ def process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx):
             }
         }]
 
+        try:
+            failure = not db_client.write_points(data, time_precision="s")
+        except :
+            traceback.print_exc()
+            failure = True
+
+        db_client.close()
+
+        insertion_count = 0
+        if failure:
+            print("[%s] failed to insert rows in the database" % (outlet_name))
+            return {"status": "failure", "reason": "could not write in the DB"}
+        else:
+            insertion_count += 1
+
         print("[%s] %s rows have been inserted in the database" % (outlet_name, insertion_count))
-        return [data]
+        return {"status": "success", "update_count": insertion_count}
 
     else:
         print("[%s] PDU returned no matching value for OID='%s' (%s)" % (outlet_name, outlet_oid, cbCtx))
-        return []
+        return {"status": "failure", "reason": "PDU returned no matching value for OID='%s' (%s)" % (outlet_oid, cbCtx)}
 
 
 def process_outlets_readings(snmpEngine, sendRequestHandle, errorIndication, errorStatus, errorIndex, varBinds, cbCtx):
-    db_client = InfluxDBClient(DB_HOST, 8086, DB_USER, DB_PASSWORD, DB_NAME)
     from core.data.pdus import get_outlets
 
     pdu_id = cbCtx["pdu_id"]
 
-    data = []
     for (outlet_num, outlet_name) in get_outlets(pdu_id).iteritems():
-        data += process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx)
+        process_one_outlet(outlet_num, outlet_name, varBinds, cbCtx)
 
-    try:
-        db_client.write_points(data)
-    except Exception:
-        return False
-    finally:
-        db_client.close()
-    return True
+    return False
 
 
 def read_outlets_of_given_pdu(pdu_id):
@@ -128,7 +138,7 @@ def build_outlets_power_reading_cmd():
 NO_PAUSE = -1
 
 
-def set_interval(f, args, interval_secs, no_args=False):
+def set_interval(f, args, interval_secs):
     class StoppableThread(threading.Thread):
 
         def __init__(self, f, args, interval):
@@ -141,10 +151,7 @@ def set_interval(f, args, interval_secs, no_args=False):
         def run(self):
             while not self.stop_execution:
                 try:
-                    if no_args:
-                        self.f()
-                    else:
-                        self.f(self.args)
+                    self.f(self.args)
                 except:
                     traceback.print_exc()
                     print("Something bad happened here :-(")
@@ -164,15 +171,13 @@ if __name__ == "__main__":
     from core.data.pdus import get_pdus
 
     print("I will start crawling PDUs")
-    # for pdu_id in get_pdus():
-    #     # read_outlets_of_given_pdu(pdu_id)
-    #     pdu_reader = set_interval(read_outlets_of_given_pdu, (pdu_id), NO_PAUSE)
-    #
-    #     # Add a pause to prevent PDU to get all requests at the same time
-    #     time.sleep(2)
-    #
-    # if last_pdu_reader is not None:
-    #     last_pdu_reader.join()
+    last_pdu_reader = None
+    for pdu_id in get_pdus():
+        # read_outlets_of_given_pdu(pdu_id)
+        pdu_reader = set_interval(read_outlets_of_given_pdu, (pdu_id), NO_PAUSE)
 
-    pdu_reader = set_interval(build_outlets_power_reading_cmd, None, NO_PAUSE, no_args=True)
-    pdu_reader.join()
+        # Add a pause to prevent PDU to get all requests at the same time
+        time.sleep(2)
+
+    if last_pdu_reader is not None:
+        last_pdu_reader.join()
