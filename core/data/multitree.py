@@ -73,15 +73,17 @@ def _get_last_node_consumption_query(node_id):
     return db_multitree_last_wattmeter_query(node_id)
 
 
-def _get_consumption_index(root_node, level=0, result=[]):
+def _get_consumption_index(root_node, level=0, result=None):
     from core.data.db import db_multitree_last_wattmeter_all_in_one_query
+    if result is None:
+        result = []
     current_node_consumption_query = _get_last_node_consumption_query(root_node)
     result += [current_node_consumption_query]
 
     if "children" in root_node:
         for child in root_node["children"]:
             child_node = get_node_by_id(child.replace("-", "_"))
-            _get_consumption_index(child_node, level+1)
+            _get_consumption_index(child_node, level+1, result=result)
 
     if level == 0:
         return db_multitree_last_wattmeter_all_in_one_query(result)

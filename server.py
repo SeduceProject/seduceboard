@@ -142,7 +142,7 @@ def aggregated_sensor_data(sensor_name, how="daily"):
 
 @app.route("/multitree_sensor_data/<sensor_name>/aggregated")
 @app.route("/multitree_sensor_data/<sensor_name>/aggregated/<how>")
-def aggregated_multitree_sensor_data(sensor_name, how="daily"):
+def aggregated_multitree_sensor_data(sensor_name, how="minutely"):
     from core.data.db import db_aggregated_multitree_sensor_data
 
     start_date = None
@@ -263,6 +263,9 @@ intervals = (
 
 
 def _display_time(seconds, granularity=2):
+    if seconds < 1.0:
+        return "now"
+
     result = []
 
     for name, count in intervals:

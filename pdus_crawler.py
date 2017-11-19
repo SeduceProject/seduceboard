@@ -110,6 +110,31 @@ def read_outlets_of_given_pdu(pdu_id):
     return False
 
 
+def build_outlets_power_reading_cmd():
+    from core.data.pdus import get_connection_info_for_pdu
+    snmpEngine = SnmpEngine()
+
+    for pdu_id in get_pdus():
+        connection_info = get_connection_info_for_pdu(pdu_id)
+        pdu_ip = connection_info["pdu_ip"]
+        pdu_oid = connection_info["pdu_oid"]
+        pdu_snmp_length = connection_info["pdu_snmp_length"]
+
+        bulkCmd(snmpEngine,
+                CommunityData('public'),
+                UdpTransportTarget((pdu_ip, 161)),
+                ContextData(),
+                0, pdu_snmp_length,
+                ObjectType(ObjectIdentity(pdu_oid)),
+                lookupMib=False,
+                lexicographicMode=False,
+                cbFun=process_outlets_readings,
+                cbCtx=connection_info)
+
+    snmpEngine.transportDispatcher.runDispatcher()
+    return False
+
+
 NO_PAUSE = -1
 
 
@@ -146,13 +171,15 @@ if __name__ == "__main__":
     from core.data.pdus import get_pdus
 
     print("I will start crawling PDUs")
-    last_pdu_reader = None
-    for pdu_id in get_pdus():
-        # read_outlets_of_given_pdu(pdu_id)
-        pdu_reader = set_interval(read_outlets_of_given_pdu, (pdu_id), NO_PAUSE)
+    # for pdu_id in get_pdus():
+    #     # read_outlets_of_given_pdu(pdu_id)
+    #     pdu_reader = set_interval(read_outlets_of_given_pdu, (pdu_id), NO_PAUSE)
+    #
+    #     # Add a pause to prevent PDU to get all requests at the same time
+    #     time.sleep(2)
+    #
+    # if last_pdu_reader is not None:
+    #     last_pdu_reader.join()
 
-        # Add a pause to prevent PDU to get all requests at the same time
-        time.sleep(2)
-
-    if last_pdu_reader is not None:
-        last_pdu_reader.join()
+    pdu_reader = set_interval(build_outlets_power_reading_cmd, 1)
+    pdu_reader.join()

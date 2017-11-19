@@ -5,4 +5,5 @@ git+https://github.com/influxdata/influxdb-python.git
 pymodbus
 pyModbusTCP
 flasgger
-pysnmp
+pysnmp==4.4.2
+exscript

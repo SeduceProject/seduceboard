@@ -637,10 +637,11 @@ def db_multitree_last_wattmeter_query(multitree_node):
 def db_multitree_last_wattmeter_all_in_one_query(queries):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
     all_in_one_query = ";".join(queries)
-
     result = {}
 
-    for result_set in db_client.query(all_in_one_query):
+    result_sets = db_client.query(all_in_one_query)
+
+    for result_set in result_sets:
         points = result_set.get_points()
 
         # If there was no data in the requested serie, the resultSet is empty
