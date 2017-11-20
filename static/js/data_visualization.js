@@ -64,7 +64,7 @@ function hc_create_chart(hc_options) {
 
     function generic_data_loader(chart, series_names, streaming = false, compute_data_url_func, process_data_func) {
 
-        if (!streaming) {
+        if (series_names.length > 0 && !streaming) {
             chart.showLoading('Loading data from server...');
         }
 
