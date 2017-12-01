@@ -64,17 +64,17 @@ if [ "$1" != "kill" ]; then
     # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_2 bash -c "python pdus_crawler.py"
     # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_3 bash -c "python pdus_crawler.py"
     # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_4 bash -c "python pdus_crawler.py"
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.10"
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.11"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_10 bash -c "python pdus_crawler.py --pdu=pdu-Z1.10"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_11 bash -c "python pdus_crawler.py --pdu=pdu-Z1.11"
 
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.20"
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.21"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_20 bash -c "python pdus_crawler.py --pdu=pdu-Z1.20"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_21 bash -c "python pdus_crawler.py --pdu=pdu-Z1.21"
 
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.40"
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.41"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_40 bash -c "python pdus_crawler.py --pdu=pdu-Z1.40"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_41 bash -c "python pdus_crawler.py --pdu=pdu-Z1.41"
 
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.50"
-    screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py --pdu=pdu-Z1.51"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_50 bash -c "python pdus_crawler.py --pdu=pdu-Z1.50"
+    screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_51 bash -c "python pdus_crawler.py --pdu=pdu-Z1.51"
 fi
 
 exit 0
