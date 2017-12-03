@@ -178,7 +178,6 @@ def sync_read_outlets_of_all_pdus(pdus):
         # Execute the snmpget command
         import subprocess
         snmp_output = subprocess.check_output([x for x in snmpget_cmd.split(" ") if x != ''])
-        continue
         # Build a dictionary that associates oids and their values
         oids_to_values = {}
         for line in snmp_output.split("\n"):
@@ -260,8 +259,8 @@ Options:
             time.sleep(0.1)
             # set_interval(async_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
             set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
-            set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
-            set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
+            #set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
+            #set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
 
             if last_pdu_reader is not None:
                 last_pdu_reader.join()
