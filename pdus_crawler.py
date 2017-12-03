@@ -165,6 +165,8 @@ def async_read_outlets_of_all_pdus(pdus):
 
 
 def sync_read_outlets_of_all_pdus(pdus):
+    global influx_lock
+    global RECORDS
     timestamp = int(time.time())
     for pdu_id in pdus:
         # Build a snmpget command
@@ -190,8 +192,13 @@ def sync_read_outlets_of_all_pdus(pdus):
             outlet_oid = "%s.%s" % (pdu_oid, outlet_oid_suffix)
             oids_to_values[outlet_oid] = float(outlet_value)
         # Prepare a database record for each of the outlets
+        data = []
         for outlet_key, outlet_value in get_outlets(pdu_id).iteritems():
-            process_one_outlet(outlet_key, outlet_value, timestamp, oids_to_values, pdu_ctxt)
+            data += process_one_outlet(outlet_key, outlet_value, timestamp, oids_to_values, pdu_ctxt)
+        # Put the outlets' consumption values in the list of values that should be inserted in DB
+        influx_lock.acquire()
+        RECORDS += data
+        influx_lock.release()
     return False
 
 
