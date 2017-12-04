@@ -95,6 +95,7 @@ def process_outlets_readings(snmpEngine, sendRequestHandle, errorIndication, err
 
 
 def flush_records(args):
+    global influx_lock
     global RECORDS
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
@@ -266,8 +267,6 @@ Options:
             time.sleep(0.1)
             # set_interval(async_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
             set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
-            #set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
-            #set_interval(sync_read_outlets_of_all_pdus, ([pdu_candidate]), 1, task_name="pdus_crawler")
 
             if last_pdu_reader is not None:
                 last_pdu_reader.join()
