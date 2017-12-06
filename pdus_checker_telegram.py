@@ -106,17 +106,9 @@ def set_interval(f, args, interval_secs, task_name=None):
 
 
 def check_ping(address):
-    with open(os.devnull, 'w') as DEVNULL:
-        try:
-            subprocess.check_call(
-                ['ping', '-1', '3', address],
-                stdout=DEVNULL,  # suppress output
-                stderr=DEVNULL
-            )
-            result = True
-        except subprocess.CalledProcessError:
-            result = False
-    return result
+    response = os.system("ping -c 1 " + address)
+    # and then check the response...
+    return response == 0
 
 
 def check_hosts(args):
