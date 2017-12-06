@@ -53,11 +53,12 @@ def process_reading(msg, pdu_name, outlets):
     if re.match("( |[0-9])[0-9]: Outlet [0-9]+: [0-9]+ W", msg) is not None:
         (outlet_num, outlet_name, outlet_reading_str) = msg.replace("W", "").strip().split(":")
 
-        print("%s -> %s" % (outlet_num, outlet_reading_str))
+        # print("%s -> %s" % (outlet_num, outlet_reading_str))
         if outlet_num in outlets:
+            timestamp = int(time.time())
             outlet_name = outlets[outlet_num]
             outlet_sensor_name = outlet_name+"_"+pdu_name
-            data = process_one_outlet(outlet_name, time.time(), outlet_reading_str, outlet_sensor_name)
+            data = process_one_outlet(outlet_name, timestamp, outlet_reading_str, outlet_sensor_name)
 
             influx_lock.acquire()
             RECORDS += data
@@ -67,6 +68,7 @@ def process_reading(msg, pdu_name, outlets):
 def flush_records(args):
     global influx_lock
     global RECORDS
+
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     flush_data = None
@@ -203,14 +205,18 @@ if __name__ == "__main__":
                     else:
                         serial_port.writelines(["\r"])
                 # At this point, we got a shell prompt
+                cpt = 0
                 while True:
+                    cpt += 1
+                    # if cpt % 8 == 0:
+                    #     time.sleep(0.05)
                     msg = serial_port.readline()
                     if msg != "":
                         # We are back to the APC prompt waiting for a command
                         if "apc>" in msg:
                             # Entering a command that will display power consumption
                             # for each outlet
-                            serial_port.writelines("olReading 1:%s power\n" % outlet_range)
+                            serial_port.writelines("olReading 1:%s power\nolReading 1:%s power\n" % (outlet_range, outlet_range))
                         else:
                             # Processing a line that is likely to correspond to a
                             # power reading of an outlet
