@@ -12,6 +12,7 @@ from core.data.pdus import get_pdus, get_outlets, get_outlets_names
 from core.data.db import *
 
 BAUDRATE = 9600
+NO_PAUSE = -1
 
 RECORDS = []
 influx_lock = threading.Lock()
@@ -145,7 +146,7 @@ if __name__ == "__main__":
         pass
         sys.exit(0)
     elif arguments["--list-serial"]:
-        files = [f for f in os.listdir('/dev') if re.match(r'.*tty\..*', f)]
+        files = [f for f in os.listdir('/dev') if re.match(r'.*tty(\.|.*USB|.*usb).*', f)]
         print("Available serial ports:")
         for file in files:
             print("  /dev/%s" % file)

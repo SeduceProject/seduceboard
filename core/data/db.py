@@ -5,7 +5,7 @@ from datetime import timedelta
 # DB_HOST = "192.168.1.8"
 #DB_PORT = 8086
 DB_HOST = "127.0.0.1"
-DB_PORT = 8096
+DB_PORT = 8086
 DB_USER = 'root'
 DB_PASSWORD = 'root'
 DB_NAME = 'pidiou'
