@@ -20,7 +20,7 @@ WATTMETERS_CONFIG = [
         "location": "cooler_electrical_board"
     },
     {
-        "ip": "192.168.1.17",
+        "ip": "192.168.1.15",
         "port": "8080",
         "sensor_id": "c6a2caade50d7532ee3a3292238fd587",
         "name": "watt_cooler_b232_1",
