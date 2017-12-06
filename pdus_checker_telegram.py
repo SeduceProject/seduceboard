@@ -122,7 +122,7 @@ def check_hosts(args):
         logger.info("PING %s.disconnected -> %s" % (host, disconnected))
         if disconnected:
             for user_id in USER_IDS:
-                bot.send_message(chat_id=user_id, text="host '%s' is disconnected" % (host))
+                bot.send_message(chat_id=user_id, text="PDU '%s' (%s) is disconnected" % (pdu_id, host))
 
 
 if __name__ == "__main__":
