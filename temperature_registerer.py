@@ -1,16 +1,9 @@
 from flask import Flask
-from flask import render_template
 from flask import request
 from flask import jsonify
 
 import threading
-
-from natsort import natsorted, ns
 from influxdb import InfluxDBClient
-
-import time
-from datetime import timedelta
-from dateutil import parser
 
 influx_lock = threading.Lock()
 
@@ -25,35 +18,6 @@ app = Flask(__name__)
 
 influx_lock = threading.Lock()
 
-#
-# @app.route("/register.php")
-# def register():
-#     db_client = InfluxDBClient('localhost', 8086, DB_USER, DB_PASSWORD, DB_NAME)
-#
-#     rack = request.args.get("rack")
-#     temp_sensors = natsorted(filter(lambda k: "temp" in k, request.args))
-#
-#     if temp_sensors:
-#         for temp_sensor in temp_sensors:
-#             value = request.args.get(temp_sensor)
-#             data = [{
-#                 "measurement": "sensors",
-#                 "fields": {
-#                     "value": value
-#                 },
-#                 "tags": {
-#                     "location": rack,
-#                     "sensor": temp_sensor,
-#                     "unit": "celsius",
-#                     "sensor_type": "temperature"
-#                 }
-#             }]
-#             try:
-#                 db_client.write_points(data)
-#             except:
-#                 return jsonify({"status": "failure", "reason": "could not write in the DB"})
-#     return jsonify({"status": "success", "update_count": len(temp_sensors)})
-
 
 @app.route("/new_temp_reading", methods=['POST'])
 def new_temp_reading():
@@ -66,6 +30,9 @@ def new_temp_reading():
     sensor_name = request.json["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
 
+    if int(request.json["v"]) > 84:
+        return jsonify({"status": "failure", "reason": "incorrect temperature value"})
+
     data = [{
         "measurement": "sensors",
         "fields": {
@@ -73,7 +40,6 @@ def new_temp_reading():
         },
         "tags": {
             "location": "room exterior",
-            # "sensor": "temp_ext_%s" % (request.json["sensor"]),
             "sensor": filtered_sensor_name,
             "unit": "celsius",
             "sensor_type": "temperature"
@@ -98,7 +64,7 @@ def new_temp_reading():
 
 if __name__ == "__main__":
 
-    print("Running the \"data register\" server")
+    print("Running the \"temperature registerer\" server")
     app.jinja_env.auto_reload = DEBUG
     app.run(host="0.0.0.0", port=8080, debug=DEBUG, threaded=True)
 

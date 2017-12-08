@@ -48,22 +48,23 @@ if [ "$1" != "kill" ]; then
     screen $COMMON_SCREEN_ARGS -t webapp bash -c "python server.py"
 
     ##########################################################
-    # Launching web application (register)
+    # Launching sensors crawler (PDU crawler)
     ##########################################################
-    screen $COMMON_SCREEN_ARGS -t register bash -c "python register.py"
+    screen $COMMON_SCREEN_ARGS -t webapp bash -c "python server.py"
+
+    ##########################################################
+    # Launching web application (registerer)
+    ##########################################################
+    screen $COMMON_SCREEN_ARGS -t pdus_checker_telegram bash -c "python pdus_checker_telegram.py"
 
     ##########################################################
     # Launching sensors crawler (crawler)
     ##########################################################
-    screen $COMMON_SCREEN_ARGS -t crawler bash -c "python sensors_crawler.py"
+    screen $COMMON_SCREEN_ARGS -t sensors_crawler bash -c "python sensors_crawler.py"
 
     ##########################################################
     # Launching sensors crawler (PDU crawler)
     ##########################################################
-    # screen $COMMON_SCREEN_ARGS -t pdu_crawler_1 bash -c "python pdus_crawler.py"
-    # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_2 bash -c "python pdus_crawler.py"
-    # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_3 bash -c "python pdus_crawler.py"
-    # # screen $COMMON_SCREEN_ARGS -t pdu_crawler_4 bash -c "python pdus_crawler.py"
     screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_10 bash -c "python pdus_crawler.py --pdu=pdu-Z1.10"
     screen $COMMON_SCREEN_ARGS -t pdu_crawler_z1_11 bash -c "python pdus_crawler.py --pdu=pdu-Z1.11"
 
