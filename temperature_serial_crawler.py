@@ -131,10 +131,6 @@ if __name__ == "__main__":
         pass
         sys.exit(0)
     else:
-        msg = """{"sensor":"28:fd:77:2d:09:00:00:79","t":"T","v":18.88}"""
-        process_one_temperature_reading(msg)
-        sys.exit(0)
-
         # Launch the background function that will be in charge of saving
         # data to the database
         set_interval(flush_records, ("Nothing"), 30, task_name="influx")
