@@ -48,12 +48,12 @@ if [ "$1" != "kill" ]; then
     screen $COMMON_SCREEN_ARGS -t webapp bash -c "python server.py"
 
     ##########################################################
-    # Launching sensors crawler (PDU crawler)
+    # Launching sensors crawler (Temperature crawler)
     ##########################################################
-    screen $COMMON_SCREEN_ARGS -t webapp bash -c "python server.py"
+    screen $COMMON_SCREEN_ARGS -t temp_crawler bash -c "python temperature_serial_crawler.py --serial=/dev/ttyUSB0"
 
     ##########################################################
-    # Launching web application (registerer)
+    # Launching Telegram bot that checks for failed PDUs
     ##########################################################
     screen $COMMON_SCREEN_ARGS -t pdus_checker_telegram bash -c "python pdus_checker_telegram.py"
 

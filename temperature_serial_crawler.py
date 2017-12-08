@@ -27,6 +27,9 @@ def process_one_temperature_reading(msg):
     sensor_name = temperature_data["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
 
+    if temperature >= 84:
+        return []
+
     data = [{
         "measurement": "sensors",
         "fields": {
