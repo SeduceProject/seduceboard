@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
+from core.data.db import *
 
 import threading
 from influxdb import InfluxDBClient
@@ -21,7 +22,7 @@ influx_lock = threading.Lock()
 
 @app.route("/new_temp_reading", methods=['POST'])
 def new_temp_reading():
-    db_client = InfluxDBClient('localhost', 8086, DB_USER, DB_PASSWORD, DB_NAME)
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     for key in ["sensor", "t", "v"]:
         if not key in request.json:
