@@ -36,6 +36,10 @@ if [ "$1" != "kill" ]; then
 
     sleep 10 # The DB needs some time to startup
 
+    ##########################################################
+    # Launching redis
+    ##########################################################
+    screen $COMMON_SCREEN_ARGS -t redis bash -c "redis-server"
 
     ##########################################################
     # Download python dependencies

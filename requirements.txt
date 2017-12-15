@@ -10,3 +10,4 @@ exscript
 docopt
 pyserial
 python-telegram-bot
+redis
