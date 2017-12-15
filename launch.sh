@@ -50,6 +50,12 @@ if [ "$1" != "kill" ]; then
     # Launching web application (webapp)
     ##########################################################
     screen $COMMON_SCREEN_ARGS -t webapp bash -c "python server.py"
+    pip install -r requirements.txt
+
+    ##########################################################
+    # Launching API application (api)
+    ##########################################################
+    screen $COMMON_SCREEN_ARGS -t api bash -c "python api.py"
 
     ##########################################################
     # Launching sensors crawler (Temperature crawler)
