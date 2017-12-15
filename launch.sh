@@ -53,6 +53,11 @@ if [ "$1" != "kill" ]; then
     screen $COMMON_SCREEN_ARGS -t temp_crawler bash -c "python temperature_serial_crawler.py --serial=/dev/ttyUSB0"
 
     ##########################################################
+    # Launching sensors crawler (Temperature web register)
+    ##########################################################
+    screen $COMMON_SCREEN_ARGS -t temp_register bash -c "python temperature_registerer.py"
+
+    ##########################################################
     # Launching Telegram bot that checks for failed PDUs
     ##########################################################
     screen $COMMON_SCREEN_ARGS -t pdus_checker_telegram bash -c "python pdus_checker_telegram.py"

@@ -22,7 +22,12 @@ influx_lock = threading.Lock()
 def process_one_temperature_reading(msg):
     global RECORDS
 
-    temperature_data = json.loads(msg)
+    try:
+        temperature_data = json.loads(msg)
+    except:
+        print("Could not load JSON data from '%s'" % (msg))
+        return []
+
     temperature = temperature_data["v"]
     sensor_name = temperature_data["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
@@ -141,6 +146,6 @@ if __name__ == "__main__":
             if serial_port.isOpen():
                 while True:
                     msg = serial_port.readline()
-                    if """{"sensor":}""" in msg:
+                    if """{"sensor":""" in msg:
                         process_one_temperature_reading(msg)
     sys.exit(0)
