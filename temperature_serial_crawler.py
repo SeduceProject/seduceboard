@@ -9,6 +9,7 @@ import traceback
 import json
 
 from docopt import docopt
+from flask import jsonify
 from core.data.pdus import get_pdus, get_outlets, get_outlets_names
 from core.data.db import *
 
@@ -32,8 +33,10 @@ def process_one_temperature_reading(msg):
     sensor_name = temperature_data["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
 
-    if temperature >= 84:
-        return []
+    if temperature > 84 or temperature < 10:
+        from core.data.db_redis import redis_increment_sensor_error_count
+        redis_increment_sensor_error_count(filtered_sensor_name)
+        return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
 
     data = [{
         "measurement": "sensors",
