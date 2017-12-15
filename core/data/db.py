@@ -35,7 +35,7 @@ def db_sensor_data(sensor_name, start_date=None, end_date=None, zoom_ui=False):
         start_date_query = "SELECT last(*) " \
                                   "FROM sensors " \
                                   "WHERE sensor = '%s'" % (sensor_name)
-        points = list(db_client.query(start_date_query ).get_points())
+        points = list(db_client.query(start_date_query).get_points())
         if points:
             start_date = "'%s' - 3600s" % (points[0]["time"])
         end_date = "now()"

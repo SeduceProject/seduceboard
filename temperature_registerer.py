@@ -30,14 +30,17 @@ def new_temp_reading():
 
     sensor_name = request.json["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
+    temperature = int(request.json["v"])
 
-    if int(request.json["v"]) > 84:
-        return jsonify({"status": "failure", "reason": "incorrect temperature value"})
+    if temperature > 84 or temperature < 10:
+        from core.data.db_redis import redis_increment_sensor_error_count
+        redis_increment_sensor_error_count(filtered_sensor_name)
+        return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
 
     data = [{
         "measurement": "sensors",
         "fields": {
-            "value": request.json["v"]
+            "value": temperature
         },
         "tags": {
             "location": "room exterior",

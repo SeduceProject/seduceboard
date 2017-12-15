@@ -328,15 +328,6 @@ def weighted_tree_consumption():
     return render_template("weighted_tree_consumption.html")
 
 
-@app.route("/check")
-def check():
-    from core.config.room_config import get_temperature_sensors_from_csv_files
-    from core.data.db import db_sensors
-    sensors_extracted_from_csv = get_temperature_sensors_from_csv_files()
-    sensors = db_sensors(sensor_type="temperature")
-    return "OK"
-
-
 @app.route("/rack_temperature/sensors")
 def rack_temperature_sensors():
     from core.config.room_config import get_temperature_sensors_infrastructure
@@ -376,6 +367,64 @@ def rack_temperature_overview():
                            temperature_sensors_infrastructure=temperature_sensors_infrastructure)
 
 
+@app.route("/rack_temperature_errors/sensors/last_values")
+def rack_temperature_sensors_errors_last_values():
+    from core.config.room_config import get_temperature_sensors_infrastructure
+    from core.data.db_redis import redis_get_sensors_data
+    temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
+
+    temperature_errors_data = redis_get_sensors_data()
+
+    for sensor_array_name in temperature_sensors_infrastructure:
+        sensor_array = temperature_sensors_infrastructure[sensor_array_name]
+        last_errors = []
+        for sensor_name in sensor_array["sensors"]:
+            if sensor_name in temperature_errors_data and "error_count" in temperature_errors_data[sensor_name]:
+                error_count = temperature_errors_data[sensor_name]["error_count"]
+            else:
+                error_count = 0
+            last_errors += [{"sensor": sensor_name, "last_value": error_count}]
+
+        sensor_array["last_temperatures"] = last_errors
+
+    return jsonify(temperature_sensors_infrastructure)
+
+
+@app.route("/rack_temperature_overview.html/errors/increment/<sensor_name>")
+def rack_temperature_errors_incr(sensor_name):
+    from core.data.db_redis import redis_get_sensors_data
+    from core.data.db_redis import redis_increment_sensor_error_count
+
+    redis_increment_sensor_error_count(sensor_name)
+    sensors_data = redis_get_sensors_data()
+
+    return jsonify(sensors_data)
+
+
+@app.route("/rack_temperature_overview.html/errors")
+def rack_temperature_errors_overview():
+    from core.config.room_config import get_temperature_sensors_infrastructure
+    from core.data.db_redis import redis_get_sensors_data
+    temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
+
+    temperature_errors_data = redis_get_sensors_data()
+
+    for sensor_array_name in temperature_sensors_infrastructure:
+        sensor_array = temperature_sensors_infrastructure[sensor_array_name]
+        last_errors = []
+        for sensor_name in sensor_array["sensors"]:
+            if sensor_name in temperature_errors_data and "error_count" in temperature_errors_data[sensor_name]:
+                error_count = temperature_errors_data[sensor_name]["error_count"]
+            else:
+                error_count = 0
+            last_errors += [{"sensor": sensor_name, "last_value": error_count}]
+
+        sensor_array["last_temperatures"] = last_errors
+
+    return render_template("rack_temperature_errors_overview.html",
+                           temperature_sensors_infrastructure=temperature_sensors_infrastructure)
+
+
 @app.route("/room_overview.html")
 @app.route("/room_overview.html/<sensors_array_name>")
 @app.route("/room_overview.html/<sensors_array_name>/<selected_sensor>")
@@ -397,7 +446,6 @@ def room_overview(sensors_array_name=None, selected_sensor=None):
                            selected_sensor=sensor)
 
 
-# @app.route("/sensors_array.html")
 @app.route("/sensors_array.html/<sensors_array_name>")
 @app.route("/sensors_array.html/<sensors_array_name>/<selected_sensor>")
 def sensors_array(sensors_array_name, selected_sensor=None):
