@@ -1,6 +1,6 @@
 WATTMETERS_CONFIG = [
     {
-        "ip": "192.168.1.7",
+        "ip": "192.168.1.3",
         "port": "8080",
         "sensor_id": "c02e3188315a049823c2275431a64d1a",
         "name": "watt_cooler_ext_1",
@@ -10,7 +10,7 @@ WATTMETERS_CONFIG = [
         "location": "cooler_electrical_board"
     },
     {
-        "ip": "192.168.1.7",
+        "ip": "192.168.1.3",
         "port": "8080",
         "sensor_id": "c9ab5e2728f7de90d3186e11dc5284ff",
         "name": "watt_cooler_ext_2",
@@ -20,7 +20,7 @@ WATTMETERS_CONFIG = [
         "location": "cooler_electrical_board"
     },
     {
-        "ip": "192.168.1.16",
+        "ip": "192.168.1.4",
         "port": "8080",
         "sensor_id": "c6a2caade50d7532ee3a3292238fd587",
         "name": "watt_cooler_b232_1",
@@ -30,7 +30,7 @@ WATTMETERS_CONFIG = [
         "location": "B232"
     },
     {
-        "ip": "192.168.1.16",
+        "ip": "192.168.1.4",
         "port": "8080",
         "sensor_id": "ec570cfc1105d5b5683ac6e016a51e15",
         "name": "watt_cooler_b232_2",
@@ -40,7 +40,7 @@ WATTMETERS_CONFIG = [
         "location": "B232"
     },
     {
-        "ip": "192.168.1.16",
+        "ip": "192.168.1.4",
         "port": "8080",
         "sensor_id": "7bb7b11e88cd9189837e774dea92a306",
         "name": "watt_cooler_b232_3",
@@ -53,7 +53,7 @@ WATTMETERS_CONFIG = [
 
 SOCOMEC_CONFIG = [
     {
-        "ip": "192.168.1.14",
+        "ip": "192.168.1.8",
         "unit_id": 4,
         "address": 18476,
         "name": "wattmeter_servers",
@@ -63,7 +63,7 @@ SOCOMEC_CONFIG = [
         "location": "B232"
     },
     {
-        "ip": "192.168.1.14",
+        "ip": "192.168.1.8",
         "unit_id": 4,
         "address": 20524,
         "name": "wattmeter_cooling",
@@ -73,7 +73,7 @@ SOCOMEC_CONFIG = [
         "location": "B232"
     },
     {
-        "ip": "192.168.1.14",
+        "ip": "192.168.1.8",
         "unit_id": 3,
         "address": 18476,
         "name": "wattmeter_condensator",

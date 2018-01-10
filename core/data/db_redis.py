@@ -2,7 +2,7 @@ import redis
 import json
 
 
-REDIS_HOST = "192.168.1.8"
+REDIS_HOST = "192.168.1.9"
 #REDIS_PORT = 8086
 REDIS_HOST = "127.0.0.1"
 REDIS_PORT = 6379

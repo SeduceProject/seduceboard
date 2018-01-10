@@ -2,7 +2,7 @@ from influxdb import InfluxDBClient
 from dateutil import parser
 from datetime import timedelta
 
-DB_HOST = "192.168.1.4"
+DB_HOST = "192.168.1.9"
 DB_PORT = 8086
 DB_HOST = "127.0.0.1"
 #DB_PORT = 8096
