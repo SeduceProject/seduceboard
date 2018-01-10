@@ -29,7 +29,7 @@ def process_one_temperature_reading(msg):
         print("Could not load JSON data from '%s'" % (msg))
         return []
 
-    temperature = temperature_data["v"]
+    temperature = float(temperature_data["v"])
     sensor_name = temperature_data["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
 

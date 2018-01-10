@@ -5,6 +5,7 @@ from core.data.db import *
 
 import threading
 from influxdb import InfluxDBClient
+import traceback
 
 influx_lock = threading.Lock()
 
@@ -30,7 +31,7 @@ def new_temp_reading():
 
     sensor_name = request.json["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
-    temperature = int(request.json["v"])
+    temperature = float(request.json["v"])
 
     if temperature > 84 or temperature < 10:
         from core.data.db_redis import redis_increment_sensor_error_count
@@ -55,6 +56,7 @@ def new_temp_reading():
     try:
         db_client.write_points(data)
     except:
+        traceback.print_exc()
         failure = True
 
     db_client.close()
