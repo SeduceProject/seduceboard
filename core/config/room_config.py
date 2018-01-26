@@ -1,3 +1,7 @@
+import json
+from core.data.snmp import get_pdus, get_outlets
+
+
 ROOM_CONFIG = [
     {
         "name": "watt_cooler_ext",
@@ -98,50 +102,27 @@ ROOM_CONFIG = [
     }
 ]
 
-
-def get_temperature_sensors_from_csv_files():
-    import csv
-    from os import listdir
-    from os.path import isfile, join
-    mypath = "conf/racks"
-    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-    result = []
-    for file in onlyfiles:
-        with open(mypath+"/"+file, 'rU') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-            next(spamreader)
-            for row in spamreader:
-                if "index,Adresse Mac" not in row:
-                    result += [row[1].replace(":", "")]
-    return result
+JSON_CLUSTER_TEMPERATURE_CONFIGURATION_PATH = "conf/g5k/nantes/ecotype/temperature.json"
 
 
 def get_temperature_sensors_infrastructure():
-    import csv
-    from os import listdir
-    from os.path import isfile, join
-    mypath = "conf/racks"
-    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
     result = {}
-    for file in onlyfiles:
-        rack_name = ".".join(file.split(".")[:-1])
-        rack_description = {
-            "rack": rack_name,
-            "sensors": [],
-            "positions": {},
-            "positions_index": {}
-        }
-        with open(mypath+"/"+file, 'rU') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-            next(spamreader)
-            for row in spamreader:
-                if "index,Adresse Mac,position" not in row:
-                    sensor_name = row[1].replace(":", "")
-                    rack_description["sensors"] += [sensor_name ]
-                    rack_description["positions"][sensor_name] = int(row[2])
-                    rack_description["positions_index"][int(row[2])] = sensor_name
-        result[rack_name] = rack_description
+    with open(JSON_CLUSTER_TEMPERATURE_CONFIGURATION_PATH) as data_file:
+        cluster_data = json.load(data_file)
+        for rack_id, rack_data in cluster_data.iteritems():
+            for side, rack_side_data in rack_data.iteritems():
+                rack_side_id = ("%s.%s" % (rack_id, side)).lower()
+                positions = dict([(v["serie"], int(k)) for (k, v) in rack_side_data.iteritems()])
+                positions_index = dict([(int(k), v["serie"]) for (k, v) in rack_side_data.iteritems()])
+                sensors_series = [v["serie"] for (k, v) in rack_side_data.iteritems()]
+                result[rack_side_id] = {
+                    "rack": rack_side_id,
+                    "sensors": sensors_series,
+                    "positions": positions,
+                    "positions_index": positions_index
+                }
     return result
+
 
 CSV_TEMPERATURE_SENSORS_INITIALIZED = False
 
@@ -227,7 +208,6 @@ if not CSV_TEMPERATURE_SENSORS_INITIALIZED:
 PDUS_SENSORS_INITIALIZED = False
 
 if not PDUS_SENSORS_INITIALIZED:
-    from core.data.pdus import get_pdus, get_outlets, get_outlets_names
     for pdu_id in get_pdus():
         rack_name = pdu_id.split("-")[1].lower()
         coordinate = SENSOR_ARRAYS_COORDINATES[rack_name[:-1]+".back"]

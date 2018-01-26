@@ -8,7 +8,7 @@ from threading import Timer
 import traceback
 
 from docopt import docopt
-from core.data.pdus import get_pdus, get_outlets, get_outlets_names
+from core.data.snmp import get_pdus, get_outlets, get_outlets_names
 from core.data.db import *
 
 BAUDRATE = 9600

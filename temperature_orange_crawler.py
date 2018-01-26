@@ -1,4 +1,3 @@
-from serial import Serial
 import sys
 import time
 import re
@@ -7,16 +6,18 @@ import threading
 from threading import Timer
 import traceback
 import json
+import requests
+from lxml import html
 
 from docopt import docopt
 from flask import jsonify
 from core.data.db import *
+from datetime import datetime
 
-BAUDRATE = 9600
-NO_PAUSE = -1
 
 RECORDS = []
 influx_lock = threading.Lock()
+NO_PAUSE = -1
 
 
 def process_one_temperature_reading(msg):
@@ -116,38 +117,70 @@ def set_interval(f, args, interval_secs, task_name=None):
     return t
 
 
+def parse_float(str_value):
+    try:
+        return float(str_value)
+    except:
+        pass
+    return None
+
+
 if __name__ == "__main__":
 
-    help = """Temperature serial crawler
+    help = """Temperature orange crawler
 
     Usage:
-      temperature_serial_crawler.py --serial=<serial>
-      temperature_serial_crawler.py --list-serial
+      temperature_orange_crawler.py --ip=<ip>
 
     Options:
       -h --help        Show this message and exit.
-      --list-serial    List serial ports that can be crawled.
     """
     arguments = docopt(help)
 
-    if arguments["--list-serial"]:
-        files = [f for f in os.listdir('/dev') if re.match(r'.*tty(\.|.*USB|.*usb).*', f)]
-        print("Available serial ports:")
-        for file in files:
-            print("  /dev/%s" % file)
-        pass
-        sys.exit(0)
-    else:
-        # Launch the background function that will be in charge of saving
-        # data to the database
-        set_interval(flush_records, ("Nothing"), 30, task_name="influx")
+    # Launch the background function that will be in charge of saving
+    # data to the database
+    set_interval(flush_records, ("Nothing"), 30, task_name="influx")
 
-        serial_device_path = arguments["--serial"]
+    ip = arguments["--ip"]
 
-        with Serial(port=serial_device_path, baudrate=BAUDRATE, timeout=1, writeTimeout=1) as serial_port:
-            if serial_port.isOpen():
-                while True:
-                    msg = serial_port.readline()
-                    if """{"sensor":""" in msg:
-                        process_one_temperature_reading(msg)
+    while True:
+        response = requests.get("http://%s/?command=TableDisplay&table=Table1&records=100" % ip)
+        response_text = response.text
+        tree = html.fromstring(response_text.encode('utf8').strip())
+        table_elements = tree.xpath('//table')
+
+        if len(table_elements) == 1:
+            table_dom = table_elements[0]
+
+            tr_elements = table_dom.xpath('.//tr')
+            row_num = 0
+            for tr_element in tr_elements:
+                row_timestamp_str = None
+                row_time = None
+                row_time_since_epoch = None
+
+                th_elements = tr_element.xpath('.//th')
+                td_elements = tr_element.xpath('.//td')
+
+                if len(th_elements) > 0:
+                    index = 0
+                    row_index = {}
+                    for th_element in th_elements:
+                        row_index[index] = th_element.text
+                        index += 1
+                else:
+                    column_num = 0
+                    for td_element in td_elements:
+                        if column_num == 0:
+                            row_timestamp_str = td_element.text
+                            row_time = datetime.strptime(row_timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
+                            row_time_since_epoch = (row_time - datetime(1970, 1, 1)).total_seconds()
+                        else:
+                            column_label = row_index[column_num]
+                            value = parse_float(td_element.text)
+                            if value is not None:
+                                print("%s %s -> %s" % (row_time_since_epoch, column_label, value))
+                                pass
+                        column_num += 1
+                row_num += 1
     sys.exit(0)

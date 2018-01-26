@@ -9,13 +9,13 @@ from influxdb import InfluxDBClient
 from pysnmp.hlapi.asyncore import *
 import time
 import threading
-from core.data.pdus import get_outlets
-from core.data.pdus import get_connection_info_for_pdu
-from core.data.pdus import get_outlets
+from core.data.snmp import get_outlets
+from core.data.snmp import get_connection_info_for_pdu
+from core.data.snmp import get_outlets
 from threading import Timer
 
 from docopt import docopt
-from core.data.pdus import get_pdus
+from core.data.snmp import get_pdus
 from core.data.db import *
 
 NO_PAUSE = -1
@@ -119,7 +119,6 @@ def flush_records(args):
 
 
 def async_read_outlets_of_given_pdu(pdu_id):
-    from core.data.pdus import get_connection_info_for_pdu
     snmpEngine = SnmpEngine()
 
     connection_info = get_connection_info_for_pdu(pdu_id)

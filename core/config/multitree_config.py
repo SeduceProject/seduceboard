@@ -92,7 +92,7 @@ MULTITREE_INDEX = {
 PDUS_SENSORS_INITIALIZED = False
 
 if not PDUS_SENSORS_INITIALIZED:
-    from core.data.pdus import get_pdus, get_outlets, get_outlets_names
+    from core.data.snmp import get_pdus, get_outlets, get_outlets_names
 
     hardware_resources = {}
 
