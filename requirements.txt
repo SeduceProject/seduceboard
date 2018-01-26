@@ -11,3 +11,9 @@ docopt
 pyserial
 python-telegram-bot
 redis
+scrapy
+gTTS
+requests
+html2text
+gunicorn
+supervisor
