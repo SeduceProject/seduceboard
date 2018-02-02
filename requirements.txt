@@ -17,3 +17,8 @@ requests
 html2text
 gunicorn
 supervisor
+flask-login
+validators
+itsdangerous
+celery
+transitions

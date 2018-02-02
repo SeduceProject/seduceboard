@@ -1,0 +1,66 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Confirmation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.css') }}">
+		<link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/app-blue.css') }}">
+		<link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/custom.css') }}">
+        <!-- Theme initialization -->
+        <script>
+            var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
+            {};
+            var themeName = themeSettings.themeName || '';
+            if (themeName)
+            {
+                document.write('<link rel="stylesheet" id="theme-style" href="css/app-' + themeName + '.css">');
+            }
+            else
+            {
+                document.write('<link rel="stylesheet" id="theme-style" href="css/app.css">');
+            }
+        </script>
+    </head>
+    <body>
+        <div class="auth">
+            <div class="auth-container">
+                <div class="card">
+                    <header class="auth-header">
+                        <h1 class="auth-title">
+                            <img class="seduce_logo" src="{{ url_for('static', filename='assets/seduce_logo.svg') }}"/> Seduce Dashboard </h1>
+                    </header>
+                    <div class="auth-content">
+                        <p class="text-center"></p>
+                        <h2 class="form-signin-heading">Congratulations!</h2>
+                        <p>Your account creation request have been taken into account.</p>
+                        <p>You should receive an email within 10 minutes asking you to confirm your email.</p>
+                        <p>Once your email is confirmed, we will proceed with your request!</p>
+                        <p>Best regards,</p>
+                        <p>Seduce Cloud admins</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Reference block for JS -->
+        <div class="ref" id="ref">
+            <div class="color-primary"></div>
+            <div class="chart">
+                <div class="color-primary"></div>
+                <div class="color-secondary"></div>
+            </div>
+        </div>
+        <script src="js/vendor.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
+
+
+{% block body %}
+
+{% endblock %}

@@ -1,14 +1,10 @@
 import redis
 import json
+from core.config.config_loader import load_config
 
 
-REDIS_HOST = "192.168.1.9"
-#REDIS_PORT = 8086
-REDIS_HOST = "127.0.0.1"
-REDIS_PORT = 6379
-REDIS_USER = 'root'
-REDIS_PASSWORD = 'root'
-REDIS_NAME = 'pidiou'
+REDIS_HOST = load_config().get("redis").get("address")
+REDIS_PORT = load_config().get("redis").get("port")
 
 
 def redis_set_sensor_error_count(sensor_name, error_count):

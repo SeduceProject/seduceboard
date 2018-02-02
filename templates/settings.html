@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+
+{% block navbar %}
+<ul class="sidebar-menu metismenu" id="sidebar-menu">
+    <li class="active">
+        <a href="/">
+            <i class="fa fa-home"></i> Dashboard </a>
+    </li>
+    <li>
+        <a href="/sensors.html">
+            <i class="fa fa-cog"></i> Sensors
+        </a>
+    </li>
+    <li>
+        <a href="/room_overview.html">
+            <i class="fa fa-map"></i> Room overview
+        </a>
+    </li>
+    <li>
+        <a href="/rack_temperature_overview.html">
+            <i class="fa fa-thermometer-half"></i> Rack temperatures
+        </a>
+    </li>
+    <li>
+        <a href="/weighted_tree_consumption">
+            <i class="fa fa-sitemap"></i> Consumption tree
+        </a>
+    </li>
+    <li>
+        <a href="/">
+            <i class="fa fa-bar-chart"></i> Measurements
+            <i class="fa arrow"></i>
+        </a>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+            </li>
+            <li>
+                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+            </li>
+            <li>
+                <a href="/measurements/socomecs.html"> Socomecs </a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a id="seduce_api_link" href="http://localhost:5000/apidocs/#/">
+            <i class="fa fa-rocket"></i> API
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+
+{% block header_css %}
+.profile_picture {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; width: 30px; height: 30px;
+}
+{% endblock %}
+
+{% block body %}
+<article class="content dashboard-page">
+    <div class="title-block">
+        <h1 class="title"> Settings </h1>
+        <p class="title-description"> Administration <i>"aux petits oignons"</i> of the Seduce platform</p>
+    </div>
+    <section class="section">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-title-block">
+                            <h3 class="title">Users</h3>
+                        </div>
+                        <section class="example">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>ID</th>
+                                    <th>Firstname</th>
+                                    <th>Lastname</th>
+                                    <th>Email</th>
+                                    <th>Authorized</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in users %}
+                                <tr>
+                                <th>
+                                    {% if user.url_picture %}
+                                    <div class="item-img xs rounded profile_picture"  style="background-image: url('{{ user.url_picture }}')"> </div>
+                                    {% else %}
+                                    <div class="item-img xs rounded profile_picture"  style="background-image: url('{{ url_for("static", filename="assets/faces/unknown.jpg") }}')"> </div>
+                                    {% endif %}
+                                </th>
+                                <th scope="row">{{ user.id }}</th>
+                                <td>{{ user.firstname }}</td>
+                                <td>{{ user.lastname }}</td>
+                                <td>{{ user.email }} {% if user.email_confirmed %}<span href="#" class="badge badge-success">confirmed</span>{%endif%}</td>
+                                <td>{{ user.user_authorized }}</td>
+                                <td>
+                                {% if user.is_admin %}
+                                Administrator</td>
+                                {% else %}
+                                User
+                                {% endif %}
+                                </td>
+                                <td>
+                                {% if user.is_admin %}
+                                <a href="{{ url_for("demote_user", user_id=user.id) }}" class="btn btn-danger">Demote</a>
+                                {% else %}
+                                <a href="{{ url_for("promote_user", user_id=user.id) }}" class="btn btn-success">Promote</a>
+                                {% endif %}
+                                {% if user.user_authorized %}
+                                <a href="{{ url_for("deauthorize_user", user_id=user.id) }}" class="btn btn-danger">Unauthorize</a>
+                                {% else %}
+                                    {% if user.state == "waiting_authorization" %}
+                                <a href="{{ url_for("approve_user", token=user.admin_authorization_token) }}" class="btn btn-warning">Approve</a>
+                                    {% elif user.email_confirmed %}
+                                <a href="{{ url_for("authorize_user", user_id=user.id) }}" class="btn btn-success">Authorize</a>
+                                    {% endif %}
+                                {% endif %}
+                                </td>
+
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+{% endblock %}
+
+{% block end_document %}
+{% endblock %}

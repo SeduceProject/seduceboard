@@ -1,15 +1,13 @@
 from influxdb import InfluxDBClient
 from dateutil import parser
 from datetime import timedelta
+from core.config.config_loader import load_config
 
-DB_HOST = "192.168.1.9"
-DB_PORT = 8086
-DB_HOST = "127.0.0.1"
-#DB_PORT = 8096
-DB_USER = 'root'
-DB_PASSWORD = 'root'
-DB_NAME = 'pidiou'
-OUTPUT_FILE = 'temperatures.json'
+DB_HOST = load_config().get("influx").get("address")
+DB_PORT = load_config().get("influx").get("port")
+DB_USER = load_config().get("influx").get("user")
+DB_PASSWORD = load_config().get("influx").get("password")
+DB_NAME = load_config().get("influx").get("db")
 
 
 def db_sensor_data(sensor_name, start_date=None, end_date=None, zoom_ui=False):

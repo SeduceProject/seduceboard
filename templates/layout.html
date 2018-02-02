@@ -17,6 +17,11 @@
         <script src="https://code.highcharts.com/stock/highstock.js"></script>
         <script src="https://code.highcharts.com/stock/highstock.js"></script>
         <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+
+        <style >
+        {% block header_css %}
+        {% endblock %}
+        </style>
     </head>
     <body>
         <div class="main-wrapper">
@@ -96,18 +101,24 @@
                             </li>
                             <li class="profile dropdown">
                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <div class="img" style="background-image: url('https://avatars0.githubusercontent.com/u/978374?v=4&u=a77eac74051bad32f50f336dbfa18dca91ba6dbf&s=400')"> </div>
-                                    <span class="name"> Jonathan Pastor </span>
+                                    {% if current_user.url_picture %}
+                                    <div class="img" style="background-image: url('{{ current_user.url_picture }}')"> </div>
+                                    {% else %}
+                                    <div class="img" style="background-image: url('{{ url_for("static", filename="assets/faces/unknown.jpg") }}')"> </div>
+                                    {% endif %}
+                                    <span class="name"> {{ current_user.firstname }} {{ current_user.lastname }} </span>
                                 </a>
                                 <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1">
                                     <a class="dropdown-item" href="#">
                                         <i class="fa fa-user icon"></i> Profile </a>
                                     <a class="dropdown-item" href="#">
                                         <i class="fa fa-bell icon"></i> Notifications </a>
-                                    <a class="dropdown-item" href="#">
+                                    {% if current_user.is_admin %}
+                                    <a class="dropdown-item" href="{{ url_for("settings") }}">
                                         <i class="fa fa-gear icon"></i> Settings </a>
+                                    {% endif %}
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="login.html">
+                                    <a class="dropdown-item" href="{{ url_for("logout") }}">
                                         <i class="fa fa-power-off icon"></i> Logout </a>
                                 </div>
                             </li>
