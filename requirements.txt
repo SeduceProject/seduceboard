@@ -23,4 +23,5 @@ itsdangerous
 celery
 transitions
 flask_bcrypt
+SQLAlchemy==0.9.10
 Flask-SQLAlchemy==2.1
