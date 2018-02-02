@@ -453,6 +453,7 @@ def index():
 @admin_login_required
 def settings():
     from database import db
+    from database import User as DbUser
     db.session.expire_all()
     users = DbUser.query.all()
     return render_template("settings.html", users=users)
