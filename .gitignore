@@ -1,4 +1,6 @@
 *.log
+test.db
+celerybeat-schedule.db
 
 ## INTELLIJ / PyCharm GITIGNORE
 
