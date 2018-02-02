@@ -33,7 +33,7 @@ def new_temp_reading():
     filtered_sensor_name = sensor_name.replace(":", "")
     temperature = float(request.json["v"])
 
-    if temperature > 84 or temperature < 10:
+    if temperature > 60 or temperature < 10:
         from core.data.db_redis import redis_increment_sensor_error_count
         redis_increment_sensor_error_count(filtered_sensor_name)
         return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
@@ -72,6 +72,6 @@ if __name__ == "__main__":
 
     print("Running the \"temperature registerer\" server")
     app.jinja_env.auto_reload = DEBUG
-    app.run(host="0.0.0.0", port=8080, debug=DEBUG, threaded=True)
+    app.run(host="0.0.0.0", port=8080, debug=DEBUG)
 
 
