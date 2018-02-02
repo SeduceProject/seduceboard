@@ -22,3 +22,5 @@ validators
 itsdangerous
 celery
 transitions
+flask_bcrypt
+Flask-SQLAlchemy==2.1
