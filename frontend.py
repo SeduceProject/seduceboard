@@ -123,6 +123,7 @@ def confirmation_account_confirmation():
 @app.route('/confirm_email/token/<token>')
 def confirm_email(token):
     from database import User
+    from database import db
     db.session.expire_all()
     user_candidate = User.query.filter_by(email_confirmation_token=token).first()
 
@@ -141,6 +142,7 @@ def confirm_email(token):
 def approve_user(token):
     from database import User
     from core.email.notification import send_authorization_confirmation
+    from database import db
     db.session.expire_all()
     user_candidate = User.query.filter_by(admin_authorization_token=token).first()
 
@@ -174,6 +176,7 @@ def disapprove_user(token):
 @admin_login_required
 def promote_user(user_id):
     from database import User
+    from database import db
     db.session.expire_all()
     user_candidate = User.query.filter_by(id=user_id).first()
 
@@ -189,6 +192,7 @@ def promote_user(user_id):
 @admin_login_required
 def demote_user(user_id):
     from database import User
+    from database import db
     db.session.expire_all()
     user_candidate = User.query.filter_by(id=user_id).first()
 
@@ -204,6 +208,7 @@ def demote_user(user_id):
 @admin_login_required
 def authorize_user(user_id):
     from database import User
+    from database import db
     db.session.expire_all()
     user_candidate = User.query.filter_by(id=user_id).first()
 
@@ -223,6 +228,7 @@ def authorize_user(user_id):
 @admin_login_required
 def deauthorize_user(user_id):
     from database import User
+    from database import db
     db.session.expire_all()
     user_candidate = User.query.filter_by(id=user_id).first()
 
@@ -446,6 +452,7 @@ def index():
 @app.route("/settings.html")
 @admin_login_required
 def settings():
+    from database import db
     db.session.expire_all()
     users = DbUser.query.all()
     return render_template("settings.html", users=users)
