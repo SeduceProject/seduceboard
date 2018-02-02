@@ -85,6 +85,7 @@ def login(msg=None):
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     from database import User
+    from database import db
     if flask.request.method == 'GET':
         next_url = flask.request.args.get("next")
         return render_template("signup.html", next_url=next_url)
@@ -160,6 +161,7 @@ def approve_user(token):
 @app.route('/disapprove_user/token/<token>')
 def disapprove_user(token):
     from database import User
+    from database import db
     user_candidate = User.query.filter_by(admin_authorization_token=token).first()
 
     if user_candidate is not None:
