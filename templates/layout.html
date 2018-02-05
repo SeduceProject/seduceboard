@@ -116,6 +116,8 @@
                                     {% if current_user.is_admin %}
                                     <a class="dropdown-item" href="{{ url_for("settings") }}">
                                         <i class="fa fa-gear icon"></i> Settings </a>
+                                    <a class="dropdown-item" href="{{ url_for("rack_temperature_errors_overview") }}">
+                                        <i class="fa fa-gear icon"></i> Temperature status </a>
                                     {% endif %}
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ url_for("logout") }}">

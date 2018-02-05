@@ -646,7 +646,8 @@ def rack_temperature_errors_incr(sensor_name):
 
 
 @app.route("/rack_temperature_overview.html/errors")
-@flask_login.login_required
+@app.route("/rack_temperature_overview_errors.html")
+@admin_login_required
 def rack_temperature_errors_overview():
     from core.config.room_config import get_temperature_sensors_infrastructure
     from core.data.db_redis import redis_get_sensors_data
