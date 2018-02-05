@@ -92,6 +92,7 @@ def detect_unresponsive_temperature_sensors():
                 time_since_last_update_secs = now_time - last_update_since_epoch
 
                 if time_since_last_update_secs > 60:
+                    print("%s is unresponsive since %s seconds: I increment his error counter" % (child.get("name"), time_since_last_update_secs))
                     redis_increment_sensor_error_count(child.get("name"))
 
 
