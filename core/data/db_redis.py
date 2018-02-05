@@ -7,6 +7,15 @@ REDIS_HOST = load_config().get("redis").get("address")
 REDIS_PORT = load_config().get("redis").get("port")
 
 
+def redis_clear_error_count():
+    redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+
+    sensor_key = "sensors_data"
+    redis_client.set(sensor_key, {})
+
+    return True
+
+
 def redis_set_sensor_error_count(sensor_name, error_count):
     redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
@@ -116,3 +125,5 @@ if __name__ == "__main__":
     n = redis_get_sensor_error_count("toto")
     print(n)
     print(redis_get_sensors_names())
+
+    redis_clear_error_count()

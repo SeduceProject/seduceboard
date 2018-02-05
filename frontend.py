@@ -645,6 +645,16 @@ def rack_temperature_errors_incr(sensor_name):
     return jsonify(sensors_data)
 
 
+@app.route("/rack_temperature_errors_clear.html")
+@admin_login_required
+def rack_temperature_errors_clear():
+    from core.data.db_redis import redis_clear_error_count
+
+    redis_clear_error_count()
+
+    return flask.redirect(flask.url_for("rack_temperature_errors_overview"))
+
+
 @app.route("/rack_temperature_overview.html/errors")
 @app.route("/rack_temperature_overview_errors.html")
 @admin_login_required
