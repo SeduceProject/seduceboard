@@ -18,7 +18,7 @@
     </li>
     <li>
         <a href="/rack_temperature_overview.html">
-            <i class="fa fa-thermometer-half"></i> Rack temperature errors
+            <i class="fa fa-thermometer-half"></i> Rack temperature
         </a>
     </li>
     <li>
@@ -225,7 +225,7 @@
                     let temperature_div = document.getElementById(div_id);
                     let hsl_color = temperature_to_hsl_color(temperature);
                     $(temperature_div).css("background-color", "hsl("+hsl_color+", 76%, 55%)");
-                    $(temperature_div).html(temperature+" ("+sensor_name+") <a class=\"sensor_a_link\" href=\"http://localhost:8081/room_overview.html/by_selected/"+sensor_name+"\">view</a>");
+                    $(temperature_div).html(temperature+" ("+sensor_name+") <a class=\"sensor_a_link\" href=\"/room_overview.html/by_selected/"+sensor_name+"\">view</a>");
                 }
             }
         });
