@@ -13,6 +13,15 @@ swagger = Swagger(app)
 DEBUG = True
 
 
+@app.route('/')
+def index():
+    return jsonify({
+        "api_documentation_url": "/apidocs",
+        "api_specification_url": "/apispec_1.json",
+        "message": "Read the api documentation at http://api.seduce.fr/apidocs/ , or get the specification of the API at http://api.seduce.fr/apispec_1.json"
+    })
+
+
 @app.route('/sensors')
 def sensors():
     """Endpoint returning IDs of all sensors of the Seduce infrastructure.
