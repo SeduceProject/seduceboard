@@ -10,6 +10,8 @@ app.config['SWAGGER'] = {
 }
 swagger = Swagger(app)
 
+DEBUG = True
+
 
 @app.route('/sensors')
 def sensors():
@@ -362,5 +364,5 @@ def infrastructure():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", port=8081, debug=DEBUG, threaded=True)
 
