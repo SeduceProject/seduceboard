@@ -27,6 +27,12 @@ def validate(date_text):
     return True
 
 
+@app.context_processor
+def inject_dict_for_all_templates():
+    api_public_address = load_config().get("api", {}).get("public_address", "localhost:5000")
+    return dict(api_public_address=api_public_address)
+
+
 @login_manager.user_loader
 def user_loader(email):
     from login_management import User
