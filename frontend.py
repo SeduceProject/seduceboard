@@ -8,6 +8,8 @@ from flask import render_template
 from flask import request
 import flask
 from core.decorators.admin_login_required import admin_login_required
+from core.config.config_loader import load_config
+
 
 login_manager = flask_login.LoginManager()
 
