@@ -77,10 +77,13 @@
 
                                 <div style="position: absolute; width: 100%; height: 100%; top: 0px;">
                                     <svg width="100%" height="100%" style="overflow: visible; position: absolute; top: 0px;">
+                                        <style>
+                                            a { cursor: pointer; }
+                                        </style>
                                         {% for sensors_array in sensors_arrays %}
-                                            <a href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">
+                                            <a xlink:href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">
                                                 {% if sensors_array.name == selected_sensors_array.name %}
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="rgb(218, 74, 41)" />
+                                                <circle onlick="alert('rouge')" cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="rgb(218, 74, 41)" />
                                                 <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2.5%" fill="white" />
                                                 {% else %}
                                                 {% if sensors_array.sensor_type == "wattmeter" %}
