@@ -13,7 +13,7 @@ TOKEN_LENGTH = 50
 
 def send_confirmation_request(user):
     email_configuration = get_email_configuration()
-    fronted_public_address = load_config().get("fronted", {}).get("public_address", "localhost:5000")
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
 
     token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
 
@@ -35,7 +35,7 @@ https://%s/confirm_email/token/%s
 
 Best Regards,
 Seduce administrators
-""" % (user.firstname, fronted_public_address, token)
+""" % (user.firstname, frontend_public_address, token)
 
     msg.attach(MIMEText(body, 'plain'))
 
@@ -56,7 +56,7 @@ Seduce administrators
 
 def send_authorization_request(user):
     email_configuration = get_email_configuration()
-    fronted_public_address = load_config().get("fronted", {}).get("public_address", "localhost:5000")
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
 
     token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
 
@@ -93,7 +93,7 @@ Thanks for taking the time to review this request.
 
 Best Regards,
 Seduce system
-""" % (user.email, user.firstname, user.lastname, fronted_public_address, token, fronted_public_address, token)
+""" % (user.email, user.firstname, user.lastname, frontend_public_address, token, frontend_public_address, token)
 
     msg.attach(MIMEText(body, 'plain'))
 
@@ -114,7 +114,7 @@ Seduce system
 
 def send_authorization_confirmation(user):
     email_configuration = get_email_configuration()
-    fronted_public_address = load_config().get("fronted", {}).get("public_address", "localhost:5000")
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
 
     fromaddr = email_configuration.get("email")
     toaddr = user.email
@@ -132,7 +132,7 @@ https://%s/login
 
 Best Regards,
 Seduce system
-""" % (user.firstname, fronted_public_address)
+""" % (user.firstname, frontend_public_address)
 
     msg.attach(MIMEText(body, 'plain'))
 
