@@ -224,8 +224,8 @@
     hc_create_chart(hc_thermometers_options);
 </script>
 
-<script src="https://www.chartjs.org/dist/2.7.0/Chart.bundle.js"></script>
-<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+<script src="{{ url_for('static', filename='js/chartjs/Chart.bundle.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chartjs/utils.js') }}"></script>
 <script>
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
