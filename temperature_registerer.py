@@ -68,6 +68,56 @@ def new_temp_reading():
     return jsonify({"status": "success", "update_count": len(data)})
 
 
+@app.route("/temperature/list", methods=['POST'])
+def temperature_list():
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    data = []
+    for obj in request.json:
+        for key in ["sensor", "t", "v"]:
+            if key not in obj:
+                return jsonify({"status": "failure", "reason": "missing \"%s\" parameter" % (key)})
+
+        sensor_name = obj["sensor"]
+        filtered_sensor_name = sensor_name.replace(":", "")
+        temperature = float(obj["v"])
+
+        if temperature > 60 or temperature < 10:
+            from core.data.db_redis import redis_increment_sensor_error_count
+            redis_increment_sensor_error_count(filtered_sensor_name)
+            return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
+
+        data += [{
+            "measurement": "sensors",
+            "fields": {
+                "value": temperature
+            },
+            "tags": {
+                "location": "room exterior",
+                "sensor": filtered_sensor_name,
+                "unit": "celsius",
+                "sensor_type": "temperature"
+            }
+        }]
+
+    if len(data) > 0:
+        influx_lock.acquire()
+        failure = False
+        try:
+            db_client.write_points(data)
+        except:
+            traceback.print_exc()
+            failure = True
+
+        db_client.close()
+        influx_lock.release()
+
+    if failure:
+        return jsonify({"status": "failure", "reason": "could not write in the DB"})
+
+    return jsonify({"status": "success", "update_count": len(data)})
+
+
 if __name__ == "__main__":
 
     print("Running the \"temperature registerer\" server")
