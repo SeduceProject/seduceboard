@@ -148,6 +148,7 @@ def confirm_email(token):
 
 
 @app.route('/approve_user/token/<token>')
+@admin_login_required
 def approve_user(token):
     from database import User
     from core.email.notification import send_authorization_confirmation
@@ -167,6 +168,7 @@ def approve_user(token):
 
 
 @app.route('/disapprove_user/token/<token>')
+@admin_login_required
 def disapprove_user(token):
     from database import User
     from database import db
