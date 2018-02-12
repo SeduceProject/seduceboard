@@ -1,8 +1,9 @@
-from core.config.email import get_email_configuration
+from core.config.email_config import get_email_configuration
 import smtplib
 import random
 import string
 from database import db
+from core.config.config_loader import load_config
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -12,6 +13,7 @@ TOKEN_LENGTH = 50
 
 def send_confirmation_request(user):
     email_configuration = get_email_configuration()
+    fronted_public_address = load_config().get("fronted", {}).get("public_address", "localhost:5000")
 
     token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
 
@@ -29,22 +31,22 @@ def send_confirmation_request(user):
 Thanks for creating an account on the Seduce system.
 
 In order to proceed with your account creation, please confirm your email by browsing on the following link:
-http://localhost:8081/confirm_email/token/%s
+https://%s/confirm_email/token/%s
 
 Best Regards,
 Seduce administrators
-""" % (user.firstname, token)
+""" % (user.firstname, fronted_public_address, token)
 
     msg.attach(MIMEText(body, 'plain'))
 
-    smtpserver = smtplib.SMTP(email_configuration.get("smtp_server_url"), email_configuration.get("smtp_server_port"))
-    smtpserver.ehlo()
-    smtpserver.starttls()
-    smtpserver.ehlo()
-    smtpserver.login(fromaddr, email_configuration.get("password"))
+    smtp_server = smtplib.SMTP(email_configuration.get("smtp_server_url"), email_configuration.get("smtp_server_port"))
+    smtp_server.ehlo()
+    smtp_server.starttls()
+    smtp_server.ehlo()
+    smtp_server.login(fromaddr, email_configuration.get("password"))
     text = msg.as_string()
-    smtpserver.sendmail(fromaddr, toaddr, text)
-    smtpserver.quit()
+    smtp_server.sendmail(fromaddr, toaddr, text)
+    smtp_server.quit()
 
     return {
         "success": True,
@@ -54,6 +56,7 @@ Seduce administrators
 
 def send_authorization_request(user):
     email_configuration = get_email_configuration()
+    fronted_public_address = load_config().get("fronted", {}).get("public_address", "localhost:5000")
 
     token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
 
@@ -80,28 +83,28 @@ In the case you approve his account, he we will get access to the Seduce system.
 Do you approve the request?
 
 Yes, I approve the request:
-http://localhost:8081/approve_user/token/%s
+https://%s/approve_user/token/%s
 
 No, I disapprove the request:
-http://localhost:8081/disapprove_user/token/%s
+https://%s/disapprove_user/token/%s
 
 
 Thanks for taking the time to review this request.
 
 Best Regards,
 Seduce system
-""" % (user.email, user.firstname, user.lastname, token, token)
+""" % (user.email, user.firstname, user.lastname, fronted_public_address, token, fronted_public_address, token)
 
     msg.attach(MIMEText(body, 'plain'))
 
-    smtpserver = smtplib.SMTP(email_configuration.get("smtp_server_url"), email_configuration.get("smtp_server_port"))
-    smtpserver.ehlo()
-    smtpserver.starttls()
-    smtpserver.ehlo()
-    smtpserver.login(fromaddr, email_configuration.get("password"))
+    smtp_server = smtplib.SMTP(email_configuration.get("smtp_server_url"), email_configuration.get("smtp_server_port"))
+    smtp_server.ehlo()
+    smtp_server.starttls()
+    smtp_server.ehlo()
+    smtp_server.login(fromaddr, email_configuration.get("password"))
     text = msg.as_string()
-    smtpserver.sendmail(fromaddr, toaddr, text)
-    smtpserver.quit()
+    smtp_server.sendmail(fromaddr, toaddr, text)
+    smtp_server.quit()
 
     return {
         "success": True,
@@ -111,6 +114,7 @@ Seduce system
 
 def send_authorization_confirmation(user):
     email_configuration = get_email_configuration()
+    fronted_public_address = load_config().get("fronted", {}).get("public_address", "localhost:5000")
 
     fromaddr = email_configuration.get("email")
     toaddr = user.email
@@ -124,22 +128,22 @@ def send_authorization_confirmation(user):
     body = """Hello %s,
 
 You account has been approved by an admin, in consequence you can now log in:
-http://localhost:8081/login
+https://%s/login
 
 Best Regards,
 Seduce system
-""" % user.firstname
+""" % (user.firstname, fronted_public_address)
 
     msg.attach(MIMEText(body, 'plain'))
 
-    smtpserver = smtplib.SMTP(email_configuration.get("smtp_server_url"), email_configuration.get("smtp_server_port"))
-    smtpserver.ehlo()
-    smtpserver.starttls()
-    smtpserver.ehlo()
-    smtpserver.login(fromaddr, email_configuration.get("password"))
+    smtp_server = smtplib.SMTP(email_configuration.get("smtp_server_url"), email_configuration.get("smtp_server_port"))
+    smtp_server.ehlo()
+    smtp_server.starttls()
+    smtp_server.ehlo()
+    smtp_server.login(fromaddr, email_configuration.get("password"))
     text = msg.as_string()
-    smtpserver.sendmail(fromaddr, toaddr, text)
-    smtpserver.quit()
+    smtp_server.sendmail(fromaddr, toaddr, text)
+    smtp_server.quit()
 
     return {
         "success": True,
