@@ -34,7 +34,7 @@ celery = make_celery(flask_app)
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(10.0, send_confirmation_email.s(), name='send_confirmation_email')
     sender.add_periodic_task(10.0, send_authorization_email.s(), name='send_authorization_email')
-    sender.add_periodic_task(120.0, detect_unresponsive_temperature_sensors.s(), name='detect_unresponsive_temperature_sensors')
+    sender.add_periodic_task(20.0, detect_unresponsive_temperature_sensors.s(), name='detect_unresponsive_temperature_sensors')
 
 
 @celery.task()
@@ -91,7 +91,7 @@ def detect_unresponsive_temperature_sensors():
                 last_update_since_epoch = int(time.mktime(parser.parse(child_last_update[0]["time"]).timetuple())) - time.timezone
                 time_since_last_update_secs = now_time - last_update_since_epoch
 
-                if time_since_last_update_secs > 60:
+                if time_since_last_update_secs > 40:
                     print("%s is unresponsive since %s seconds: I increment his error counter" % (child.get("name"), time_since_last_update_secs))
                     redis_increment_sensor_error_count(child.get("name"))
 
