@@ -169,6 +169,8 @@ def cqs_recreate_all(force_creation=False):
             db_client.query(query, database=DB_NAME)
             cqs_updated = True
 
+    db_client.close()
+
     return cqs_updated
 
 
@@ -309,6 +311,8 @@ def cqs_recompute_data():
         print(query)
         db_client.query(query, database=DB_NAME)
 
+    db_client.close()
+
     return True
 
 
@@ -368,6 +372,8 @@ def multitree_drop_cqs_and_series_names(cq_name):
             db_client.query(query, database=DB_NAME)
         except InfluxDBClientError:
             print("serie %s was already destroyed" % (serie_name))
+
+    db_client.close()
 
 
 def multitree_create_continuous_query(cq_name, sub_query_sets):
@@ -447,6 +453,8 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
                       cq_name_freq)
     print(query)
     db_client.query(query, database=DB_NAME)
+
+    db_client.close()
 
     return True
 
@@ -531,6 +539,8 @@ def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
                                                  oldest_timestamp)
     print(query)
     db_client.query(query, database=DB_NAME)
+
+    db_client.close()
 
     return True
 

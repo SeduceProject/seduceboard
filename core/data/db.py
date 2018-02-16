@@ -57,6 +57,8 @@ def db_sensor_data(sensor_name, start_date=None, end_date=None, zoom_ui=False):
         result["timestamps"].append(point['time'])
         result["values"].append(point['value'])
 
+    db_client.close()
+
     return result
 
 
@@ -76,6 +78,8 @@ def db_sensors(sensor_type=None):
     for point in points:
         result["sensors"].append(point['value'])
 
+    db_client.close()
+
     return result
 
 
@@ -92,6 +96,8 @@ def db_sensor_types():
     for point in points:
         result["sensor_types"].append(point['value'])
 
+    db_client.close()
+
     return result
 
 
@@ -107,6 +113,8 @@ def db_locations():
 
     for point in points:
         result["locations"].append(point['value'])
+
+    db_client.close()
 
     return result
 
@@ -198,6 +206,8 @@ def db_aggregated_sensor_data(sensor_name, start_date=None, how="daily"):
         "is_downsampled": True,
         "sensor_name": sensor_name
     }
+
+    db_client.close()
 
     return result
 
@@ -297,6 +307,8 @@ def db_aggregated_multitree_sensor_data(sensor_name, start_date=None, end_date=N
         "sensor_name": sensor_name
     }
 
+    db_client.close()
+
     return result
 
 
@@ -388,6 +400,8 @@ def db_datainfo(start_date=None, how="daily"):
         }
     }
 
+    db_client.close()
+
     return result
 
 
@@ -465,6 +479,8 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
             "maxs": maxs
         }
     }
+
+    db_client.close()
 
     return result
 
@@ -553,6 +569,8 @@ def db_wattmeters_data(sensor_type, start_date=None, how="daily"):
         }
     }
 
+    db_client.close()
+
     return result
 
 
@@ -573,6 +591,8 @@ def db_last_sensors_updates():
             "sensor_type": point["sensor_type"],
             "sensor": point["sensor"],
         }]
+
+    db_client.close()
 
     return result
 
@@ -595,6 +615,8 @@ def db_last_temperature_values():
             "sensor": point["sensor"],
         }]
 
+    db_client.close()
+
     return result
 
 
@@ -606,6 +628,8 @@ def db_last_temperature_mean():
 
     temperatures = [x["value"] for x in points if x["value"] < 84]
     result = sum(temperatures) / len(temperatures)
+
+    db_client.close()
 
     return result
 
@@ -620,6 +644,8 @@ def db_multitree_last_wattmeter_value(multitree_node):
 
     for point in points:
         return point["last_mean"]
+
+    db_client.close()
 
     return 0
 
@@ -651,6 +677,8 @@ def db_multitree_last_wattmeter_all_in_one_query(queries):
         for point in points:
             result[serie_name] = point["last_mean"]
 
+    db_client.close()
+
     return result
 
 
@@ -659,5 +687,7 @@ def db_get_running_queries():
 
     query = "show queries"
     points = db_client.query(query).get_points()
+
+    db_client.close()
 
     return points
