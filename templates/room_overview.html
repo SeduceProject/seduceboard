@@ -17,6 +17,16 @@
         </a>
     </li>
     <li>
+        <a href="/rack_temperature_overview.html">
+            <i class="fa fa-thermometer-half"></i> Rack temperatures
+        </a>
+    </li>
+    <li>
+        <a href="/weighted_tree_consumption">
+            <i class="fa fa-sitemap"></i> Consumption tree
+        </a>
+    </li>
+    <li>
         <a href="/">
             <i class="fa fa-bar-chart"></i> Measurements
             <i class="fa arrow"></i>
@@ -34,7 +44,7 @@
         </ul>
     </li>
     <li>
-        <a id="seduce_api_link" href="http://localhost:5000/apidocs/#/">
+        <a id="seduce_api_link" href="https://localhost:5000/apidocs/#/">
             <i class="fa fa-rocket"></i> API
         </a>
     </li>
@@ -67,14 +77,21 @@
 
                                 <div style="position: absolute; width: 100%; height: 100%; top: 0px;">
                                     <svg width="100%" height="100%" style="overflow: visible; position: absolute; top: 0px;">
+                                        <style>
+                                            a { cursor: pointer; }
+                                        </style>
                                         {% for sensors_array in sensors_arrays %}
-                                            <a href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">
+                                            <a xlink:href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">
                                                 {% if sensors_array.name == selected_sensors_array.name %}
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="4.5%" fill="rgb(218, 74, 41)" />
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="white" />
+                                                <circle onlick="alert('rouge')" cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="rgb(218, 74, 41)" />
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2.5%" fill="white" />
                                                 {% else %}
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3%" fill="rgb(74, 179, 193)" />
-                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="white" />
+                                                {% if sensors_array.sensor_type == "wattmeter" %}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="rgb(74, 179, 193)" />
+                                                {% else %}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="orange" />
+                                                {% endif%}
+                                                <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="1.25%" fill="white" />
                                                 {% endif %}
                                             </a>
                                         {% endfor %}
@@ -92,7 +109,7 @@
                         <div class="card">
                             <div class="card-block">
                                 <div class="card-title-block">
-                                    <h3 class="title"> Socomecs data </h3>
+                                    <h3 class="title"> Sensor data </h3>
                                 </div>
                                 <section class="example">
                                     <div id="sensor-container" style="height: 100%;"/>
@@ -209,7 +226,6 @@
     </section>
 </article>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.subwayMap-0.5.0.js') }}"></script>
 <script type="text/javascript">
     $(".subway-map").subwayMap({ debug: true });
@@ -229,14 +245,14 @@
         title: "{{ selected_sensor.name }}",
         subtitle: "Displaying data from {{ selected_sensor.name }}",
         {% if selected_sensor.sensor_type == "temperature" %}
-		sensor_type: "temp",
-		navigator_data_url: "/ui/data/navigation/temp/hourly",
+		sensor_type: "temperature",
+		navigator_data_url: "/ui/data/navigation/temperature/hourly",
 		{% else %}
 		sensor_type: "{{ selected_sensor.sensor_type }}",
 		navigator_data_url: "/ui/data/navigation/{{ selected_sensor.sensor_type }}/hourly",
 		{% endif %}
 		{% if selected_sensor.sensor_type == "temperature" %}
-		selected_sensor: "temp_ext_{{ selected_sensor.name }}"
+		selected_sensor: "{{ selected_sensor.name }}"
 		{% else %}
 		selected_sensor: "{{ selected_sensor.name }}"
 		{% endif %}

@@ -204,13 +204,13 @@ if __name__ == "__main__":
 
     last_flukso_reader = None
     for config in WATTMETERS_CONFIG:
-        flukso_reader = set_interval(new_flukso_reading, (config), 20)
+        flukso_reader = set_interval(new_flukso_reading, (config), 1)
 
         # To prevent all sensors to crawl in parallel
         time.sleep(2)
 
     for config in SOCOMEC_CONFIG:
-        socomec_reader = set_interval(new_socomec_reading, (config), 20)
+        socomec_reader = set_interval(new_socomec_reading, (config), 1)
 
         # To prevent all sensors to crawl in parallel
         time.sleep(2)

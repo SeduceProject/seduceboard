@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.css') }}">
+    <link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/app-blue.css') }}">
+    <link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/custom.css') }}">
+
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.splitter.js') }}"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="{{ url_for('static', filename='js/data_visualization.js') }} "></script>
+
+
+    <!--<link rel="stylesheet" type="text/css" href="/css/result-light.css">-->
+
+
+    <style type="text/css">
+html {
+  font: 10px sans-serif;
+}
+
+body {
+    margin: 0px;
+}
+
+svg {
+  border: 1px solid silver;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.link {
+  fill: none;
+  stroke: lightgray;
+  stroke-width: 1.5px;
+}
+
+.tree {
+    width: 100%;
+    height: 100%;
+}
+
+.selected_tree_element {
+    fill: red;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.unselected_tree_element {
+    fill: black;
+    font-size: 12px;
+
+}
+    </style>
+
+    <title>Tree Chart - D3js</title>
+
+
+    <!--<script type="text/javascript" src="{{url_for('static', filename='js/weighted_tree_consumption.js')}}"></script>-->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/dndTree.js')}}"></script>
+
+
+</head>
+
+<body>
+
+
+<div id="workspace">
+  <div id="leftPane">
+    <div id="tree"></div>
+  </div>
+  <div id="rightPane">
+    <div id="topPane">
+      <p>Right Top</p>
+    </div>
+    <div id="bottomPane" style="width: 100%;">
+        <div id="wattmeters-container" style="top: 10px; bottom: 10px; left: 10px; right: 10px; height: 100%;"/>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+    var selected_series = [];
+
+    load_weighted_tree_consumption(function(node, data) {
+        node.attr("class", "selected_tree_element");
+        selected_series.push(data["id"]);
+    }, function(node, data) {
+        node.attr("class", "unselected_tree_element");
+        selected_series = selected_series.filter(id => id != data["id"]);
+    });
+
+</script>
+
+<script>
+$(function() {
+  $("#workspace").splitter({
+    "orientation": "horizontal",
+    "limit": 100
+  });
+  $("#rightPane").splitter({
+    "orientation": "vertical",
+    "limit": 100
+  });
+});
+</script>
+
+<script>
+    let hc_options = {
+        div_id: "wattmeters-container",
+        title: "Wattmeters instant consumption",
+        subtitle: "Displaying data from Flukso",
+		sensor_type: "multitree_consumptions",
+		multitree_selected_sensors_getter: function() {
+		    return selected_series;
+		    },
+		navigator_data_url: "/ui/data/navigation/wattmeter/hourly"
+    }
+    hc_create_chart(hc_options);
+</script>
+
+<script>
+    var lastRighPaneWidth = -1;
+    var lastRighPaneHeight = -1;
+    setInterval(function() {
+        let newRighPaneWidth = $("#bottomPane").width();
+        let newRighPaneHeight = $("#bottomPane").height();
+        if (newRighPaneWidth != lastRighPaneWidth || newRighPaneHeight != lastRighPaneHeight) {
+            console.log("The width or the height of the righ panel have changed!");
+            lastRighPaneWidth = newRighPaneWidth;
+            lastRighPaneHeight = newRighPaneHeight;
+            width = $("#bottomPane").width();
+            height = $("#bottomPane").height();
+            Highcharts.charts.map(c => c.setSize(width, height));
+        }
+    }, 1000);
+</script>
+
+</body>
+
+</html>
+

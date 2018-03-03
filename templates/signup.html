@@ -1,0 +1,95 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Signup</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.css') }}">
+		<link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/app-blue.css') }}">
+		<link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/custom.css') }}">
+        <!-- Theme initialization -->
+        <script>
+            var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
+            {};
+            var themeName = themeSettings.themeName || '';
+            if (themeName)
+            {
+                document.write('<link rel="stylesheet" id="theme-style" href="css/app-' + themeName + '.css">');
+            }
+            else
+            {
+                document.write('<link rel="stylesheet" id="theme-style" href="css/app.css">');
+            }
+        </script>
+    </head>
+    <body>
+        <div class="auth">
+            <div class="auth-container">
+                <div class="card">
+                    <header class="auth-header">
+                        <h1 class="auth-title">
+                            <img class="seduce_logo" src="{{ url_for('static', filename='assets/seduce_logo.svg') }}"/> Seduce Dashboard </h1>
+                    </header>
+                    <div class="auth-content">
+                        <p class="text-center"></p>
+                        <form class="form-signin" action="{{ url_for("signup") }}" method="POST">
+                            <h2 class="form-signin-heading">Sign up</h2>
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">First Name</label>
+                                <input type="text" name="firstname" class="form-control" placeholder="First name" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Last name</label>
+                                <input type="text" name="lastname" class="form-control" placeholder="Last name" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="next_url" value="{{ next_url }}">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+                            </div>
+
+                            <div class="form-group">
+                                <p class="text-muted text-center">If you already have an account, please
+                                    <a href="{{ url_for("login") }}">Login!</a>
+                                </p>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+        <!-- Reference block for JS -->
+        <div class="ref" id="ref">
+            <div class="color-primary"></div>
+            <div class="chart">
+                <div class="color-primary"></div>
+                <div class="color-secondary"></div>
+            </div>
+        </div>
+        <script src="js/vendor.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
+
+
+{% block body %}
+
+{% endblock %}

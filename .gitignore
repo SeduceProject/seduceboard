@@ -1,3 +1,7 @@
+*.log
+test.db
+celerybeat-schedule.db
+
 ## INTELLIJ / PyCharm GITIGNORE
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm

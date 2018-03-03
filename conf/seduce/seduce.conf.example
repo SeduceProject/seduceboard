@@ -1,0 +1,30 @@
+[frontend]
+listen = 0.0.0.0
+port = 8081
+public_address = 127.0.0.1
+
+[api]
+listen = 0.0.0.0
+port = 5000
+public_address = 127.0.0.1
+
+[mail]
+smtp_address = smtp.gmail.com
+smtp_port = 587
+account = EMAIL_ACCOUNT
+password = EMAIL_PASSWORD
+
+[admin]
+user = admin
+password = ADMIN_PASSWORD
+
+[influx]
+address = 127.0.0.1
+port = 8086
+
+[redis]
+address = 127.0.0.1
+port = 6379
+
+[db]
+connection_url = jdbc:sqlite:/Users/jonathan/Documents/workspace/ds18b20/test.db
