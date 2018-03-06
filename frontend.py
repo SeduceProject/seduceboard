@@ -365,7 +365,13 @@ def aggregated_sensor_data(sensor_name, how="daily"):
         if validate(start_date):
             start_date = "'%s'" % start_date
 
-    _aggregated_sensor_data = db_aggregated_sensor_data(sensor_name=sensor_name, start_date=start_date, how=how)
+    end_date = None
+    if "end_date" in request.args:
+        end_date = request.args["end_date"]
+        if validate(end_date):
+            end_date = "'%s'" % end_date
+
+    _aggregated_sensor_data = db_aggregated_sensor_data(sensor_name=sensor_name, start_date=start_date, end_date=end_date, how=how)
     return jsonify(_aggregated_sensor_data)
 
 
@@ -508,6 +514,8 @@ intervals = (
 def _display_time(seconds, granularity=2):
     if seconds < 1.0:
         return "now"
+    if seconds > 3600:
+        return "more than one hour"
 
     result = []
 

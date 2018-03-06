@@ -127,15 +127,20 @@ def _get_aggregate_serie_name(how):
     return "measurement_downsample_1m"
 
 
-def db_aggregated_sensor_data(sensor_name, start_date=None, how="daily"):
+def db_aggregated_sensor_data(sensor_name, start_date=None, end_date=None, how="daily"):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     serie_name = _get_aggregate_serie_name(how)
 
-    if not start_date or start_date == "undefined":
-        query = "SELECT * from %s where sensor='%s'" % (serie_name, sensor_name)
-    else:
-        query = "SELECT * from %s where time >= %s and sensor='%s'" % (serie_name, start_date, sensor_name)
+    criterion = "sensor='%s'" % (sensor_name)
+
+    if not (start_date is None or start_date == "undefined"):
+        criterion += "and time >= %s " % (start_date)
+
+    if not (end_date is None or end_date == "undefined"):
+        criterion += "and time <= %s " % (end_date)
+
+    query = "SELECT * from %s where %s" % (serie_name, criterion)
     points = db_client.query(query).get_points()
 
     start_date = -1
@@ -577,7 +582,8 @@ def db_wattmeters_data(sensor_type, start_date=None, how="daily"):
 def db_last_sensors_updates():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    query = "SELECT last(*), *, sensor from sensors group by sensor"
+    # query = "SELECT last(*), *, sensor from sensors group by sensor"
+    query = "SELECT last(*), *, sensor from sensors where time > now() - 3660s group by sensor"
     points = db_client.query(query).get_points()
 
     result = []
