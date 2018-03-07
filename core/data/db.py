@@ -20,7 +20,8 @@ def db_sensor_data(sensor_name, start_date=None, end_date=None, zoom_ui=False):
         points = list(db_client.query(extended_start_time_query).get_points())
         if points:
             start_date = "'%s'" % (points[0]["time"])
-        end_date = "now()"
+        if not end_date:
+            end_date = "now()"
         extended_end_time_query = "SELECT first(*) " \
                                   "FROM sensors " \
                                   "WHERE sensor = '%s' and time > %s " % (sensor_name, end_date)
