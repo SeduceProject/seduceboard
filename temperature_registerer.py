@@ -12,10 +12,6 @@ from threading import Timer
 influx_lock = threading.Lock()
 
 NO_PAUSE = -1
-# DB_USER = 'root'
-# DB_PASSWORD = 'root'
-# DB_NAME = 'pidiou'
-# OUTPUT_FILE = 'temperatures.json'
 
 DEBUG = True
 RECORDS = []
@@ -29,7 +25,6 @@ influx_lock = threading.Lock()
 def new_temp_reading():
     global influx_lock
     global RECORDS
-    # db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     for key in ["sensor", "t", "v"]:
         if not key in request.json:
@@ -38,6 +33,7 @@ def new_temp_reading():
     sensor_name = request.json["sensor"]
     filtered_sensor_name = sensor_name.replace(":", "")
     temperature = float(request.json["v"])
+    timestamp = int(time.time())
 
     if temperature > 60 or temperature < 10:
         from core.data.db_redis import redis_increment_sensor_error_count
@@ -49,6 +45,7 @@ def new_temp_reading():
         "fields": {
             "value": temperature
         },
+        "time": timestamp,
         "tags": {
             "location": "room exterior",
             "sensor": filtered_sensor_name,
@@ -62,20 +59,6 @@ def new_temp_reading():
     RECORDS += data
     influx_lock.release()
 
-    # influx_lock.acquire()
-    # failure = False
-    # try:
-    #     db_client.write_points(data)
-    # except:
-    #     traceback.print_exc()
-    #     failure = True
-    #
-    # db_client.close()
-    # influx_lock.release()
-
-    # if failure:
-    #     return jsonify({"status": "failure", "reason": "could not write in the DB"})
-
     return jsonify({"status": "success", "update_count": len(data)})
 
 
@@ -83,8 +66,6 @@ def new_temp_reading():
 def temperature_list():
     global influx_lock
     global RECORDS
-
-    # db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     data = []
     for obj in request.json:
@@ -95,17 +76,20 @@ def temperature_list():
         sensor_name = obj["sensor"]
         filtered_sensor_name = sensor_name.replace(":", "")
         temperature = float(obj["v"])
+        timestamp = int(time.time())
 
         if temperature > 60 or temperature < 10:
             from core.data.db_redis import redis_increment_sensor_error_count
             redis_increment_sensor_error_count(filtered_sensor_name)
             return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
 
+        print(timestamp)
         data += [{
             "measurement": "sensors",
             "fields": {
                 "value": temperature
             },
+            "time": timestamp,
             "tags": {
                 "location": "room exterior",
                 "sensor": filtered_sensor_name,
@@ -113,18 +97,6 @@ def temperature_list():
                 "sensor_type": "temperature"
             }
         }]
-
-    # if len(data) > 0:
-    #     influx_lock.acquire()
-    #     failure = False
-    #     try:
-    #         db_client.write_points(data)
-    #     except:
-    #         traceback.print_exc()
-    #         failure = True
-    #
-    #     db_client.close()
-    #     influx_lock.release()
 
     influx_lock.acquire()
     RECORDS += data
