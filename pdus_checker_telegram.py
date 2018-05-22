@@ -22,6 +22,7 @@ from core.data.db import *
 import telegram
 import logging
 from telegram.ext import Updater, CommandHandler
+from core.config.bot_config import get_bot_configuration
 
 logger = logging.getLogger('shipment_bot')
 logger.setLevel(logging.DEBUG)
@@ -40,7 +41,6 @@ logger.addHandler(ch)
 logger.addHandler(fh)
 
 
-HOSTS_TO_CHECK = ["s1.jonathanpastor.fr", "csgo.jonathanpastor.frr"]
 CHECK_INTERVAL = 30
 USER_IDS = []
 NO_PAUSE = -1
@@ -128,15 +128,15 @@ def check_hosts(args):
 if __name__ == "__main__":
 
     # Create a telegram bot
-    token = "373836168:AAHKe0s2cX6krq2ylsqCqF7QwY4E4ut4SuE"
+    token = get_bot_configuration().get("bot_token")
     bot = telegram.Bot(token=token)
 
-    updater = Updater('373836168:AAHKe0s2cX6krq2ylsqCqF7QwY4E4ut4SuE')
+    updater = Updater(token)
     updater.dispatcher.add_handler(CommandHandler('register', register))
     updater.dispatcher.add_handler(CommandHandler('unregister', unregister))
 
     # Create a thread in charge of checking hosts
-    set_interval(check_hosts, (["toto"]), 30, task_name="hosts_checker")
+    set_interval(check_hosts, (["None"]), 30, task_name="hosts_checker")
 
     # Start reading messages
     updater.start_polling()

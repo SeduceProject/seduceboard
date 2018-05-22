@@ -26,5 +26,8 @@ port = 8086
 address = 127.0.0.1
 port = 6379
 
+[bot]
+token = TELEGRAM_API_KEY
+
 [db]
 connection_url = jdbc:sqlite:/Users/jonathan/Documents/workspace/ds18b20/test.db
