@@ -424,6 +424,27 @@ def wattmeters_data(sensor_type, how="daily"):
     return jsonify(_wattmeters_data)
 
 
+@app.route("/data/generated/pue/<how>")
+def pue_data(how="daily"):
+    from core.data.db import db_aggregated_multitree_sensor_data
+
+    start_date = None
+    if "start_date" in request.args:
+        start_date = request.args["start_date"]
+        if validate(start_date):
+            start_date = "'%s'" % start_date
+
+    _datacenter_data = db_aggregated_multitree_sensor_data(sensor_name="datacenter", start_date=start_date, end_date="now()", how=how)
+    _cluster_data = db_aggregated_multitree_sensor_data(sensor_name="hardware_cluster", start_date=start_date, end_date="now()", how=how)
+    _pue_data = {
+        "end_date": _cluster_data.get("end_date"),
+        "start_date": _cluster_data.get("start_date"),
+        "means": [x/y for (x, y) in zip(_datacenter_data.get("means"), _cluster_data.get("means")) if x != None and y != None],
+        "timestamps": _cluster_data.get("timestamps"),
+    }
+    return jsonify(_pue_data)
+
+
 @app.route("/ui/data/navigation/<sensor_type>/<how>")
 def get_navigation_data(sensor_type, how="daily"):
     from core.data.db import db_get_navigation_data
@@ -451,12 +472,27 @@ def queries():
 def index():
     from core.data.multitree import get_node_by_id, _get_last_node_consumption
     from core.data.db import db_last_temperature_mean
+    from core.data.db import db_aggregated_multitree_sensor_data
+    import numpy as np
+
     datacenter_node = get_node_by_id("datacenter")
     cluster_hardware = get_node_by_id("hardware_cluster")
     datacenter_consumption = _get_last_node_consumption(datacenter_node)
     cluster_hardware_consumption = _get_last_node_consumption(cluster_hardware)
+    #
+    # pue_ratio = datacenter_consumption / cluster_hardware_consumption
 
-    pue_ratio = datacenter_consumption / cluster_hardware_consumption
+    _datacenter_data = db_aggregated_multitree_sensor_data(sensor_name="datacenter", start_date="now()-8d",
+                                                           end_date="now()", how="hourly")
+    _cluster_data = db_aggregated_multitree_sensor_data(sensor_name="hardware_cluster", start_date="now()-8d",
+                                                        end_date="now()", how="hourly")
+    _pue_data = {
+        "end_date": _cluster_data.get("end_date"),
+        "start_date": _cluster_data.get("start_date"),
+        "means": [x / y for (x, y) in zip(_datacenter_data.get("means"), _cluster_data.get("means")) if
+                  x != None and y != None]
+    }
+    pue_ratio = np.mean(_pue_data.get("means"))
 
     last_temperature_mean = db_last_temperature_mean()
 

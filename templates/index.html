@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 
+{% block header %}
+{% endblock %}
+
 {% block navbar %}
 <ul class="sidebar-menu metismenu" id="sidebar-menu">
     <li class="active">
@@ -59,7 +62,7 @@
     </div>
     <section class="section">
         <div class="row sameheight-container">
-            <div class="col col-12 col-sm-12 col-md-6 col-xl-5 stats-col">
+            <div class="col col-12 col-sm-12 col-xl-5 stats-col">
                 <div class="card sameheight-item stats" data-exclude="xs">
                     <div class="card-block">
                         <div class="title-block">
@@ -75,8 +78,9 @@
                                     <div class="value"> {{ last_temperature_mean  | round(2) }} °C</div>
                                     <div class="name"> Temperature (inside)</div>
                                 </div>
-                                <div class="progress stat-progress">
-                                    <div class="progress-bar" style="width: 75%;"></div>
+                                <div class="">
+                                    <span class="line" id="inside_temperature_sparkline"></span>
+                                    <!--&lt;!&ndash;<div class="progress-bar" style="width: 75%;"></div>&ndash;&gt;-->
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6 stat-col">
@@ -87,8 +91,8 @@
                                     <div class="value"> {{ last_temperature_mean | round(2) }} °C</div>
                                     <div class="name"> Temperature (outside)</div>
                                 </div>
-                                <div class="progress stat-progress">
-                                    <div class="progress-bar" style="width: 25%;"></div>
+                                <div class="">
+                                    <span class="line" id="temperature_sparkline"></span>
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6  stat-col">
@@ -99,8 +103,9 @@
                                     <div class="value"> {{datacenter_consumption  | round(2) }} W</div>
                                     <div class="name"> Instant consumption</div>
                                 </div>
-                                <div class="progress stat-progress">
-                                    <div class="progress-bar" style="width: 60%;"></div>
+                                <div class="">
+                                    <span class="line" id="power_sparkline"></span>
+                                    <!--&lt;!&ndash;<div class="progress-bar" style="width: 75%;"></div>&ndash;&gt;-->
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6  stat-col">
@@ -109,10 +114,11 @@
                                 </div>
                                 <div class="stat">
                                     <div class="value"> {{ pue_ratio  | round(2) }} </div>
-                                    <div class="name"> PUE </div>
+                                    <div class="name"> PUE (week)</div>
                                 </div>
-                                <div class="progress stat-progress">
-                                    <div class="progress-bar" style="width: 34%;"></div>
+                                <div class="">
+                                    <span class="line" id="pue_sparkline"></span>
+                                    <!--&lt;!&ndash;<div class="progress-bar" style="width: 75%;"></div>&ndash;&gt;-->
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6  stat-col">
@@ -236,8 +242,8 @@
         data: {
             datasets: [{
                 data: [
-                    {{ datacenter_consumption -  cluster_hardware_consumption}},
-                    {{ cluster_hardware_consumption}},
+                    {{ datacenter_consumption -  cluster_hardware_consumption }},
+                    {{ cluster_hardware_consumption }},
                 ],
                 backgroundColor: [
                     window.chartColors.red,
@@ -331,6 +337,120 @@
         });
 
         window.myDoughnut.update();
+    });
+</script>
+
+<!--<script src="https://benpickles.github.io/peity/jquery.peity.js"></script>-->
+
+<!--<script>-->
+    <!--let internal_temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";-->
+    <!--let temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";-->
+    <!--let power_last_week_url = "http://localhost:8081/multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-8d";-->
+    <!--let pue_last_week_url = "http://localhost:8081/data/generated/pue/hourly?start_date=now()-8d";-->
+
+    <!--$.fn.peity.defaults.line = {-->
+      <!--delimiter: ",",-->
+      <!--fill: "rgb(228, 228, 228)",-->
+      <!--height: 16,-->
+      <!--max: null,-->
+      <!--min: 0,-->
+      <!--stroke: "rgb(87, 188, 210)",-->
+      <!--strokeWidth: 2,-->
+      <!--width: "100%"-->
+    <!--};-->
+
+    <!--let internal_temperature_sparkline = $("#inside_temperature_sparkline").peity("line");-->
+    <!--$.getJSON(internal_temperature_last_week_url, function (data) {-->
+        <!--console.log("Updating the sparkline for internal temperature");-->
+        <!--internal_temperature_sparkline.text(data["range"]["means"].filter(x => x != null).join(",")).change()-->
+    <!--});-->
+
+    <!--let temperature_sparkline = $("#temperature_sparkline").peity("line");-->
+    <!--$.getJSON(temperature_last_week_url, function (data) {-->
+        <!--console.log("Updating the sparkline for temperature");-->
+        <!--temperature_sparkline.text(data["range"]["means"].filter(x => x != null).join(",")).change()-->
+    <!--});-->
+
+    <!--let power_sparkline = $("#power_sparkline").peity("line");-->
+    <!--$.getJSON(power_last_week_url, function (data) {-->
+        <!--console.log("Updating the sparkline for power consumption");-->
+        <!--power_sparkline.text(data["means"].filter(x => x != null).join(",")).change()-->
+    <!--});-->
+
+    <!--let pue_sparkline = $("#pue_sparkline").peity("line");-->
+    <!--$.getJSON(pue_last_week_url, function (data) {-->
+        <!--console.log("Updating the sparkline for pue");-->
+        <!--pue_sparkline.text(data["means"].filter(x => x != null).join(",")).change()-->
+    <!--});-->
+<!--</script>-->
+
+<script src="https://omnipotent.net/jquery.sparkline/2.0/jquery.sparkline.js"></script>
+
+<script>
+    $(function() {
+        /** This code runs when everything has been loaded on the page */
+        /* Inline sparklines take their values from the contents of the tag */
+        $('.inlinesparkline').sparkline();
+
+        /* Sparklines can also take their values from the first argument passed to the sparkline() function */
+        var myvalues = [10,8,5,7,4,4,1];
+        $('.dynamicsparkline').sparkline(myvalues);
+
+        /* The second argument gives options such as specifying you want a bar chart */
+        $('.dynamicbar').sparkline(myvalues, {type: 'bar', barColor: 'green'} );
+
+        /* Use 'html' instead of an array of values to pass options to a sparkline with data in the tag */
+        $('.inlinebar').sparkline('html', {type: 'bar', barColor: 'red'} );
+
+    });
+
+    let internal_temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";
+    let temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";
+    let power_last_week_url = "http://localhost:8081/multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-8d";
+    let pue_last_week_url = "http://localhost:8081/data/generated/pue/hourly?start_date=now()-8d";
+
+    let internal_temperature_sparkline = $("#inside_temperature_sparkline");
+    $.getJSON(internal_temperature_last_week_url, function (data) {
+        console.log("Updating the sparkline for internal temperature");
+        let filtered_data = data["range"]["means"].filter(x => x != null);
+
+        function selectValueForTooltip(sparkline, options, fields) {
+            return data["range"]["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+        }
+        let sparkline = internal_temperature_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
+    });
+
+    let temperature_sparkline = $("#temperature_sparkline");
+    $.getJSON(temperature_last_week_url, function (data) {
+        console.log("Updating the sparkline for temperature");
+        let filtered_data = data["range"]["means"].filter(x => x != null);
+
+        function selectValueForTooltip(sparkline, options, fields) {
+            return data["range"]["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+        }
+        let sparkline = temperature_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
+    });
+
+    let power_sparkline = $("#power_sparkline");
+    $.getJSON(power_last_week_url, function (data) {
+        console.log("Updating the sparkline for power consumption");
+        let filtered_data = data["means"].filter(x => x != null);
+
+        function selectValueForTooltip(sparkline, options, fields) {
+            return data["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+        }
+        let sparkline = power_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
+    });
+
+    let pue_sparkline = $("#pue_sparkline");
+    $.getJSON(pue_last_week_url, function (data) {
+        console.log("Updating the sparkline for pue");
+        let filtered_data = data["means"].filter(x => x != null);
+
+        function selectValueForTooltip(sparkline, options, fields) {
+            return data["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+        }
+        let sparkline = pue_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
     });
 </script>
 {% endblock %}
