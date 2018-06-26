@@ -415,7 +415,9 @@
         let filtered_data = data["range"]["means"].filter(x => x != null);
 
         function selectValueForTooltip(sparkline, options, fields) {
-            return data["range"]["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+            let date = new Date(data["range"]["timestamps"][fields["x"]]);
+            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
         }
         let sparkline = internal_temperature_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
     });
@@ -426,7 +428,9 @@
         let filtered_data = data["range"]["means"].filter(x => x != null);
 
         function selectValueForTooltip(sparkline, options, fields) {
-            return data["range"]["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+            let date = new Date(data["range"]["timestamps"][fields["x"]]);
+            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
         }
         let sparkline = temperature_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
     });
@@ -437,7 +441,9 @@
         let filtered_data = data["means"].filter(x => x != null);
 
         function selectValueForTooltip(sparkline, options, fields) {
-            return data["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+            let date = new Date(data["timestamps"][fields["x"]]);
+            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
         }
         let sparkline = power_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
     });
@@ -448,7 +454,9 @@
         let filtered_data = data["means"].filter(x => x != null);
 
         function selectValueForTooltip(sparkline, options, fields) {
-            return data["timestamps"][fields["x"]]+": <b>"+fields["y"].toFixed(2)+"</b>";
+            let date = new Date(data["timestamps"][fields["x"]]);
+            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
         }
         let sparkline = pue_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
     });
