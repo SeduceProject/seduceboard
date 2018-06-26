@@ -3,6 +3,7 @@ from flask import request
 from flask import jsonify
 from core.data.db import *
 
+import sys
 import time
 import threading
 from influxdb import InfluxDBClient
@@ -13,7 +14,7 @@ influx_lock = threading.Lock()
 
 NO_PAUSE = -1
 
-DEBUG = True
+DEBUG = False
 RECORDS = []
 
 app = Flask(__name__)
@@ -83,7 +84,6 @@ def temperature_list():
             redis_increment_sensor_error_count(filtered_sensor_name)
             return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
 
-        print(timestamp)
         data += [{
             "measurement": "sensors",
             "fields": {
@@ -140,6 +140,7 @@ def set_interval(f, args, interval_secs, task_name=None):
             self.f = f
             self.args = args
             self.interval = interval
+            self.daemon = True
             self.stop_execution = False
 
         def run(self):
@@ -153,7 +154,7 @@ def set_interval(f, args, interval_secs, task_name=None):
             end_task_time = time.time()
             print("[sched:%s] took %f seconds to execute the task (starting: %f)" % (task_name, (end_task_time - start_task_time), start_task_time))
             time_to_sleep = (self.interval) - (end_task_time - start_task_time)
-            if interval_secs != NO_PAUSE and time_to_sleep > 0:
+            if interval_secs != NO_PAUSE and time_to_sleep > 0 and not self.stop_execution:
                 Timer(time_to_sleep, self.run).start()
             else:
                 self.run()
@@ -169,10 +170,11 @@ def set_interval(f, args, interval_secs, task_name=None):
 if __name__ == "__main__":
 
     print("Running the \"temperature registerer\" server")
-
-    set_interval(flush_records, (None), 30, task_name="influx")
+    db_thread = set_interval(flush_records, (None), 30, task_name="influx")
 
     app.jinja_env.auto_reload = DEBUG
     app.run(host="0.0.0.0", port=8080, debug=DEBUG)
 
+    db_thread.stop_execution = True
+    sys.exit()
 
