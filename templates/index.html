@@ -47,7 +47,7 @@
         </ul>
     </li>
     <li>
-        <a id="seduce_api_link" href="https://fonts.googleapis.comlocalhost:5000/apidocs/#/">
+        <a id="seduce_api_link" href="localhost:5000/apidocs/#/">
             <i class="fa fa-rocket"></i> API
         </a>
     </li>
@@ -404,10 +404,10 @@
 
     });
 
-    let internal_temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";
-    let temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";
-    let power_last_week_url = "http://localhost:8081/multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-8d";
-    let pue_last_week_url = "http://localhost:8081/data/generated/pue/hourly?start_date=now()-8d";
+    let internal_temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-8d";
+    let temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-8d";
+    let power_last_week_url = "multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-8d";
+    let pue_last_week_url = "data/generated/pue/hourly?start_date=now()-8d";
 
     let internal_temperature_sparkline = $("#inside_temperature_sparkline");
     $.getJSON(internal_temperature_last_week_url, function (data) {
