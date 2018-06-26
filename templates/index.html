@@ -340,125 +340,119 @@
     });
 </script>
 
-<!--<script src="https://benpickles.github.io/peity/jquery.peity.js"></script>-->
-
-<!--<script>-->
-    <!--let internal_temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";-->
-    <!--let temperature_last_week_url = "http://localhost:8081/data/hardcoded/external_temperature/hourly?start_date=now()-8d";-->
-    <!--let power_last_week_url = "http://localhost:8081/multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-8d";-->
-    <!--let pue_last_week_url = "http://localhost:8081/data/generated/pue/hourly?start_date=now()-8d";-->
-
-    <!--$.fn.peity.defaults.line = {-->
-      <!--delimiter: ",",-->
-      <!--fill: "rgb(228, 228, 228)",-->
-      <!--height: 16,-->
-      <!--max: null,-->
-      <!--min: 0,-->
-      <!--stroke: "rgb(87, 188, 210)",-->
-      <!--strokeWidth: 2,-->
-      <!--width: "100%"-->
-    <!--};-->
-
-    <!--let internal_temperature_sparkline = $("#inside_temperature_sparkline").peity("line");-->
-    <!--$.getJSON(internal_temperature_last_week_url, function (data) {-->
-        <!--console.log("Updating the sparkline for internal temperature");-->
-        <!--internal_temperature_sparkline.text(data["range"]["means"].filter(x => x != null).join(",")).change()-->
-    <!--});-->
-
-    <!--let temperature_sparkline = $("#temperature_sparkline").peity("line");-->
-    <!--$.getJSON(temperature_last_week_url, function (data) {-->
-        <!--console.log("Updating the sparkline for temperature");-->
-        <!--temperature_sparkline.text(data["range"]["means"].filter(x => x != null).join(",")).change()-->
-    <!--});-->
-
-    <!--let power_sparkline = $("#power_sparkline").peity("line");-->
-    <!--$.getJSON(power_last_week_url, function (data) {-->
-        <!--console.log("Updating the sparkline for power consumption");-->
-        <!--power_sparkline.text(data["means"].filter(x => x != null).join(",")).change()-->
-    <!--});-->
-
-    <!--let pue_sparkline = $("#pue_sparkline").peity("line");-->
-    <!--$.getJSON(pue_last_week_url, function (data) {-->
-        <!--console.log("Updating the sparkline for pue");-->
-        <!--pue_sparkline.text(data["means"].filter(x => x != null).join(",")).change()-->
-    <!--});-->
-<!--</script>-->
-
 <script src="https://omnipotent.net/jquery.sparkline/2.0/jquery.sparkline.js"></script>
-
 <script>
-    $(function() {
-        /** This code runs when everything has been loaded on the page */
-        /* Inline sparklines take their values from the contents of the tag */
-        $('.inlinesparkline').sparkline();
+    function draw_sparklines() {
+        let internal_temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-2d";
+        let temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-2d";
+        let power_last_week_url = "multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-2d";
+        let pue_last_week_url = "data/generated/pue/hourly?start_date=now()-2d";
 
-        /* Sparklines can also take their values from the first argument passed to the sparkline() function */
-        var myvalues = [10,8,5,7,4,4,1];
-        $('.dynamicsparkline').sparkline(myvalues);
+        let internal_temperature_sparkline = $("#inside_temperature_sparkline");
+        $.getJSON(internal_temperature_last_week_url, function (data) {
+            console.log("Updating the sparkline for internal temperature");
+            let filtered_data = data["range"]["means"].filter(x => x != null);
 
-        /* The second argument gives options such as specifying you want a bar chart */
-        $('.dynamicbar').sparkline(myvalues, {type: 'bar', barColor: 'green'} );
+            function selectValueForTooltip(sparkline, options, fields) {
+                let date = new Date(data["range"]["timestamps"][fields["x"]]);
+                let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+                return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
+            }
+            let sparkline = internal_temperature_sparkline.sparkline(filtered_data, {
+                fillColor: 'rgb(228, 228, 228)',
+                lineColor: 'rgb(87, 188, 210)',
+                lineWidth: 2,
+                width: "100%",
+                tooltipFormatter: selectValueForTooltip
+            });
+        });
 
-        /* Use 'html' instead of an array of values to pass options to a sparkline with data in the tag */
-        $('.inlinebar').sparkline('html', {type: 'bar', barColor: 'red'} );
+        let temperature_sparkline = $("#temperature_sparkline");
+        $.getJSON(temperature_last_week_url, function (data) {
+            console.log("Updating the sparkline for temperature");
+            let filtered_data = data["range"]["means"].filter(x => x != null);
 
-    });
+            function selectValueForTooltip(sparkline, options, fields) {
+                let date = new Date(data["range"]["timestamps"][fields["x"]]);
+                let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+                return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
+            }
+            let sparkline = temperature_sparkline.sparkline(filtered_data, {
+                fillColor: 'rgb(228, 228, 228)',
+                lineColor: 'rgb(87, 188, 210)',
+                lineWidth: 2,
+                width: "100%",
+                tooltipFormatter: selectValueForTooltip
+            });
+        });
 
-    let internal_temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-8d";
-    let temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-8d";
-    let power_last_week_url = "multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-8d";
-    let pue_last_week_url = "data/generated/pue/hourly?start_date=now()-8d";
+        let power_sparkline = $("#power_sparkline");
+        $.getJSON(power_last_week_url, function (data) {
+            console.log("Updating the sparkline for power consumption");
+            let filtered_data = data["means"].filter(x => x != null);
 
-    let internal_temperature_sparkline = $("#inside_temperature_sparkline");
-    $.getJSON(internal_temperature_last_week_url, function (data) {
-        console.log("Updating the sparkline for internal temperature");
-        let filtered_data = data["range"]["means"].filter(x => x != null);
+            function selectValueForTooltip(sparkline, options, fields) {
+                let date = new Date(data["timestamps"][fields["x"]]);
+                let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+                return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
+            }
+            let sparkline = power_sparkline.sparkline(filtered_data, {
+                fillColor: 'rgb(228, 228, 228)',
+                lineColor: 'rgb(87, 188, 210)',
+                lineWidth: 2,
+                width: "100%",
+                tooltipFormatter: selectValueForTooltip
+            });
+        });
 
-        function selectValueForTooltip(sparkline, options, fields) {
-            let date = new Date(data["range"]["timestamps"][fields["x"]]);
-            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
-            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
-        }
-        let sparkline = internal_temperature_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
-    });
+        let pue_sparkline = $("#pue_sparkline");
+        $.getJSON(pue_last_week_url, function (data) {
+            console.log("Updating the sparkline for pue");
+            let filtered_data = data["means"].filter(x => x != null);
 
-    let temperature_sparkline = $("#temperature_sparkline");
-    $.getJSON(temperature_last_week_url, function (data) {
-        console.log("Updating the sparkline for temperature");
-        let filtered_data = data["range"]["means"].filter(x => x != null);
+            function selectValueForTooltip(sparkline, options, fields) {
+                let date = new Date(data["timestamps"][fields["x"]]);
+                let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+                return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
+            }
+            let sparkline = pue_sparkline.sparkline(filtered_data, {
+                fillColor: 'rgb(228, 228, 228)',
+                lineColor: 'rgb(87, 188, 210)',
+                lineWidth: 2,
+                width: "100%",
+                tooltipFormatter: selectValueForTooltip
+            });
+        });
+    }
+    draw_sparklines();
 
-        function selectValueForTooltip(sparkline, options, fields) {
-            let date = new Date(data["range"]["timestamps"][fields["x"]]);
-            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
-            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
-        }
-        let sparkline = temperature_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
-    });
+    // Refresh the sparklines every 15 minutes
+    setInterval(function() {
+        draw_sparklines()
+    }, 15 * 60 * 1000);
 
-    let power_sparkline = $("#power_sparkline");
-    $.getJSON(power_last_week_url, function (data) {
-        console.log("Updating the sparkline for power consumption");
-        let filtered_data = data["means"].filter(x => x != null);
-
-        function selectValueForTooltip(sparkline, options, fields) {
-            let date = new Date(data["timestamps"][fields["x"]]);
-            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
-            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
-        }
-        let sparkline = power_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
-    });
-
-    let pue_sparkline = $("#pue_sparkline");
-    $.getJSON(pue_last_week_url, function (data) {
-        console.log("Updating the sparkline for pue");
-        let filtered_data = data["means"].filter(x => x != null);
-
-        function selectValueForTooltip(sparkline, options, fields) {
-            let date = new Date(data["timestamps"][fields["x"]]);
-            let datestring = date.toDateString()+" "+date.toLocaleTimeString()
-            return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
-        }
-        let sparkline = pue_sparkline.sparkline(filtered_data, {fillColor: 'rgb(228, 228, 228)', lineColor: 'rgb(87, 188, 210)', lineWidth: 2, tooltipFormatter: selectValueForTooltip});
+    // Refresh the sparklines on resize of the current window
+    $(window).resize(function() {
+        draw_sparklines();
     });
 </script>
+<style>
+    .sparkline canvas {
+        width: 100%;
+    }
+
+    .line canvas {
+        width: 100%;
+    }
+
+    #temperature_sparkline {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    #inside_temperature_sparkline {
+        max-width: 100%;
+        width: 100%;
+    }
+</style>
 {% endblock %}
