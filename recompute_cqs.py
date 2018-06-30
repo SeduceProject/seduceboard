@@ -6,9 +6,9 @@ if __name__ == "__main__":
     # Will recompute data of continuous queries
     print("I will recompute data of continuous queries")
     print("  - cqs_recreate_all")
-    cqs_recreate_all(force_creation=True)
+    cqs_recreate_all(force_creation=False)
     print("  - cqs_recompute_data")
-    cqs_recompute_data()
+    # cqs_recompute_data()
     print("  - cq_multitree_recreate_all")
-    cq_multitree_recreate_all(True)
-    cq_multitree_recreate_all(False)
+    # cq_multitree_recreate_all(True)
+    # cq_multitree_recreate_all(False)

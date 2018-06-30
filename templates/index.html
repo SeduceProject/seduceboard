@@ -88,7 +88,7 @@
                                     <i class="fa fa-thermometer-three-quarters"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> {{ last_temperature_mean | round(2) }} °C</div>
+                                    <div class="value"> {{ last_external_temperature_mean | round(2) }} °C</div>
                                     <div class="name"> Temperature (outside)</div>
                                 </div>
                                 <div class="">
@@ -344,7 +344,7 @@
 <script>
     function draw_sparklines() {
         let internal_temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-2d";
-        let temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-2d";
+        let temperature_last_week_url = "/data/generated/external_temperature/hourly?start_date=now()-2d";
         let power_last_week_url = "multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-2d";
         let pue_last_week_url = "data/generated/pue/hourly?start_date=now()-2d";
 
@@ -370,10 +370,10 @@
         let temperature_sparkline = $("#temperature_sparkline");
         $.getJSON(temperature_last_week_url, function (data) {
             console.log("Updating the sparkline for temperature");
-            let filtered_data = data["range"]["means"].filter(x => x != null);
+            let filtered_data = data["values"].filter(x => x != null);
 
             function selectValueForTooltip(sparkline, options, fields) {
-                let date = new Date(data["range"]["timestamps"][fields["x"]]);
+                let date = new Date(data["timestamps"][fields["x"]]);
                 let datestring = date.toDateString()+" "+date.toLocaleTimeString()
                 return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
             }

@@ -1,4 +1,12 @@
 {
+  "room": {
+    "top": {
+      "1": {
+        "serie": "28b8fb2909000003",
+        "tags": ["external-temperature"]
+      }
+    }
+  },
   "Z1.5": {
     "front": {
       "32": {

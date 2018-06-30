@@ -445,6 +445,29 @@ def pue_data(how="daily"):
     return jsonify(_pue_data)
 
 
+@app.route("/data/generated/external_temperature/<how>")
+def external_temperature_data(how="daily"):
+    from core.data.db import db_aggregated_multitree_sensor_data
+    from core.data.db import db_sensor_data
+    from core.config.room_config import get_temperature_sensors_infrastructure
+
+    start_date = None
+    if "start_date" in request.args:
+        start_date = request.args["start_date"]
+        if validate(start_date):
+            start_date = "'%s'" % start_date
+
+    # Last external temperature value
+    extenal_temperature_sensors = get_temperature_sensors_infrastructure().get("room.top", {}).get("sensors", [])
+    if len(extenal_temperature_sensors) > 0:
+        external_temperature_sensor = extenal_temperature_sensors[-1]
+        sensor_data = db_sensor_data(external_temperature_sensor, start_date, end_date="now()")
+    else:
+        sensor_data = {}
+
+    return jsonify(sensor_data)
+
+
 @app.route("/ui/data/navigation/<sensor_type>/<how>")
 def get_navigation_data(sensor_type, how="daily"):
     from core.data.db import db_get_navigation_data
@@ -473,6 +496,8 @@ def index():
     from core.data.multitree import get_node_by_id, _get_last_node_consumption
     from core.data.db import db_last_temperature_mean
     from core.data.db import db_aggregated_multitree_sensor_data
+    from core.data.db import db_sensor_data
+    from core.config.room_config import get_temperature_sensors_infrastructure
     import numpy as np
 
     datacenter_node = get_node_by_id("datacenter")
@@ -496,11 +521,21 @@ def index():
 
     last_temperature_mean = db_last_temperature_mean()
 
+    # Last external temperature value
+    extenal_temperature_sensors = get_temperature_sensors_infrastructure().get("room.top", {}).get("sensors", [])
+    if len(extenal_temperature_sensors) > 0:
+        extenal_temperature_sensor = extenal_temperature_sensors[-1]
+        last_temperature_values = db_sensor_data(extenal_temperature_sensor, start_date="now()-30m", end_date="now()")
+        last_external_temperature_mean = last_temperature_values.get("values")[-1]
+    else:
+        last_external_temperature_mean = "No external temperature sensor"
+
     return render_template("index.html",
                            pue_ratio=pue_ratio,
                            datacenter_consumption=datacenter_consumption,
                            cluster_hardware_consumption=cluster_hardware_consumption,
-                           last_temperature_mean=last_temperature_mean)
+                           last_temperature_mean=last_temperature_mean,
+                           last_external_temperature_mean=last_external_temperature_mean)
 
 
 @app.route("/settings.html")
