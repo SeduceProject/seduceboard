@@ -370,7 +370,7 @@
         let temperature_sparkline = $("#temperature_sparkline");
         $.getJSON(temperature_last_week_url, function (data) {
             console.log("Updating the sparkline for temperature");
-            let filtered_data = data["values"].filter(x => x != null);
+            let filtered_data = data["means"].filter(x => x != null);
 
             function selectValueForTooltip(sparkline, options, fields) {
                 let date = new Date(data["timestamps"][fields["x"]]);

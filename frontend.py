@@ -448,7 +448,7 @@ def pue_data(how="daily"):
 @app.route("/data/generated/external_temperature/<how>")
 def external_temperature_data(how="daily"):
     from core.data.db import db_aggregated_multitree_sensor_data
-    from core.data.db import db_sensor_data
+    from core.data.db import db_aggregated_sensor_data
     from core.config.room_config import get_temperature_sensors_infrastructure
 
     start_date = None
@@ -461,7 +461,7 @@ def external_temperature_data(how="daily"):
     extenal_temperature_sensors = get_temperature_sensors_infrastructure().get("room.top", {}).get("sensors", [])
     if len(extenal_temperature_sensors) > 0:
         external_temperature_sensor = extenal_temperature_sensors[-1]
-        sensor_data = db_sensor_data(external_temperature_sensor, start_date, end_date="now()")
+        sensor_data = db_aggregated_sensor_data(external_temperature_sensor, start_date, end_date="now()", how=how)
     else:
         sensor_data = {}
 
