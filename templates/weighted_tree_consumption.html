@@ -23,49 +23,49 @@
 
 
     <style type="text/css">
-html {
-  font: 10px sans-serif;
-}
+        html {
+            font: 10px sans-serif;
+        }
 
-body {
-    margin: 0px;
-}
+        body {
+            margin: 0px;
+        }
 
-svg {
-  border: 1px solid silver;
-}
+        svg {
+            border: 1px solid silver;
+        }
 
-.node {
-  cursor: pointer;
-}
+        .node {
+            cursor: pointer;
+        }
 
-.node circle {
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
+        .node circle {
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
 
-.link {
-  fill: none;
-  stroke: lightgray;
-  stroke-width: 1.5px;
-}
+        .link {
+            fill: none;
+            stroke: lightgray;
+            stroke-width: 1.5px;
+        }
 
-.tree {
-    width: 100%;
-    height: 100%;
-}
+        .tree {
+            width: 100%;
+            height: 100%;
+        }
 
-.selected_tree_element {
-    fill: red;
-    font-size: 12px;
-    font-weight: bold;
-}
+        .selected_tree_element {
+            fill: red;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
-.unselected_tree_element {
-    fill: black;
-    font-size: 12px;
+        .unselected_tree_element {
+            fill: black;
+            font-size: 12px;
 
-}
+        }
     </style>
 
     <title>Tree Chart - D3js</title>
@@ -73,7 +73,8 @@ svg {
 
     <!--<script type="text/javascript" src="{{url_for('static', filename='js/weighted_tree_consumption.js')}}"></script>-->
     <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script type="text/javascript" src="{{url_for('static', filename='js/dndTree.js')}}"></script>
+    <!--<script type="text/javascript" src="{{url_for('static', filename='js/dndTree.js')}}"></script>-->
+    <script type="text/javascript" src="{{url_for('static', filename='js/weighted_tree_consumption.js')}}"></script>
 
 
 </head>
@@ -82,17 +83,17 @@ svg {
 
 
 <div id="workspace">
-  <div id="leftPane">
-    <div id="tree"></div>
-  </div>
-  <div id="rightPane">
-    <div id="topPane">
-      <p>Right Top</p>
+    <div id="leftPane">
+        <div id="tree"></div>
     </div>
-    <div id="bottomPane" style="width: 100%;">
-        <div id="wattmeters-container" style="top: 10px; bottom: 10px; left: 10px; right: 10px; height: 100%;"/>
+    <div id="rightPane">
+        <div id="topPane">
+            <p>Right Top</p>
+        </div>
+        <div id="bottomPane" style="width: 100%;">
+            <div id="wattmeters-container" style="top: 10px; bottom: 10px; left: 10px; right: 10px; height: 100%;"/>
+        </div>
     </div>
-  </div>
 </div>
 
 
@@ -100,10 +101,10 @@ svg {
 
     var selected_series = [];
 
-    load_weighted_tree_consumption(function(node, data) {
+    load_weighted_tree_consumption(function (node, data) {
         node.attr("class", "selected_tree_element");
         selected_series.push(data["id"]);
-    }, function(node, data) {
+    }, function (node, data) {
         node.attr("class", "unselected_tree_element");
         selected_series = selected_series.filter(id => id != data["id"]);
     });
@@ -111,16 +112,16 @@ svg {
 </script>
 
 <script>
-$(function() {
-  $("#workspace").splitter({
-    "orientation": "horizontal",
-    "limit": 100
-  });
-  $("#rightPane").splitter({
-    "orientation": "vertical",
-    "limit": 100
-  });
-});
+    $(function () {
+        $("#workspace").splitter({
+            "orientation": "horizontal",
+            "limit": 100
+        });
+        $("#rightPane").splitter({
+            "orientation": "vertical",
+            "limit": 100
+        });
+    });
 </script>
 
 <script>
@@ -128,11 +129,11 @@ $(function() {
         div_id: "wattmeters-container",
         title: "Wattmeters instant consumption",
         subtitle: "Displaying data from Flukso",
-		sensor_type: "multitree_consumptions",
-		multitree_selected_sensors_getter: function() {
-		    return selected_series;
-		    },
-		navigator_data_url: "/ui/data/navigation/wattmeter/hourly"
+        sensor_type: "multitree_consumptions",
+        multitree_selected_sensors_getter: function () {
+            return selected_series;
+        },
+        navigator_data_url: "/ui/data/navigation/wattmeter/hourly"
     }
     hc_create_chart(hc_options);
 </script>
@@ -140,7 +141,7 @@ $(function() {
 <script>
     var lastRighPaneWidth = -1;
     var lastRighPaneHeight = -1;
-    setInterval(function() {
+    setInterval(function () {
         let newRighPaneWidth = $("#bottomPane").width();
         let newRighPaneHeight = $("#bottomPane").height();
         if (newRighPaneWidth != lastRighPaneWidth || newRighPaneHeight != lastRighPaneHeight) {
@@ -151,6 +152,19 @@ $(function() {
             height = $("#bottomPane").height();
             Highcharts.charts.map(c => c.setSize(width, height));
         }
+
+
+        // Fix Highcharts that overlap right panel
+        $(function () {
+            $("#workspace").splitter({
+                "orientation": "horizontal",
+                "limit": 100
+            });
+            $("#rightPane").splitter({
+                "orientation": "vertical",
+                "limit": 100
+            });
+        });
     }, 1000);
 </script>
 
