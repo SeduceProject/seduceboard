@@ -36,7 +36,7 @@ def new_temp_reading():
     temperature = float(request.json["v"])
     timestamp = int(time.time())
 
-    if temperature > 60 or temperature < 10:
+    if temperature > 75 or temperature < 05:
         from core.data.db_redis import redis_increment_sensor_error_count
         redis_increment_sensor_error_count(filtered_sensor_name)
         return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
