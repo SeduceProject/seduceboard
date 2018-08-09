@@ -79,7 +79,7 @@ def temperature_list():
         temperature = float(obj["v"])
         timestamp = int(time.time())
 
-        if temperature > 60 or temperature < 10:
+        if temperature > 75 or temperature < 05:
             from core.data.db_redis import redis_increment_sensor_error_count
             redis_increment_sensor_error_count(filtered_sensor_name)
             return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
@@ -170,7 +170,7 @@ def set_interval(f, args, interval_secs, task_name=None):
 if __name__ == "__main__":
 
     print("Running the \"temperature registerer\" server")
-    db_thread = set_interval(flush_records, (None), 30, task_name="influx")
+    db_thread = set_interval(flush_records, (None), 10, task_name="influx")
 
     app.jinja_env.auto_reload = DEBUG
     app.run(host="0.0.0.0", port=8080, debug=DEBUG)
