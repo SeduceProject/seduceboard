@@ -665,12 +665,6 @@ def measurements_thermometers():
     return render_template("measurements_thermometers.html")
 
 
-@app.route("/measurements/socomecs.html")
-@flask_login.login_required
-def measurements_socomecs():
-    return render_template("measurements_socomecs.html")
-
-
 @app.route("/weighted_tree_consumption_data")
 @flask_login.login_required
 def weighted_tree_consumption_data():

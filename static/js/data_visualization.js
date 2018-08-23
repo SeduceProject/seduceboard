@@ -136,14 +136,20 @@ function hc_create_chart(hc_options) {
 
     function load_sensors_data(chart, streaming = false) {
         if (selected_sensor === undefined) {
-            let sensor_url = "/sensors";
-            if (sensor_type !== "*") {
-                sensor_url = "/sensors/" + sensor_type;
+            if ("multitree_selected_sensors_getter" in hc_options) {
+                let sensors = hc_options["multitree_selected_sensors_getter"]();
+                if (sensors.length > 0) {
+                    return generic_data_loader(chart, sensors, streaming, compute_data_url, data => process_json_data(data, "values"));
+                }
             }
-            $.getJSON(sensor_url, function (sensors_json) {
-                let sensors = sensors_json["sensors"];
-                return generic_data_loader(chart, sensors, streaming, compute_data_url, data => process_json_data(data, "values"));
-            });
+            // let sensor_url = "/sensors";
+            // if (sensor_type !== "*") {
+            //     sensor_url = "/sensors/" + sensor_type;
+            // }
+            // $.getJSON(sensor_url, function (sensors_json) {
+            //     let sensors = sensors_json["sensors"];
+            //     return generic_data_loader(chart, sensors, streaming, compute_data_url, data => process_json_data(data, "values"));
+            // });
         } else {
             let sensors = [selected_sensor];
             return generic_data_loader(chart, sensors, streaming, compute_data_url, data => process_json_data(data, "values"));
@@ -510,7 +516,7 @@ function hc_create_chart(hc_options) {
 
 
         // Delete unselected series
-        if (hc_options["sensor_type"] === "multitree_consumptions") {
+        if (hc_options["sensor_type"] === "multitree_consumptions" || "multitree_selected_sensors_getter" in hc_options) {
             setInterval(function () {
                 for (let serie_name of get_series_names(chart)) {
                     if (!hc_options["multitree_selected_sensors_getter"]().includes(serie_name)) {
@@ -523,7 +529,7 @@ function hc_create_chart(hc_options) {
 
 
         // Check if a new serie has been selected
-        if (hc_options["sensor_type"] === "multitree_consumptions") {
+        if (hc_options["sensor_type"] === "multitree_consumptions" || "multitree_selected_sensors_getter" in hc_options) {
             setInterval(function () {
                 for (let serie_name of hc_options["multitree_selected_sensors_getter"]()) {
                     if (!get_series_names(chart).includes(serie_name)) {
@@ -535,7 +541,7 @@ function hc_create_chart(hc_options) {
         }
 
         // Debug if a new serie has been selected
-        if (hc_options["sensor_type"] === "multitree_consumptions") {
+        if (hc_options["sensor_type"] === "multitree_consumptions" || "multitree_selected_sensors_getter" in hc_options) {
             setInterval(function () {
                 let navigator_max_timestamp = get_navigator_max_timestamp();
                 let navigator_max_datetime = new Date(navigator_max_timestamp);

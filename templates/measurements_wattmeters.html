@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 
+{% block header %}
+{% endblock %}
+
 {% block navbar %}
 <ul class="sidebar-menu metismenu" id="sidebar-menu">
     <li>
@@ -38,9 +41,6 @@
             <li>
                 <a href="/measurements/thermometers.html"> Temperature sensors </a>
             </li>
-            <li>
-                <a href="/measurements/socomecs.html"> Socomecs </a>
-            </li>
         </ul>
     </li>
     <li>
@@ -63,6 +63,19 @@
                 <div class="card">
                     <div class="card-block">
                         <div class="card-title-block">
+                            <h3 class="title">Selected sensors</h3>
+                            <br>
+                                <div class="form-group">
+                                    <input id="input_search" data-role="tagsinput" class="form-control typeahead" placeholder="Search a sensor">
+                                    <input id="add_serie_button" class="form-control btn btn-primary" type="button" value="Add sensor" disabled="false">
+                                    <div id="currentTags"></div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-title-block">
                             <h3 class="title"> Wattmeters data </h3>
                         </div>
                         <section class="example">
@@ -78,17 +91,80 @@
 
 {% block end_document %}
 <script src="{{ url_for('static', filename='js/data_visualization.js') }} "></script>
+<script src="{{ url_for('static', filename='js/bootstrap3-typeahead.js') }}"></script>
 <script>
-    setTimeout(function() {
-        setSameHeights();
-    }, 1000);
+    var selected_series = [];
+
+    function delete_tag(tag_id, serie_name) {
+        $("#"+tag_id).remove();
+        selected_series = selected_series.filter(s => s != serie_name);
+        console.log(selected_series);
+    }
+
+    $.get("/sensors/wattmeter", function(data){
+
+        function process_input_serie_change() {
+            let currentValue = $("#input_search").val();
+            let button_element = $("#add_serie_button");
+
+            if (data["sensors"].includes(currentValue)) {
+                button_element.prop("disabled", false);
+            } else {
+                button_element.prop("disabled", true);
+            }
+        }
+
+        $("#input_search").typeahead({ source:data["sensors"] });
+
+
+        $("#add_serie_button").click(function() {
+            let new_serie = $("#input_search").val();
+            let new_serie_escaped = new_serie.replace(".", "_").replace("-", "_");
+
+            $("#input_search").val("");
+            process_input_serie_change();
+
+            console.log("Adding serie: '"+new_serie+"'");
+            selected_series.push(new_serie);
+
+            let new_tag_id = "tag_"+ new_serie_escaped;
+
+            // Adding the serie in the HTML document
+            $("#currentTags").append("<div id=\""+ new_tag_id +"\" class=\"alert alert-warning\" role=\"alert\">\n" +
+                "  "+ new_serie +"\n" +
+                "  <button onclick='delete_tag(\""+ new_tag_id +"\", \""+ new_serie +"\" )' id=\"close_"+new_serie_escaped+"\" type=\"button\" class=\"close\" aria-label=\"Close\">\n" +
+                "    <span id=\"close_"+new_serie_escaped+"_span\" aria-hidden=\"true\">&times;</span>\n" +
+                "  </button>\n" +
+                "</div>");
+
+
+            $("#close_"+ new_serie+"_span").click(function(e) {
+                $("#currentTags").detach($("#tag_"+ new_serie));
+                selected_series = selected_series.filter(s => s != new_serie);
+                console.log(selected_series);
+            })
+        })
+
+
+        $("#input_search").keyup(function(e) {
+            process_input_serie_change();
+        })
+
+        $("#input_search").change(function(e) {
+            process_input_serie_change();
+        })
+
+    },'json');
 
     let hc_options = {
         div_id: "wattmeters-container",
         title: "Wattmeters instant consumption",
         subtitle: "Displaying data from Flukso",
-		sensor_type: "wattmeter",
-		navigator_data_url: "/ui/data/navigation/wattmeter/hourly"
+        sensor_type: "wattmeter",
+        multitree_selected_sensors_getter: function () {
+            return selected_series;
+        },
+        navigator_data_url: "/ui/data/navigation/wattmeter/hourly"
     }
     hc_create_chart(hc_options);
 </script>
