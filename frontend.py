@@ -525,8 +525,18 @@ def index():
     extenal_temperature_sensors = get_temperature_sensors_infrastructure().get("room.top", {}).get("sensors", [])
     if len(extenal_temperature_sensors) > 0:
         extenal_temperature_sensor = extenal_temperature_sensors[-1]
-        last_temperature_values = db_sensor_data(extenal_temperature_sensor, start_date="now()-30m", end_date="now()")
-        last_external_temperature_mean = last_temperature_values.get("values")[-1]
+        # Exponential backoff to_find the last temperature
+        search_interval = 30
+        last_external_temperature_mean = None
+        while last_external_temperature_mean is None and search_interval < 24 * 60:
+            start_date = "now() - %sm" % search_interval
+            end_date = "now() - %sm" % (search_interval - 30)
+            last_temperatures = db_sensor_data(extenal_temperature_sensor, start_date=start_date, end_date=end_date)
+            last_temperatures_values = last_temperatures.get("values", [])
+            if len(last_temperatures_values) > 0:
+                last_external_temperature_mean = last_temperatures_values[-1]
+            else:
+                search_interval = search_interval * 2
     else:
         last_external_temperature_mean = "No external temperature sensor"
 
