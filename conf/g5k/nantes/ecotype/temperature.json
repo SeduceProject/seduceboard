@@ -7,6 +7,58 @@
       }
     }
   },
+  "Z1.5TC": {
+    "front": {
+      "32": {
+        "serie": "3b05b75809fc0c6a",
+        "tags": ["ecotype-1"]
+      },
+      "30": {
+        "serie": "3b420a5909fc2c95",
+        "tags": ["ecotype-2"]
+      },
+      "28": {
+        "serie": "3be3125909fc4cd9",
+        "tags": ["ecotype-3"]
+      },
+      "26": {
+        "serie": "3b7a0a5909fc2cd9",
+        "tags": ["ecotype-4"]
+      },
+      "24": {
+        "serie": "3b67f95809fc2caf",
+        "tags": ["ecotype-5"]
+      },
+      "22": {
+        "serie": "3b9f0c5909fc6cc1",
+        "tags": ["ecotype-6"]
+      },
+      "20": {
+        "serie": "3bf0b65809fc0c3e",
+        "tags": ["ecotype-7"]
+      },
+      "18": {
+        "serie": "3b51f95809fc2cf0",
+        "tags": ["ecotype-8"]
+      },
+      "16": {
+        "serie": "3b240c5909fc6c3e",
+        "tags": ["ecotype-9"]
+      },
+      "14": {
+        "serie": "3bd4b95809fc0c3b",
+        "tags": ["ecotype-10"]
+      },
+      "12": {
+        "serie": "3b5c0c5909fc6c07",
+        "tags": ["ecotype-11"]
+      },
+      "10": {
+        "serie": "3bbfb95809fc0c00",
+        "tags": ["ecotype-12"]
+      }
+    }
+  },
   "Z1.5": {
     "front": {
       "32": {

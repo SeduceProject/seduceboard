@@ -170,6 +170,10 @@ SENSOR_ARRAYS_COORDINATES = {
     "room.top": {
         "x": "36.5%",
         "y": "45%"
+    },
+    "z1.5tc.front": {
+        "x": "40.5%",
+        "y": "65%"
     }
 }
 
