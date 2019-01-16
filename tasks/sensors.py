@@ -1,7 +1,7 @@
 from core.data.sensors import get_sensors_arrays_with_children
 from core.data.influx import db_last_sensors_updates
 from dateutil import parser
-from core.data.redis import redis_increment_sensor_error_count
+from core.data.redis_counters import redis_increment_sensor_error_count
 import celery
 import time
 

@@ -1,7 +1,7 @@
 from flask import Flask
 from celery import Celery
-from core.finite_state_machine.tasks.email import send_confirmation_email, send_authorization_email
-from core.finite_state_machine.tasks.sensors import detect_unresponsive_temperature_sensors
+from tasks.email import send_confirmation_email, send_authorization_email
+from tasks.sensors import detect_unresponsive_temperature_sensors
 
 
 def make_celery(app):
