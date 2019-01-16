@@ -74,6 +74,7 @@ def prettify_duration(dt, default="just now"):
 
 @app.context_processor
 def inject_dict_for_all_templates():
+    from core.config.config_loader import load_config
     api_public_address = load_config().get("api", {}).get("public_address", "localhost:5000")
     return dict(api_public_address=api_public_address)
 
