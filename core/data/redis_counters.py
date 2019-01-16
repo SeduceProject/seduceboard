@@ -1,4 +1,4 @@
-import redis
+from redis import StrictRedis
 import json
 from core.config.config_loader import load_config
 
@@ -8,7 +8,7 @@ REDIS_PORT = load_config().get("redis").get("port")
 
 
 def redis_clear_error_count():
-    redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
     redis_client.set(sensor_key, {})
@@ -17,7 +17,7 @@ def redis_clear_error_count():
 
 
 def redis_set_sensor_error_count(sensor_name, error_count):
-    redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
     sensors_data_str = redis_client.get(sensor_key)
@@ -43,7 +43,7 @@ def redis_set_sensor_error_count(sensor_name, error_count):
 
 
 def redis_increment_sensor_error_count(sensor_name):
-    redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
     sensors_data_str = redis_client.get(sensor_key)
@@ -69,7 +69,7 @@ def redis_increment_sensor_error_count(sensor_name):
 
 
 def redis_get_sensor_error_count(sensor_name):
-    redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
     sensors_data_str = redis_client.get(sensor_key)
@@ -90,7 +90,7 @@ def redis_get_sensor_error_count(sensor_name):
 
 
 def redis_get_sensors_data():
-    redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
     sensors_data_str = redis_client.get(sensor_key)
@@ -103,7 +103,7 @@ def redis_get_sensors_data():
 
 
 def redis_get_sensors_names():
-    redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
     sensors_data_str = redis_client.get(sensor_key)
