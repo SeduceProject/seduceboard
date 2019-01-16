@@ -294,7 +294,7 @@ def rack_temperature_sensors_last_values():
 @flask_login.login_required
 def rack_temperature_sensors_errors_last_values():
     from core.config.room_config import get_temperature_sensors_infrastructure
-    from core.data.redis import redis_get_sensors_data
+    from core.data.redis_counters import redis_get_sensors_data
     temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
 
     temperature_errors_data = redis_get_sensors_data()
@@ -317,8 +317,8 @@ def rack_temperature_sensors_errors_last_values():
 @webapp_api_blueprint.route("/rack_temperature_overview.html/errors/increment/<sensor_name>")
 @flask_login.login_required
 def rack_temperature_errors_incr(sensor_name):
-    from core.data.redis import redis_get_sensors_data
-    from core.data.redis import redis_increment_sensor_error_count
+    from core.data.redis_counters import redis_get_sensors_data
+    from core.data.redis_counters import redis_increment_sensor_error_count
 
     redis_increment_sensor_error_count(sensor_name)
     sensors_data = redis_get_sensors_data()

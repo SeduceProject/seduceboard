@@ -142,7 +142,7 @@ def rack_temperature_overview():
 @webapp_blueprint.route("/rack_temperature_errors_clear.html")
 @admin_login_required
 def rack_temperature_errors_clear():
-    from core.data.redis import redis_clear_error_count
+    from core.data.redis_counters import redis_clear_error_count
 
     redis_clear_error_count()
 
@@ -154,7 +154,7 @@ def rack_temperature_errors_clear():
 @admin_login_required
 def rack_temperature_errors_overview():
     from core.config.room_config import get_temperature_sensors_infrastructure
-    from core.data.redis import redis_get_sensors_data
+    from core.data.redis_counters import redis_get_sensors_data
     temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
 
     temperature_errors_data = redis_get_sensors_data()

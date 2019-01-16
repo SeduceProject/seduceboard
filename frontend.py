@@ -72,6 +72,12 @@ def prettify_duration(dt, default="just now"):
     prettify_duration_func(dt, default)
 
 
+@app.context_processor
+def inject_dict_for_all_templates():
+    api_public_address = load_config().get("api", {}).get("public_address", "localhost:5000")
+    return dict(api_public_address=api_public_address)
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     # Create DB
