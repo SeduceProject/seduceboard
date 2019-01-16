@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
-from core.data.db import *
+from core.data.influx import *
 
 import sys
 import time
@@ -37,7 +37,7 @@ def new_temp_reading():
     timestamp = int(time.time())
 
     if temperature > 75 or temperature < 05:
-        from core.data.db_redis import redis_increment_sensor_error_count
+        from core.data.redis import redis_increment_sensor_error_count
         redis_increment_sensor_error_count(filtered_sensor_name)
         return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
 
@@ -80,7 +80,7 @@ def temperature_list():
         timestamp = int(time.time())
 
         if temperature > 75 or temperature < 05:
-            from core.data.db_redis import redis_increment_sensor_error_count
+            from core.data.redis import redis_increment_sensor_error_count
             redis_increment_sensor_error_count(filtered_sensor_name)
             return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
 

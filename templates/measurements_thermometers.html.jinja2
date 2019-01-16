@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout.html.jinja2" %}
 
 {% block header %}
 {% endblock %}
@@ -6,40 +6,40 @@
 {% block navbar %}
 <ul class="sidebar-menu metismenu" id="sidebar-menu">
     <li>
-        <a href="/">
+        <a href="{{ url_for("webapp.index") }}">
             <i class="fa fa-home"></i> Dashboard </a>
     </li>
     <li>
-        <a href="/sensors.html">
+        <a href="{{ url_for("webapp.sensors") }}">
             <i class="fa fa-cog"></i> Sensors
         </a>
     </li>
     <li>
-        <a href="/room_overview.html">
+        <a href="{{ url_for("webapp.room_overview") }}">
             <i class="fa fa-map"></i> Room overview
         </a>
     </li>
     <li>
-        <a href="/rack_temperature_overview.html">
+        <a href="{{ url_for("webapp.rack_temperature_overview") }}">
             <i class="fa fa-thermometer-half"></i> Rack temperatures
         </a>
     </li>
     <li>
-        <a href="/weighted_tree_consumption">
+        <a href="{{ url_for("webapp.weighted_tree_consumption") }}">
             <i class="fa fa-sitemap"></i> Consumption tree
         </a>
     </li>
     <li class="open">
-        <a href="/">
+        <a href="#">
             <i class="fa fa-bar-chart"></i> Measurements
             <i class="fa arrow"></i>
         </a>
         <ul class="sidebar-nav">
             <li>
-                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+                <a href="{{ url_for("webapp.measurements_wattmeters") }}"> Wattmeters </a>
             </li>
             <li class="active">
-                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+                <a href="{{ url_for("webapp.measurements_thermometers") }}"> Temperature sensors </a>
             </li>
         </ul>
     </li>
@@ -164,7 +164,7 @@
         multitree_selected_sensors_getter: function () {
             return selected_series;
         },
-        navigator_data_url: "/ui/data/navigation/temperature/hourly"
+        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", how="hourly") }}"
     }
     hc_create_chart(hc_options);
 </script>

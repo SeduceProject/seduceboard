@@ -1,42 +1,42 @@
-{% extends "layout.html" %}
+{% extends "layout.html.jinja2" %}
 
 {% block navbar %}
 <ul class="sidebar-menu metismenu" id="sidebar-menu">
     <li class="active">
-        <a href="/">
+        <a href="{{ url_for("webapp.index") }}">
             <i class="fa fa-home"></i> Dashboard </a>
     </li>
     <li>
-        <a href="/sensors.html">
+        <a href="{{ url_for("webapp.sensors") }}">
             <i class="fa fa-cog"></i> Sensors
         </a>
     </li>
     <li>
-        <a href="/room_overview.html">
+        <a href="{{ url_for("webapp.room_overview") }}">
             <i class="fa fa-map"></i> Room overview
         </a>
     </li>
     <li>
-        <a href="/rack_temperature_overview.html">
+        <a href="{{ url_for("webapp.rack_temperature_overview") }}">
             <i class="fa fa-thermometer-half"></i> Rack temperatures
         </a>
     </li>
     <li>
-        <a href="/weighted_tree_consumption">
+        <a href="{{ url_for("webapp.weighted_tree_consumption") }}">
             <i class="fa fa-sitemap"></i> Consumption tree
         </a>
     </li>
     <li>
-        <a href="/">
+        <a href="#">
             <i class="fa fa-bar-chart"></i> Measurements
             <i class="fa arrow"></i>
         </a>
         <ul class="sidebar-nav">
             <li>
-                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+                <a href="{{ url_for("webapp.measurements_wattmeters") }}"> Wattmeters </a>
             </li>
             <li>
-                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+                <a href="{{ url_for("webapp.measurements_thermometers") }}"> Temperature sensors </a>
             </li>
         </ul>
     </li>
@@ -109,17 +109,17 @@
                                 </td>
                                 <td>
                                 {% if user.is_admin %}
-                                <a href="{{ url_for("demote_user", user_id=user.id) }}" class="btn btn-danger">Demote</a>
+                                <a href="{{ url_for("login.demote_user", user_id=user.id) }}" class="btn btn-danger">Demote</a>
                                 {% else %}
-                                <a href="{{ url_for("promote_user", user_id=user.id) }}" class="btn btn-success">Promote</a>
+                                <a href="{{ url_for("login.promote_user", user_id=user.id) }}" class="btn btn-success">Promote</a>
                                 {% endif %}
                                 {% if user.user_authorized %}
-                                <a href="{{ url_for("deauthorize_user", user_id=user.id) }}" class="btn btn-danger">Unauthorize</a>
+                                <a href="{{ url_for("login.deauthorize_user", user_id=user.id) }}" class="btn btn-danger">Unauthorize</a>
                                 {% else %}
                                     {% if user.state == "waiting_authorization" %}
-                                <a href="{{ url_for("approve_user", token=user.admin_authorization_token) }}" class="btn btn-warning">Approve</a>
+                                <a href="{{ url_for("login.approve_user", token=user.admin_authorization_token) }}" class="btn btn-warning">Approve</a>
                                     {% elif user.email_confirmed %}
-                                <a href="{{ url_for("authorize_user", user_id=user.id) }}" class="btn btn-success">Authorize</a>
+                                <a href="{{ url_for("login.authorize_user", user_id=user.id) }}" class="btn btn-success">Authorize</a>
                                     {% endif %}
                                 {% endif %}
                                 </td>

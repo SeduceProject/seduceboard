@@ -1,42 +1,42 @@
-{% extends "layout.html" %}
+{% extends "layout.html.jinja2" %}
 
 {% block navbar %}
 <ul class="sidebar-menu metismenu" id="sidebar-menu">
-    <li class="active">
-        <a href="/">
+    <li>
+        <a href="{{ url_for("webapp.index") }}">
             <i class="fa fa-home"></i> Dashboard </a>
     </li>
     <li>
-        <a href="/sensors.html">
+        <a href="{{ url_for("webapp.sensors") }}">
             <i class="fa fa-cog"></i> Sensors
         </a>
     </li>
     <li>
-        <a href="/room_overview.html">
+        <a href="{{ url_for("webapp.room_overview") }}">
             <i class="fa fa-map"></i> Room overview
         </a>
     </li>
-    <li>
-        <a href="/rack_temperature_overview.html">
-            <i class="fa fa-thermometer-half"></i> Rack temperature
+    <li class="active">
+        <a href="{{ url_for("webapp.rack_temperature_overview") }}">
+            <i class="fa fa-thermometer-half"></i> Rack temperatures
         </a>
     </li>
     <li>
-        <a href="/weighted_tree_consumption">
+        <a href="{{ url_for("webapp.weighted_tree_consumption") }}">
             <i class="fa fa-sitemap"></i> Consumption tree
         </a>
     </li>
     <li>
-        <a href="/">
+        <a href="#">
             <i class="fa fa-bar-chart"></i> Measurements
             <i class="fa arrow"></i>
         </a>
         <ul class="sidebar-nav">
             <li>
-                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+                <a href="{{ url_for("webapp.measurements_wattmeters") }}"> Wattmeters </a>
             </li>
             <li>
-                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+                <a href="{{ url_for("webapp.measurements_thermometers") }}"> Temperature sensors </a>
             </li>
         </ul>
     </li>
@@ -97,10 +97,11 @@
     <div class="title-block">
         <h1 class="title"> Rack temperature overview</h1>
         <p class="title-description"> Display an overview of the temperature inside the rack</p>
-        <a class="btn btn-danger" href="{{ url_for("rack_temperature_errors_clear") }}">Clear error counts</a>
     </div>
     <section class="section">
         <div class="row">
+
+
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-block">
@@ -192,8 +193,8 @@
         setSameHeights();
     }, 1000);
 
-    let TEMP_MIN = 0;
-    let TEMP_MAX = 10;
+    let TEMP_MIN = 17;
+    let TEMP_MAX = 50;
     let HSL_COLOR_MIN = 180;
     let HSL_COLOR_MAX = 0;
 
@@ -211,8 +212,8 @@
     }
 
     function update_temperature_tables() {
-        $.getJSON("/rack_temperature_errors/sensors/last_values", function (data) {
-            console.log("Updating temperature errors");
+        $.getJSON("/rack_temperature/sensors/last_values", function (data) {
+            console.log("Updating temperatures");
             for (rack_name in data) {
                 for (idx in data[rack_name]["last_temperatures"]) {
                     let sensor_data = data[rack_name]["last_temperatures"][idx];
@@ -222,7 +223,7 @@
                     let temperature_div = document.getElementById(div_id);
                     let hsl_color = temperature_to_hsl_color(temperature);
                     $(temperature_div).css("background-color", "hsl("+hsl_color+", 76%, 55%)");
-                    $(temperature_div).html(temperature+" ("+sensor_name+") <a class=\"sensor_a_link\" href=\"/room_overview.html/by_selected/"+sensor_name+"\">view</a>");
+                    $(temperature_div).html(temperature+"°C ("+sensor_name+") <a class=\"sensor_a_link\" href=\"/room_overview.html/by_selected/"+sensor_name+"\">view</a>");
                 }
             }
         });

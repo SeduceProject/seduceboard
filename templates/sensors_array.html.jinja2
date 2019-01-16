@@ -47,7 +47,7 @@
                 {% if sensor == selected_sensor %}
                     <li data-css-class="selected_sensor badge badge-danger" data-coords="1,{{ loop.index + 1 }}" data-marker="station" data-labelpos="e">{{ sensor }}</li>
                 {% else %}
-                    <li data-css-class="non-selected_sensor" data-coords="1,{{ loop.index + 1 }}" data-marker="@station" data-labelpos="e"><a target="_parent" href="{{ url_for('room_overview', selected_sensor=sensor) }}">{{ sensor }}</a></li>
+                    <li data-css-class="non-selected_sensor" data-coords="1,{{ loop.index + 1 }}" data-marker="@station" data-labelpos="e"><a target="_parent" href="{{ url_for('webapp.room_overview', selected_sensor=sensor) }}">{{ sensor }}</a></li>
                 {% endif %}
             {% endfor %}
             <li data-coords="1,{{ sensors|length + 1 }}"></li>

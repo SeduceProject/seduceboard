@@ -1,4 +1,7 @@
 from core.config.multitree_config import MULTITREE_CONFIG, MULTITREE_INDEX
+from core.data.influx import db_multitree_last_wattmeter_value
+from core.data.influx import db_multitree_last_wattmeter_query
+from core.data.influx import db_multitree_last_wattmeter_all_in_one_query
 
 
 def get_root_nodes():
@@ -10,7 +13,6 @@ def get_nodes():
 
 
 def get_node_by_id(node_id):
-
     if node_id in MULTITREE_INDEX:
         return MULTITREE_INDEX[node_id]
 
@@ -65,17 +67,14 @@ def get_sensors_tree(root_node, level=0, use_simplified_children=True):
 
 
 def _get_last_node_consumption(node_id):
-    from core.data.db import db_multitree_last_wattmeter_value
     return db_multitree_last_wattmeter_value(node_id)
 
 
 def _get_last_node_consumption_query(node_id):
-    from core.data.db import db_multitree_last_wattmeter_query
     return db_multitree_last_wattmeter_query(node_id)
 
 
 def _get_consumption_index(root_node, level=0, result=None):
-    from core.data.db import db_multitree_last_wattmeter_all_in_one_query
     if result is None:
         result = []
     current_node_consumption_query = _get_last_node_consumption_query(root_node)
@@ -93,7 +92,6 @@ def _get_consumption_index(root_node, level=0, result=None):
 
 
 def _get_weighted_tree_consumption_data(root_node, level=0, total_consumption=None, consumption_index=None):
-
     cq_root_node_1m = "cq_%s_1m" % root_node["id"]
 
     if consumption_index is None:

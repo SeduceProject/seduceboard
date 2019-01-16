@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flasgger import Swagger
-from core.data.db import *
+from core.data.influx import *
 from flask import request
 
 app = Flask(__name__)
@@ -62,7 +62,7 @@ def sensors():
               "since": "1510232877.81"
             }
     """
-    from core.data.db import db_sensors
+    from core.data.influx import db_sensors
     result = db_sensors()
     return jsonify(result)
 
@@ -95,7 +95,7 @@ def sensors_types():
               ]
             }
     """
-    from core.data.db import db_sensor_types
+    from core.data.influx import db_sensor_types
     result = db_sensor_types()
     return jsonify(result)
 
@@ -135,7 +135,7 @@ def sensors_of_specified_sensors_type(sensor_type):
               ]
             }
     """
-    from core.data.db import db_sensors
+    from core.data.influx import db_sensors
     result = db_sensors(sensor_type=sensor_type)
     return jsonify(result)
 
@@ -178,7 +178,7 @@ def measurements(sensor_id):
               ]
             }
     """
-    from core.data.db import db_sensor_data
+    from core.data.influx import db_sensor_data
     start_date = request.args["start_date"]
     end_date = request.args["end_date"]
     result = db_sensor_data(sensor_id, start_date=start_date, end_date=end_date)

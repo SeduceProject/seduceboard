@@ -112,19 +112,14 @@
                                     <span class="name"> {{ current_user.firstname }} {{ current_user.lastname }} </span>
                                 </a>
                                 <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fa fa-user icon"></i> Profile </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fa fa-bell icon"></i> Notifications </a>
+                                    <a class="dropdown-item" href="#"><i class="fa fa-user icon"></i> Profile</a>
+                                    <a class="dropdown-item" href="#"><i class="fa fa-bell icon"></i> Notifications</a>
                                     {% if current_user.is_admin %}
-                                    <a class="dropdown-item" href="{{ url_for("settings") }}">
-                                        <i class="fa fa-gear icon"></i> Settings </a>
-                                    <a class="dropdown-item" href="{{ url_for("rack_temperature_errors_overview") }}">
-                                        <i class="fa fa-gear icon"></i> Temperature status </a>
+                                    <a class="dropdown-item" href="{{ url_for("admin_app.manage_users") }}"><i class="fa fa-gear icon"></i> Manage users</a>
+                                    <a class="dropdown-item" href="{{ url_for("webapp.rack_temperature_errors_overview") }}"><i class="fa fa-gear icon"></i> Temperature status</a>
                                     {% endif %}
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{{ url_for("logout") }}">
-                                        <i class="fa fa-power-off icon"></i> Logout </a>
+                                    <a class="dropdown-item" href="{{ url_for("login.logout") }}"><i class="fa fa-power-off icon"></i> Logout</a>
                                 </div>
                             </li>
                         </ul>
@@ -140,142 +135,16 @@
                         </div>
                         <nav class="menu">
                             {% block navbar %}
-                            <ul class="sidebar-menu metismenu" id="sidebar-menu">
-                                <li>
-                                    <a href="/">
-                                        <i class="fa fa-home"></i> Dashboard </a>
-                                </li>
-                                <li>
-                                    <a href="/sensors.html">
-                                        <i class="fa fa-cog"></i> Sensors
-                                    </a>
-                                </li>
-                                <li class="open">
-                                    <a href="/">
-                                        <i class="fa fa-bar-chart"></i> Measurements
-                                        <i class="fa arrow"></i>
-                                    </a>
-                                    <ul class="sidebar-nav">
-                                        <li class="active">
-                                            <a href="/measurements/wattmeters.html"> Wattmeters </a>
-                                        </li>
-                                        <li>
-                                            <a href="/"> Temperature sensors </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
                             {% endblock %}
                         </nav>
                     </div>
-
-
-                    <footer class="sidebar-footer">
-                        <ul class="sidebar-menu metismenu" id="customize-menu">
-                            <li>
-                                <ul>
-                                    <li class="customize">
-                                        <div class="customize-item">
-                                            <div class="row customize-header">
-                                                <div class="col-4"> </div>
-                                                <div class="col-4">
-                                                    <label class="title">fixed</label>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label class="title">static</label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <label class="title">Sidebar:</label>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label>
-                                                        <input class="radio" type="radio" name="sidebarPosition" value="sidebar-fixed">
-                                                        <span></span>
-                                                    </label>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label>
-                                                        <input class="radio" type="radio" name="sidebarPosition" value="">
-                                                        <span></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <label class="title">Header:</label>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label>
-                                                        <input class="radio" type="radio" name="headerPosition" value="header-fixed">
-                                                        <span></span>
-                                                    </label>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label>
-                                                        <input class="radio" type="radio" name="headerPosition" value="">
-                                                        <span></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <label class="title">Footer:</label>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label>
-                                                        <input class="radio" type="radio" name="footerPosition" value="footer-fixed">
-                                                        <span></span>
-                                                    </label>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label>
-                                                        <input class="radio" type="radio" name="footerPosition" value="">
-                                                        <span></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="customize-item">
-                                            <ul class="customize-colors">
-                                                <li>
-                                                    <span class="color-item color-red" data-theme="red"></span>
-                                                </li>
-                                                <li>
-                                                    <span class="color-item color-orange" data-theme="orange"></span>
-                                                </li>
-                                                <li>
-                                                    <span class="color-item color-green active" data-theme=""></span>
-                                                </li>
-                                                <li>
-                                                    <span class="color-item color-seagreen" data-theme="seagreen"></span>
-                                                </li>
-                                                <li>
-                                                    <span class="color-item color-blue" data-theme="blue"></span>
-                                                </li>
-                                                <li>
-                                                    <span class="color-item color-purple" data-theme="purple"></span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <a href="">
-                                    <i class="fa fa-cog"></i> Customize </a>
-                            </li>
-                        </ul>
-                    </footer>
                 </aside>
                 <div class="sidebar-overlay" id="sidebar-overlay"></div>
                 <div class="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle"></div>
                 <div class="mobile-menu-handle"></div>
 
-
                 {% block body %}
                 {% endblock %}
-
-
 
                 <footer class="footer">
                     <div class="footer-block buttons">

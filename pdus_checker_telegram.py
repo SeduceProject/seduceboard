@@ -1,22 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 
-import threading
 import traceback
 import sys
 import os
-import re
-import subprocess
-
-from influxdb import InfluxDBClient
-from pysnmp.hlapi.asyncore import *
 import time
 import threading
-from core.data.snmp import get_outlets
 from core.data.snmp import get_connection_info_for_pdu
-from core.data.snmp import get_outlets
 from threading import Timer
-
-from docopt import docopt
 from core.data.snmp import get_pdus
 from core.data.db import *
 import telegram
@@ -85,10 +75,9 @@ def set_interval(f, args, interval_secs, task_name=None):
             start_task_time = time.time()
             try:
                 self.f(self.args)
-            except:
+            except Exception as e:
                 traceback.print_exc()
-                print("Something bad happened here :-(")
-                pass
+                print("recovering an error")
             end_task_time = time.time()
             print("[sched:%s] took %f seconds to execute the task (starting: %f)" % (task_name, (end_task_time - start_task_time), start_task_time))
             time_to_sleep = (self.interval) - (end_task_time - start_task_time)

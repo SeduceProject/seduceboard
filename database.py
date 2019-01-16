@@ -1,7 +1,7 @@
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
-from fsm import user_initial_state
+from core.finite_state_machine.fsm import user_initial_state
 from frontend import app
 from sqlalchemy import event
 from transitions import Machine
@@ -40,7 +40,7 @@ class User(db.Model):
 @event.listens_for(User, 'init')
 @event.listens_for(User, 'load')
 def receive_init(obj, *args, **kwargs):
-    from fsm import user_initial_state, user_states, user_transitions
+    from core.finite_state_machine.fsm import user_initial_state, user_states, user_transitions
     # when we load data from the DB(via query) we need to set the proper initial state
     initial = obj.state or user_initial_state
     machine = Machine(model=obj, states=user_states, transitions=user_transitions, initial=initial)

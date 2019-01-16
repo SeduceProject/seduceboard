@@ -1,6 +1,6 @@
 from core.config.aggregates_config import AGGREGATES_CONFIG
 from core.config.multitree_config import MULTITREE_CONFIG
-from core.data.db import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+from core.data.influx import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
 from influxdb import InfluxDBClient
 import logging
 from influxdb.exceptions import InfluxDBClientError as InfluxDBClientError

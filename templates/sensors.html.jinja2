@@ -1,42 +1,42 @@
-{% extends "layout.html" %}
+{% extends "layout.html.jinja2" %}
 
 {% block navbar %}
 <ul class="sidebar-menu metismenu" id="sidebar-menu">
     <li>
-        <a href="/">
+        <a href="{{ url_for("webapp.index") }}">
             <i class="fa fa-home"></i> Dashboard </a>
     </li>
     <li class="active">
-        <a href="/sensors.html">
+        <a href="{{ url_for("webapp.sensors") }}">
             <i class="fa fa-cog"></i> Sensors
         </a>
     </li>
     <li>
-        <a href="/room_overview.html">
+        <a href="{{ url_for("webapp.room_overview") }}">
             <i class="fa fa-map"></i> Room overview
         </a>
     </li>
     <li>
-        <a href="/rack_temperature_overview.html">
+        <a href="{{ url_for("webapp.rack_temperature_overview") }}">
             <i class="fa fa-thermometer-half"></i> Rack temperatures
         </a>
     </li>
     <li>
-        <a href="/weighted_tree_consumption">
+        <a href="{{ url_for("webapp.weighted_tree_consumption") }}">
             <i class="fa fa-sitemap"></i> Consumption tree
         </a>
     </li>
     <li>
-        <a href="/">
+        <a href="#">
             <i class="fa fa-bar-chart"></i> Measurements
             <i class="fa arrow"></i>
         </a>
         <ul class="sidebar-nav">
             <li>
-                <a href="/measurements/wattmeters.html"> Wattmeters </a>
+                <a href="{{ url_for("webapp.measurements_wattmeters") }}"> Wattmeters </a>
             </li>
             <li>
-                <a href="/measurements/thermometers.html"> Temperature sensors </a>
+                <a href="{{ url_for("webapp.measurements_thermometers") }}"> Temperature sensors </a>
             </li>
         </ul>
     </li>
@@ -62,7 +62,7 @@
                 <div class="card">
                     <div class="card-block">
                         <div class="card-title-block">
-                            <h3 class="title"> {{ sensors_array.name }} </h3> <a href="{{ url_for('room_overview', sensors_array_name=sensors_array.name) }}">view</a>
+                            <h3 class="title"> {{ sensors_array.name }} </h3> <a href="{{ url_for('webapp.room_overview', sensors_array_name=sensors_array.name) }}">view</a>
                         </div>
                         <section class="example">
                             <table class="table table-hover">
@@ -78,7 +78,7 @@
                                 <tbody>
                                 {% for sensor in sensors_array.children %}
                                 <tr>
-                                <th scope="row"><a href="{{ url_for('room_overview', selected_sensor=sensor.name) }}">{{ sensor.name }}</a></th>
+                                <th scope="row"><a href="{{ url_for('webapp.room_overview', selected_sensor=sensor.name) }}">{{ sensor.name }}</a></th>
                                 <td>{{ sensor.sensor_type }}</td>
                                 <td>{{ sensor.location }}</td>
                                 <!--<td>{{ sensor.last_update.time }}</td>-->
