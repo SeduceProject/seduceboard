@@ -1,0 +1,127 @@
+{% extends "layout.html.jinja2" %}
+
+{% block navbar %}
+    <ul class="sidebar-menu metismenu" id="sidebar-menu">
+        <li class="active">
+            <a href="{{ url_for("webapp.index") }}">
+                <i class="fa fa-home"></i> Dashboard </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.sensors") }}">
+                <i class="fa fa-cog"></i> Sensors
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.room_overview") }}">
+                <i class="fa fa-map"></i> Room overview
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.rack_temperature_overview") }}">
+                <i class="fa fa-thermometer-half"></i> Rack temperatures
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.weighted_tree_consumption") }}">
+                <i class="fa fa-sitemap"></i> Consumption tree
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-bar-chart"></i> Measurements
+                <i class="fa arrow"></i>
+            </a>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for("webapp.measurements_wattmeters") }}"> Wattmeters </a>
+                </li>
+                <li>
+                    <a href="{{ url_for("webapp.measurements_thermometers") }}"> Temperature sensors </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a id="seduce_api_link" href="https://localhost:5000/apidocs/#/">
+                <i class="fa fa-rocket"></i> API
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+
+
+{% block header_css %}
+    .profile_picture {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; width: 30px; height: 30px;
+    }
+
+    .query_code {
+    box-sizing: border-box;
+    color: rgb(33, 37, 41);
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
+    word-break: normal;
+    }
+{% endblock %}
+
+{% block body %}
+    <article class="content dashboard-page">
+        <div class="title-block">
+            <h1 class="title"> Continous Queries Management </h1>
+            <p class="title-description"> Continuous queries are in charge of aggregating data collected during a period
+                of time</p>
+        </div>
+
+        {# Show multitree sensors #}
+        <section class="section">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-block">
+                            <section class="example">
+                                <div class="col-xl" style="padding: 0px; padding-left: 5px;">
+                                    <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg">
+                                        <div class="card-header">
+                                            <div class="header-block">
+                                                <h3 class="title">Missing continuous queries</h3>
+                                            </div>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-block">
+                                                {% for cq in missing_cqs %}
+                                                    <span class="badge badge-secondary">{{ cq }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card sameheight-item sales-breakdown" data-exclude="xs,sm,lg">
+                                        <div class="card-header">
+                                            <div class="header-block">
+                                                <h3 class="title">Unknown continuous queries</h3>
+                                            </div>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-block">
+                                                {% for cq in unknown_cqs %}
+                                                    <span class="badge badge-secondary">{{ cq }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {# End of multitree sensors #}
+    </article>
+{% endblock %}
+
+{% block end_document %}
+{% endblock %}

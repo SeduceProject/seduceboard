@@ -60,26 +60,81 @@
 {% block body %}
 <article class="content dashboard-page">
     <div class="title-block">
-        <h1 class="title"> Management </h1>
-        <p class="title-description"> Administration <i>"aux petits oignons"</i> of the Seduce platform</p>
+        <h1 class="title"> Continous Queries Management </h1>
+        <p class="title-description"> Continuous queries are in charge of aggregating data collected during a period of time</p>
+        <a class="btn btn-danger" href="{{ url_for("admin_app.continuous_query_diagnostic") }}">Diagnostic</a>
+        <a class="btn btn-danger" href="{{ url_for("admin_app.prepare_rerun_continuous_query") }}">Prepare a recomputations</a>
+        <a class="btn btn-danger" href="{{ url_for("admin_app.continuous_queries_recomputations") }}">List recomputations</a>
     </div>
+
+    {# Show non aggregated and non multitree sensors #}
     <section class="section">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-block">
                         <div class="card-title-block">
-                            <h3 class="title">Continuous queries</h3>
+                            <h3 class="title">Sensors continous queries</h3>
                         </div>
                         <section class="example">
-                            {% if user.is_admin %}
-                            {% endif %}
+                            {% for continuous_query in continuous_queries %}
+                                {% if not continuous_query.is_aggregated_query and not continuous_query.is_aggregated_query %}
+                                   <a class="cq_link" href="{{ url_for("admin_app.continuous_query", query_name=continuous_query.name) }}"><span class="badge badge-secondary">{{ continuous_query.name }}</span></a>
+                                {% endif %}
+                            {% endfor %}
                         </section>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+    {# End of non aggregated and non multitree sensors #}
+
+    {# Show aggregated sensors #}
+    <section class="section">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-title-block">
+                            <h3 class="title">Aggregated continuous queries</h3>
+                        </div>
+                        <section class="example">
+                            {% for continuous_query in continuous_queries %}
+                                {% if continuous_query.is_aggregated_query %}
+                                   <a class="cq_link" href="{{ url_for("admin_app.continuous_query", query_name=continuous_query.name) }}"><span class="badge badge-secondary">{{ continuous_query.name }}</span></a>
+                                {% endif %}
+                            {% endfor %}
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {# End of aggregated sensors #}
+
+    {# Show multitree sensors #}
+    <section class="section">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-title-block">
+                            <h3 class="title">Multitree continuous queries</h3>
+                        </div>
+                        <section class="example">
+                            {% for continuous_query in continuous_queries %}
+                                {% if continuous_query.is_multitree_query %}
+                                   <a class="cq_link" href="{{ url_for("admin_app.continuous_query", query_name=continuous_query.name) }}"><span class="badge badge-secondary">{{ continuous_query.name }}</span></a>
+                                {% endif %}
+                            {% endfor %}
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {# End of multitree sensors #}
 </article>
 {% endblock %}
 

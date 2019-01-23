@@ -1,0 +1,153 @@
+{% extends "layout.html.jinja2" %}
+
+{% block navbar %}
+    <ul class="sidebar-menu metismenu" id="sidebar-menu">
+        <li class="active">
+            <a href="{{ url_for("webapp.index") }}">
+                <i class="fa fa-home"></i> Dashboard </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.sensors") }}">
+                <i class="fa fa-cog"></i> Sensors
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.room_overview") }}">
+                <i class="fa fa-map"></i> Room overview
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.rack_temperature_overview") }}">
+                <i class="fa fa-thermometer-half"></i> Rack temperatures
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.weighted_tree_consumption") }}">
+                <i class="fa fa-sitemap"></i> Consumption tree
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-bar-chart"></i> Measurements
+                <i class="fa arrow"></i>
+            </a>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for("webapp.measurements_wattmeters") }}"> Wattmeters </a>
+                </li>
+                <li>
+                    <a href="{{ url_for("webapp.measurements_thermometers") }}"> Temperature sensors </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a id="seduce_api_link" href="https://localhost:5000/apidocs/#/">
+                <i class="fa fa-rocket"></i> API
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+
+
+{% block header_css %}
+    .profile_picture {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; width: 30px; height: 30px;
+    }
+
+    .query_code {
+    box-sizing: border-box;
+    color: rgb(33, 37, 41);
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
+    word-break: normal;
+    }
+
+    .result {
+        margin-right: 5px;
+    }
+
+    .hidden_selected_cqs_options {
+        display: none;
+    }
+
+    .cq_list {
+        padding: 0;
+        list-style-type: none;
+    }
+{% endblock %}
+
+{% block body %}
+    <article class="content dashboard-page">
+        <div class="title-block">
+            <h1 class="title"> Continous Queries Management </h1>
+            <p class="title-description"> Continuous queries are in charge of aggregating data collected during a period
+                of time</p>
+        </div>
+
+        {# Show non aggregated and non multitree sensors #}
+        <section class="section">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-block">
+                            <div class="card-title-block">
+                                <h3 class="title">Sensors continous queries</h3>
+                                <form action="{{ url_for("admin_app.process_rerun_continuous_query") }}" method="post">
+                                    <input name="cq_names_pattern" v-model="cq_search_pattern" type="text">
+                                    <input type="submit">
+                                    <div>current filtering pattern is "[[cq_search_pattern]]"</div>
+                                    <select name="selected_cqs" class="hidden_selected_cqs_options" multiple>
+                                          <option v-for="cq in filter_cqs()" selected>[[ cq ]]</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <section class="example">
+                                <ul class="cq_list">
+                                    <li class="result badge badge-secondary" v-for="cq in filter_cqs()">[[ cq ]]</li>
+                                </ul>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {# End of non aggregated and non multitree sensors #}
+    </article>
+{% endblock %}
+
+{% block end_document %}
+    <script src="https://unpkg.com/vue"></script>
+    <script src="app.js"></script>
+
+    <script>
+        Vue.filter('formatDate', function (d) {
+            if (!window.Intl) return d;
+            return new Intl.DateTimeFormat('en-US').format(new Date(d));
+        });
+
+        const app = new Vue({
+            el: '#app',
+            data: {
+                cqs: [
+                    {% for cq in existing_cqs %}
+                        "{{ cq }}",
+                    {% endfor %}
+                ],
+                cq_search_pattern: ""
+            },
+            methods: {
+                filter_cqs: function () {
+                    return this.cqs.filter(cq => cq.indexOf(this.cq_search_pattern) != -1);
+                }
+            },
+            beforeMount: function () {
+            },
+            delimiters: ['[[', ']]']
+        });
+    </script>
+{% endblock %}

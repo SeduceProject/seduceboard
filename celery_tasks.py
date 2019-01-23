@@ -2,6 +2,7 @@ from flask import Flask
 from celery import Celery
 from tasks.email import send_confirmation_email, send_authorization_email
 from tasks.sensors import detect_unresponsive_temperature_sensors
+from tasks.cq_jobs import run_job, wait_job, finish_job
 
 
 def make_celery(app):
@@ -35,8 +36,16 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(10.0, send_authorization_email.s(), name='send_authorization_email')
     sender.add_periodic_task(20.0, detect_unresponsive_temperature_sensors.s(), name='detect_unresponsive_temperature_sensors')
 
+    sender.add_periodic_task(10.0, run_job.s(), name='run_job')
+    sender.add_periodic_task(10.0, wait_job.s(), name='wait_job')
+    sender.add_periodic_task(20.0, finish_job.s(), name='finish_job')
+
 
 if __name__ == "__main__":
-    send_confirmation_email()
-    send_authorization_email()
-    detect_unresponsive_temperature_sensors()
+    while True:
+        send_confirmation_email()
+        send_authorization_email()
+        detect_unresponsive_temperature_sensors()
+        run_job()
+        wait_job()
+        finish_job()

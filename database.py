@@ -1,7 +1,7 @@
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
-from core.finite_state_machine.fsm import user_initial_state
+from core.finite_state_machine.fsm import user_initial_state, cq_initial_state
 from frontend import app
 from sqlalchemy import event
 from transitions import Machine
@@ -37,12 +37,38 @@ class User(db.Model):
         self._password = bcrypt.generate_password_hash(plaintext)
 
 
+class ContinuousQueryRecomputeJob(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    state = db.Column(db.String(120), default=cq_initial_state)
+
+    cq_name = db.Column(db.Text)
+    priority = db.Column(db.String(120), default="low")
+    time_interval_start = db.Column(db.DateTime, nullable=False)
+    time_interval_end = db.Column(db.DateTime, nullable=False)
+
+    last_run_start = db.Column(db.DateTime)
+    last_run_end = db.Column(db.DateTime)
+
+    last_execution_time = db.Column(db.BigInteger)
+
+
 @event.listens_for(User, 'init')
 @event.listens_for(User, 'load')
-def receive_init(obj, *args, **kwargs):
+def user_receive_init(obj, *args, **kwargs):
     from core.finite_state_machine.fsm import user_initial_state, user_states, user_transitions
     # when we load data from the DB(via query) we need to set the proper initial state
     initial = obj.state or user_initial_state
     machine = Machine(model=obj, states=user_states, transitions=user_transitions, initial=initial)
+    # in case that we need to have machine obj in model obj
+    setattr(obj, 'machine', machine)
+
+
+@event.listens_for(ContinuousQueryRecomputeJob, 'init')
+@event.listens_for(ContinuousQueryRecomputeJob, 'load')
+def cq_receive_init(obj, *args, **kwargs):
+    from core.finite_state_machine.fsm import cq_initial_state, cq_states, cq_transitions
+    # when we load data from the DB(via query) we need to set the proper initial state
+    initial = obj.state or cq_initial_state
+    machine = Machine(model=obj, states=cq_states, transitions=cq_transitions, initial=initial)
     # in case that we need to have machine obj in model obj
     setattr(obj, 'machine', machine)

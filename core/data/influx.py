@@ -584,7 +584,7 @@ def db_last_sensors_updates():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     # query = "SELECT last(*), *, sensor from sensors group by sensor"
-    query = "SELECT last(*), *, sensor from sensors where time > now() - 3660s group by sensor"
+    query = "SELECT last(*), *, sensor from sensors where time > now() - 36600s group by sensor"
     points = db_client.query(query).get_points()
 
     result = []
@@ -602,6 +602,25 @@ def db_last_sensors_updates():
     db_client.close()
 
     return result
+
+
+def db_oldest_point_in_serie(serie_name):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    query = "SELECT first(*), *, sensor from sensors where sensor='%s'" % (serie_name)
+    points = db_client.query(query).get_points()
+    db_client.close()
+
+    for point in points:
+        return {
+            "time": point["time"],
+            "first_value": point["first_value"],
+            "location": point["location"],
+            "unit": point["unit"],
+            "sensor_type": point["sensor_type"],
+            "sensor": point["sensor"],
+        }
+    return None
 
 
 def db_last_temperature_values():
@@ -693,6 +712,16 @@ def db_get_running_queries():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     query = "show queries"
+    points = db_client.query(query).get_points()
+
+    db_client.close()
+
+    return points
+
+
+def influx_run_query(query):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
     points = db_client.query(query).get_points()
 
     db_client.close()

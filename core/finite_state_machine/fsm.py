@@ -14,3 +14,14 @@ user_transitions = [
     {'trigger': 'deauthorize', 'source': 'authorized', 'dest': 'unauthorized'},
     {'trigger': 'reauthorize', 'source': 'unauthorized', 'dest': 'authorized'},
 ]
+
+# The states
+cq_initial_state = 'created'
+cq_states = [cq_initial_state, 'running', 'waiting', 'finished']
+
+# And some transitions between states.
+cq_transitions = [
+    {'trigger': 'run', 'source': [cq_initial_state, "waiting"], 'dest': 'running'},
+    {'trigger': 'wait', 'source': 'running', 'dest': 'waiting'},
+    {'trigger': 'finish', 'source': 'waiting', 'dest': 'finished'},
+]
