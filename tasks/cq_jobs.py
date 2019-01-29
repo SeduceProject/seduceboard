@@ -26,7 +26,8 @@ def run_job():
 
             if last_run_start_ts > time_interval_start_ts:
                 recomputation_job.last_run_end = recomputation_job.last_run_start
-                recomputation_job.last_run_start = recomputation_job.last_run_end - datetime.timedelta(days=31)
+                time_delta = 7
+                recomputation_job.last_run_start = recomputation_job.last_run_end - datetime.timedelta(days=time_delta)
                 recomputation_job.run()
                 db.session.add(recomputation_job)
                 db.session.commit()

@@ -102,7 +102,11 @@
                                     <td>Not started</td>
                                     {% endif %}
                                     <td>{{ (cq_recomputation.progress * 100) | int }}%</td>
+                                    {% if cq_recomputation.last_execution_time %}
                                     <td>{{ cq_recomputation.last_execution_time | round(1, 'floor') }} seconds</td>
+                                    {% else %}
+                                    <td></td>
+                                    {% endif %}
                                     <td>{{ cq_recomputation.state }}</td>
                                     </tr>
                                 {% endfor %}
