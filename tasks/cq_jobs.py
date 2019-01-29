@@ -31,6 +31,7 @@ def run_job():
                 recomputation_job.run()
                 db.session.add(recomputation_job)
                 db.session.commit()
+        db.session.remove()
 
 
 @celery.task()
@@ -59,6 +60,7 @@ def wait_job():
             db.session.add(recomputation_job)
             db.session.commit()
             pass
+        db.session.remove()
     pass
 
 
@@ -76,4 +78,5 @@ def finish_job():
                 recomputation_job.finish()
                 db.session.add(recomputation_job)
                 db.session.commit()
+        db.session.remove()
     pass
