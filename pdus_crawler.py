@@ -16,7 +16,7 @@ from threading import Timer
 
 from docopt import docopt
 from core.data.snmp import get_pdus
-from core.data.db import *
+from core.data.influx import *
 
 NO_PAUSE = -1
 

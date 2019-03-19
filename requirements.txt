@@ -27,3 +27,4 @@ SQLAlchemy==0.9.10
 Flask-SQLAlchemy==2.1
 paho-mqtt
 redlock
+numpy
