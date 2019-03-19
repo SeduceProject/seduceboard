@@ -11,7 +11,7 @@ def redis_clear_error_count():
     redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
-    redis_client.set(sensor_key, {})
+    redis_client.set(sensor_key, "{}")
 
     return True
 
