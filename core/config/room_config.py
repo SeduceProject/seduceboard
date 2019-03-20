@@ -171,6 +171,10 @@ SENSOR_ARRAYS_COORDINATES = {
         "x": "36.5%",
         "y": "45%"
     },
+    "z1.5tc.exp.front": {
+        "x": "40.5%",
+        "y": "65%"
+    },
     "z1.5tc.front": {
         "x": "40.5%",
         "y": "65%"
