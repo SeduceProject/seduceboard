@@ -8,7 +8,7 @@ import threading
 from core.data.snmp import get_connection_info_for_pdu
 from threading import Timer
 from core.data.snmp import get_pdus
-from core.data.db import *
+#from core.data.db import *
 import telegram
 import logging
 from telegram.ext import Updater, CommandHandler
