@@ -127,53 +127,69 @@
       }
     },
     "back": {
+      "41": {
+        "serie": "3bd1b75809fc0c72",
+        "tags": []
+      },
+      "37": {
+        "serie": "3bc6b75809fc0cac",
+        "tags": []
+      },
       "32": {
-        "serie": "287b7e2b090000db",
+        "serie": "3ba6b75809fc0c6f",
         "tags": ["ecotype-1"]
       },
       "30": {
-        "serie": "281c592b09000034",
+        "serie": "3b96f85809fc2c27",
         "tags": ["ecotype-2"]
       },
       "28": {
-        "serie": "284f8b2b0900009e",
+        "serie": "3bbbb75809fc0c7e",
         "tags": ["ecotype-3"]
       },
       "26": {
-        "serie": "283af1290900003a",
+        "serie": "3b8e0a5909fc2c77",
         "tags": ["ecotype-4"]
       },
       "24": {
-        "serie": "28dd2a2d090000b6",
+        "serie": "3b4fb75809fc0cd0",
         "tags": ["ecotype-5"]
       },
       "22": {
-        "serie": "28878f2c09000039",
+        "serie": "3b9cb75809fc0c4d",
         "tags": ["ecotype-6"]
       },
       "20": {
-        "serie": "284e6e2b090000a1",
+        "serie": "3b990a5909fc2ca9",
         "tags": ["ecotype-7"]
       },
       "18": {
-        "serie": "28d9812b09000020",
+        "serie": "3b580a5909fc2c01",
         "tags": ["ecotype-8"]
       },
       "16": {
-        "serie": "28ab712a090000ff",
+        "serie": "3b210a5909fc2c0f",
         "tags": ["ecotype-9"]
       },
       "14": {
-        "serie": "28c6362a090000ce",
+        "serie": "3b14fb5809fc2ced",
         "tags": ["ecotype-10"]
       },
       "12": {
-        "serie": "28710c2a09000075",
+        "serie": "3b010a5909fc2cb9",
         "tags": ["ecotype-11"]
       },
       "10": {
-        "serie": "2854d12c09000093",
+        "serie": "3b05f95809fc2c02",
         "tags": ["ecotype-12"]
+      },
+      "5": {
+        "serie": "3b61065909fc2c5b",
+        "tags": []
+      },
+      "1": {
+        "serie": "3bb8125909fc4c0f",
+        "tags": []
       }
     }
   },
