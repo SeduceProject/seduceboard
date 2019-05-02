@@ -27,26 +27,26 @@ login_manager.init_app(app)
 login_manager.login_view = "login.login"
 
 
-# You need to declare necessary configuration to initialize
-# flask-profiler as follows:
-app.config["DEBUG"] = True
-app.config["flask_profiler"] = {
-    "enabled": app.config["DEBUG"],
-    "storage": {
-        "engine": "sqlite"
-    },
-    "basicAuth": {
-        "enabled": True,
-        "username": "admin",
-        "password": "admin"
-    },
-    "ignore": [
-        "^/static/.*"
-    ]
-}
-
-profiler = Profiler()  # You can have this in another module
-profiler.init_app(app)
+# # You need to declare necessary configuration to initialize
+# # flask-profiler as follows:
+# app.config["DEBUG"] = True
+# app.config["flask_profiler"] = {
+#     "enabled": app.config["DEBUG"],
+#     "storage": {
+#         "engine": "sqlite"
+#     },
+#     "basicAuth": {
+#         "enabled": True,
+#         "username": "admin",
+#         "password": "admin"
+#     },
+#     "ignore": [
+#         "^/static/.*"
+#     ]
+# }
+#
+# profiler = Profiler()  # You can have this in another module
+# profiler.init_app(app)
 
 
 @login_manager.user_loader
