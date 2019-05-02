@@ -71,9 +71,12 @@ def flush_records(args):
 def read_one_snmp_sensor(sensor_config):
     global influx_lock
     global RECORDS
-    timestamp = int(time.time())
 
     sensor_name = sensor_config.get("name")
+    print("Crawling '%s'" % sensor_name)
+
+    timestamp = int(time.time())
+
     sensor_ip = sensor_config["ip"]
     sensor_oid = sensor_config["oid"]
     sensor_index = sensor_config["index"]
@@ -117,7 +120,7 @@ def read_one_snmp_sensor(sensor_config):
     return False
 
 
-def set_interval(f, args, interval_secs, task_name=None):
+def set_interval(f, args, interval):
     class StoppableThread(threading.Thread):
 
         def __init__(self, f, args, interval):
@@ -126,28 +129,21 @@ def set_interval(f, args, interval_secs, task_name=None):
             self.args = args
             self.interval = interval
             self.stop_execution = False
-            self.daemon = True
 
         def run(self):
-            start_task_time = time.time()
-            try:
-                self.f(self.args)
-            except:
-                traceback.print_exc()
-                print("Something bad happened here :-(")
-                pass
-            end_task_time = time.time()
-            print("[sched:%s] took %f seconds to execute the task (starting: %f)" % (task_name, (end_task_time - start_task_time), start_task_time))
-            time_to_sleep = (self.interval) - (end_task_time - start_task_time)
-            if interval_secs != NO_PAUSE and time_to_sleep > 0:
-                Timer(time_to_sleep, self.run).start()
-            else:
-                self.run()
+            while not self.stop_execution:
+                try:
+                    self.f(self.args)
+                except:
+                    traceback.print_exc()
+                    print("Something bad happened here :-(")
+                    pass
+                time.sleep(self.interval)
 
         def stop(self):
             self.stop_execution = True
 
-    t = StoppableThread(f, args, interval_secs)
+    t = StoppableThread(f, args, interval)
     t.start()
     return t
 
@@ -178,19 +174,15 @@ Options:
 
         readers = []
         for sensor_config in snmp_sensors:
-
             if pdu_candidate not in sensor_config.get("name"):
                 continue
 
-            print("I will start crawling '%s'" % pdu_candidate)
             last_pdu_reader = None
             time.sleep(0.1)
-            reader = set_interval(read_one_snmp_sensor, (sensor_config), 1, task_name="pdus_crawler")
+            reader = set_interval(read_one_snmp_sensor, (sensor_config), 1)
             readers += [reader]
 
-            break
-
-        flusher = set_interval(flush_records, (snmp_sensors), 30, task_name="influx")
+        flusher = set_interval(flush_records, (snmp_sensors), 30)
         readers += [flusher]
 
         for reader in readers:
