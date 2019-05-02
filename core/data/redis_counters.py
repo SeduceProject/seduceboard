@@ -20,7 +20,7 @@ def redis_set_sensor_error_count(sensor_name, error_count):
     redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
-    sensors_data_str = redis_client.get(sensor_key)
+    sensors_data_str = redis_client.get(sensor_key).decode("utf8")
 
     if sensors_data_str is not None:
         sensors_data = json.loads(sensors_data_str)
@@ -46,7 +46,7 @@ def redis_increment_sensor_error_count(sensor_name):
     redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
-    sensors_data_str = redis_client.get(sensor_key)
+    sensors_data_str = redis_client.get(sensor_key).decode("utf8")
 
     if sensors_data_str is not None:
         sensors_data = json.loads(sensors_data_str)
@@ -72,7 +72,7 @@ def redis_get_sensor_error_count(sensor_name):
     redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
-    sensors_data_str = redis_client.get(sensor_key)
+    sensors_data_str = redis_client.get(sensor_key).decode("utf8")
 
     if sensors_data_str is not None:
         sensors_data = json.loads(sensors_data_str)
@@ -93,7 +93,7 @@ def redis_get_sensors_data():
     redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
-    sensors_data_str = redis_client.get(sensor_key)
+    sensors_data_str = redis_client.get(sensor_key).decode("utf8")
 
     if sensors_data_str is None:
         return {}
@@ -106,7 +106,7 @@ def redis_get_sensors_names():
     redis_client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
     sensor_key = "sensors_data"
-    sensors_data_str = redis_client.get(sensor_key)
+    sensors_data_str = redis_client.get(sensor_key).decode("utf8")
 
     if sensors_data_str is None:
         return {}
