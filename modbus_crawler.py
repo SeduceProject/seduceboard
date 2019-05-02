@@ -33,7 +33,7 @@ def new_modbus_reading(config):
     modbus_ip = config["ip"]
     modbus_register = config["register"]
 
-    sensor_name = config.get("sensor_name", config["generated_sensor_id"])
+    sensor_name = config.get("name", config["generated_sensor_id"])
     sensor_type = config["sensor_type"]
     sensor_unit = config["unit"]
     sensor_location = config.get("location", "not specified")
