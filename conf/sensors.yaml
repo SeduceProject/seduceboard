@@ -187,46 +187,42 @@ classes:
     parent: snmp_pdu_z110
 
 inrow:
-  fanspeed:
+  inrow_fanspeed:
     register: 1235
     modbus_length: 2
-    name: fanspeed
+    name: inrow_fanspeed
     unit: '%'
     info: Speed of the fans (percentage of the maximum speed)
-    type: fan
-    sensor_name: inrow_fanspeed
+    sensor_type: fan
     <<: *modbus_inrow
-  supply_temp:
+  inrow_supply_temp:
     register: 1225
     modbus_length: 2
-    name: supply_temp
+    name: inrow_supply_temp
     modbus_divide_by: 10
     unit: C
     info: Temperature of the air supplied by the cooling system
-    type: temperature
-    sensor_name: inrow_supply_temp
+    sensor_type: temperature
     exclude_from_aggregation: true
     <<: *modbus_inrow
-  return_temp:
-    name: return_temp
+  inrow_return_temp:
+    name: inrow_return_temp
     register: 1227
     modbus_length: 2
     modbus_divide_by: 10
     unit: C
     info: Temperature of the air entering the cooling system
-    type: temperature
-    sensor_name: inrow_return_temp
+    sensor_type: temperature
     exclude_from_aggregation: true
     <<: *modbus_inrow
-  cool_output:
-    name: cool_output
+  inrow_cool_demand:
+    name: inrow_cool_demand
     register: 1209
     modbus_length: 2
     modbus_divide_by: 10
     unit: W
     info: '"Cool" demand'
-    type: wattmeter
-    sensor_name: inrow_cool_demand
+    sensor_type: wattmeter
     exclude_from_aggregation: true
     <<: *modbus_inrow
 

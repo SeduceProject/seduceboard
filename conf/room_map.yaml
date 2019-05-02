@@ -436,3 +436,16 @@ wattmeter_b232:
   - wattmeter_servers
   - wattmeter_cooling
   - wattmeter_condensator
+sensors_inrow:
+  coordinates:
+    x: 62%
+    y: 50%
+  info: sensors of the INROW
+  location: B232
+  color: blue
+  name: sensors_inrow
+  sensors:
+  - inrow_fanspeed
+  - inrow_supply_temp
+  - inrow_return_temp
+  - inrow_cool_demand
