@@ -89,7 +89,7 @@ def sensors():
 
     for (sensors_array_name, sensors_array) in sensors_arrays_with_children.items():
         for child in sensors_array["children"]:
-            child_last_update = filter(lambda x: x["sensor"] == child["name"], last_updates)
+            child_last_update = [x for x in last_updates if x.get("sensor") == child.get("name")]
             if len(child_last_update) > 0:
                 last_update_since_epoch = int(
                     time.mktime(parser.parse(child_last_update[0]["time"]).timetuple())) - time.timezone
