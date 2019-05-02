@@ -18,6 +18,7 @@ app = Flask(__name__)
 
 influx_lock = threading.Lock()
 
+
 @app.route("/temperature/list", methods=['POST'])
 def temperature_list():
     global influx_lock
@@ -82,6 +83,7 @@ def flush_records():
     db_client.close()
 
     return False
+
 
 if __name__ == "__main__":
 

@@ -7,6 +7,7 @@ from blueprints.webapp_api import webapp_api_blueprint
 from blueprints.login import login_blueprint
 from blueprints.admin_app import admin_app_blueprint
 from core.misc import prettify_duration as prettify_duration_func
+from flask_profiler import Profiler
 
 
 login_manager = flask_login.LoginManager()
@@ -24,6 +25,28 @@ app.register_blueprint(admin_app_blueprint)
 
 login_manager.init_app(app)
 login_manager.login_view = "login.login"
+
+
+# You need to declare necessary configuration to initialize
+# flask-profiler as follows:
+app.config["DEBUG"] = True
+app.config["flask_profiler"] = {
+    "enabled": app.config["DEBUG"],
+    "storage": {
+        "engine": "sqlite"
+    },
+    "basicAuth": {
+        "enabled": True,
+        "username": "admin",
+        "password": "admin"
+    },
+    "ignore": [
+        "^/static/.*"
+    ]
+}
+
+profiler = Profiler()  # You can have this in another module
+profiler.init_app(app)
 
 
 @login_manager.user_loader

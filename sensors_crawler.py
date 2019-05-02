@@ -177,6 +177,7 @@ def set_interval(f, args, interval):
             self.args = args
             self.interval = interval
             self.stop_execution = False
+            self.daemon = True
 
         def run(self):
             while not self.stop_execution:
@@ -197,20 +198,23 @@ def set_interval(f, args, interval):
 
 
 if __name__ == "__main__":
-    from core.config.crawlers_config import WATTMETERS_CONFIG, SOCOMEC_CONFIG
+    # from core.config.crawlers_config import WATTMETERS_CONFIG, SOCOMEC_CONFIG
+    from core.config.crawlers_config import get_flukso_sensors, get_socomec_sensors
 
-    last_flukso_reader = None
-    for config in WATTMETERS_CONFIG:
+    readers = []
+    for config in get_flukso_sensors():
         flukso_reader = set_interval(new_flukso_reading, (config), 1)
+        readers += [flukso_reader]
 
         # To prevent all sensors to crawl in parallel
         time.sleep(2)
 
-    for config in SOCOMEC_CONFIG:
+    for config in get_socomec_sensors():
         socomec_reader = set_interval(new_socomec_reading, (config), 1)
+        readers += [socomec_reader]
 
         # To prevent all sensors to crawl in parallel
         time.sleep(2)
 
-    if last_flukso_reader is not None:
-        last_flukso_reader.join()
+    for reader in readers:
+        reader.join()

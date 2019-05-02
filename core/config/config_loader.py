@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 import os
 
 
@@ -8,7 +8,7 @@ CONFIG_SINGLETON = None
 
 
 def config_file_to_dict(config_path):
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     successfully_read_files = config.read(config_path)
 
     if len(successfully_read_files) > 0:

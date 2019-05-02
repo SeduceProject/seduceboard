@@ -55,7 +55,7 @@
         <p class="title-description"> Display all the sensors and their more recent data</p>
     </div>
 
-    {% for sensors_array in sensors_arrays_with_children %}
+    {% for (sensors_array_name, sensors_array) in sensors_arrays_with_children.items() %}
     <section class="section">
         <div class="row">
             <div class="col-md-12">

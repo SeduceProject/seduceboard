@@ -1,0 +1,1939 @@
+classes:
+
+  wattmeter: &wattmeter
+    sensor_type: wattmeter
+    unit: W
+
+  temperature: &temperature
+    sensor_type: temperature
+    unit: T
+
+  modbus_inrow: &modbus_inrow
+    method: modbus
+    ip: 192.168.1.17
+    parent: modbus_inrow
+
+  watt_cooler_b232: &watt_cooler_b232
+    <<: *wattmeter
+    method: flukso
+    ip: 192.168.1.65
+    port: 8080
+    location: B232
+    parent: watt_cooler_b232
+
+  watt_cooler_ext: &watt_cooler_ext
+    <<: *wattmeter
+    method: flukso
+    ip: 192.168.1.3
+    port: 8080
+    location: B232
+    parent: watt_cooler_ext
+
+  socomec_server_room: &socomec_server_room
+    <<: *wattmeter
+    method: socomec
+    ip: 192.168.1.8
+    unit_id: 4
+    location: B232
+    parent: socomec_server_room
+
+  temp_Z1_5_back: &temp_Z1_5_back
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_5_back
+    rack: Z1.5
+    side: back
+
+  temp_Z1_5_front: &temp_Z1_5_front
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_5_front
+    rack: Z1.5
+    side: front
+
+  temp_Z1_4_back: &temp_Z1_4_back
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_4_back
+    rack: Z1.4
+    side: back
+
+  temp_Z1_4_front: &temp_Z1_4_front
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_4_front
+    rack: Z1.4
+    side: front
+
+  temp_Z1_2_back: &temp_Z1_2_back
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_2_back
+    rack: Z1.2
+    side: back
+
+  temp_Z1_2_front: &temp_Z1_2_front
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_2_front
+    rack: Z1.2
+    side: front
+
+  temp_Z1_1_back: &temp_Z1_1_back
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_1_back
+    rack: Z1.1
+    side: back
+
+  temp_Z1_1_front: &temp_Z1_1_front
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_1_front
+    rack: Z1.1
+    side: front
+
+  temp_additional_card1: &temp_additional_card1
+    <<: *temperature
+    method: temperature_push
+    parent: temp_additional_card1
+    rack: Z1.5
+    side: front
+
+  temp_room: &temp_room
+    <<: *temperature
+    method: temperature_push
+    parent: temp_room
+    rack: room
+    side: top
+
+  snmp_inrow: &snmp_inrow
+    method: snmp
+    ip: 192.168.1.17
+    oid: 1.3.6.1.4.1.318.1.1.27.1.4.1.2.1.3.1
+    array: true
+    parent: snmp_inrow
+
+  snmp_power_inrow: &snmp_power_inrow
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.17
+    oid: 1.3.6.1.4.1.318.1.1.27.1.4.1.2.1.3.1
+    array: true
+    parent: snmp_power_inrow
+
+  snmp_pdu_z151: &snmp_pdu_z151
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.12
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z151
+
+  snmp_pdu_z150: &snmp_pdu_z150
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.11
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z150
+
+  snmp_pdu_z141: &snmp_pdu_z141
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.10
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z141
+
+  snmp_pdu_z140: &snmp_pdu_z140
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.5
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z140
+
+  snmp_pdu_z121: &snmp_pdu_z121
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.16
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z121
+
+  snmp_pdu_z120: &snmp_pdu_z120
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.15
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z120
+
+  snmp_pdu_z111: &snmp_pdu_z111
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.14
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z111
+
+  snmp_pdu_z110: &snmp_pdu_z110
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.6
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z110
+
+inrow:
+  fanspeed:
+    register: 1235
+    modbus_length: 2
+    name: fanspeed
+    unit: '%'
+    info: Speed of the fans (percentage of the maximum speed)
+    type: fan
+    sensor_name: inrow_fanspeed
+    <<: *modbus_inrow
+  supply_temp:
+    register: 1225
+    modbus_length: 2
+    name: supply_temp
+    modbus_divide_by: 10
+    unit: C
+    info: Temperature of the air supplied by the cooling system
+    type: temperature
+    sensor_name: inrow_supply_temp
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  return_temp:
+    name: return_temp
+    register: 1227
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: Temperature of the air entering the cooling system
+    type: temperature
+    sensor_name: inrow_return_temp
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  cool_output:
+    name: cool_output
+    register: 1209
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: W
+    info: '"Cool" demand'
+    type: wattmeter
+    sensor_name: inrow_cool_demand
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+temperature:
+  3bf2fa5809fc2cbb:
+    info: Temperature sensor 3bf2fa5809fc2cbb
+    name: 3bf2fa5809fc2cbb
+    <<: *temp_Z1_1_front
+    position: 1
+    tags: []
+  3b040d5909fc6c45:
+    info: Temperature sensor 3b040d5909fc6c45
+    name: 3b040d5909fc6c45
+    <<: *temp_Z1_1_front
+    position: 5
+    tags: []
+  3b82fb5809fc2cee:
+    info: Temperature sensor 3b82fb5809fc2cee
+    name: 3b82fb5809fc2cee
+    <<: *temp_Z1_1_front
+    position: 18
+    tags:
+    - ecotype-48
+  3b510c5909fc6c4d:
+    info: Temperature sensor 3b510c5909fc6c4d
+    name: 3b510c5909fc6c4d
+    <<: *temp_Z1_1_front
+    position: 19
+    tags:
+    - ecotype-47
+  3bc8fa5809fc2c99:
+    info: Temperature sensor 3bc8fa5809fc2c99
+    name: 3bc8fa5809fc2c99
+    <<: *temp_Z1_1_front
+    position: 20
+    tags:
+    - ecotype-46
+  3ba9b95809fc0ce9:
+    info: Temperature sensor 3ba9b95809fc0ce9
+    name: 3ba9b95809fc0ce9
+    <<: *temp_Z1_1_front
+    position: 21
+    tags:
+    - ecotype-45
+  3bb3fa5809fc2cf9:
+    info: Temperature sensor 3bb3fa5809fc2cf9
+    name: 3bb3fa5809fc2cf9
+    <<: *temp_Z1_1_front
+    position: 22
+    tags:
+    - ecotype-44
+  3b1bf95809fc2c4a:
+    info: Temperature sensor 3b1bf95809fc2c4a
+    name: 3b1bf95809fc2c4a
+    <<: *temp_Z1_1_front
+    position: 23
+    tags:
+    - ecotype-43
+  3ba9055909fc2c2b:
+    info: Temperature sensor 3ba9055909fc2c2b
+    name: 3ba9055909fc2c2b
+    <<: *temp_Z1_1_front
+    position: 24
+    tags:
+    - ecotype-42
+  3bb9fb5809fc2cfb:
+    info: Temperature sensor 3bb9fb5809fc2cfb
+    name: 3bb9fb5809fc2cfb
+    <<: *temp_Z1_1_front
+    position: 25
+    tags:
+    - ecotype-41
+  3bd3095909fc2c5d:
+    info: Temperature sensor 3bd3095909fc2c5d
+    name: 3bd3095909fc2c5d
+    <<: *temp_Z1_1_front
+    position: 26
+    tags:
+    - ecotype-40
+  3b40fb5809fc2c1f:
+    info: Temperature sensor 3b40fb5809fc2c1f
+    name: 3b40fb5809fc2c1f
+    <<: *temp_Z1_1_front
+    position: 27
+    tags:
+    - ecotype-39
+  3b1a0c5909fc6cc0:
+    info: Temperature sensor 3b1a0c5909fc6cc0
+    name: 3b1a0c5909fc6cc0
+    <<: *temp_Z1_1_front
+    position: 28
+    tags:
+    - ecotype-38
+  3b4d0a5909fc2cb1:
+    info: Temperature sensor 3b4d0a5909fc2cb1
+    name: 3b4d0a5909fc2cb1
+    <<: *temp_Z1_1_front
+    position: 29
+    tags:
+    - ecotype-37
+  3badf85809fc2c32:
+    info: Temperature sensor 3badf85809fc2c32
+    name: 3badf85809fc2c32
+    <<: *temp_Z1_1_front
+    position: 35
+    tags: []
+  3baf0a5909fc2cf6:
+    info: Temperature sensor 3baf0a5909fc2cf6
+    name: 3baf0a5909fc2cf6
+    <<: *temp_Z1_1_front
+    position: 42
+    tags: []
+  3b30b95809fc0cce:
+    info: Temperature sensor 3b30b95809fc0cce
+    name: 3b30b95809fc0cce
+    <<: *temp_Z1_1_back
+    position: 1
+    tags: []
+  3b7e0c5909fc6cdf:
+    info: Temperature sensor 3b7e0c5909fc6cdf
+    name: 3b7e0c5909fc6cdf
+    <<: *temp_Z1_1_back
+    position: 5
+    tags: []
+  3b82065909fc2c2b:
+    info: Temperature sensor 3b82065909fc2c2b
+    name: 3b82065909fc2c2b
+    <<: *temp_Z1_1_back
+    position: 18
+    tags:
+    - ecotype-48
+  3b190d5909fc6c54:
+    info: Temperature sensor 3b190d5909fc6c54
+    name: 3b190d5909fc6c54
+    <<: *temp_Z1_1_back
+    position: 19
+    tags:
+    - ecotype-47
+  3b56065909fc2c33:
+    info: Temperature sensor 3b56065909fc2c33
+    name: 3b56065909fc2c33
+    <<: *temp_Z1_1_back
+    position: 20
+    tags:
+    - ecotype-46
+  3b6c065909fc2c11:
+    info: Temperature sensor 3b6c065909fc2c11
+    name: 3b6c065909fc2c11
+    <<: *temp_Z1_1_back
+    position: 21
+    tags:
+    - ecotype-45
+  3b10135909fc4c3f:
+    info: Temperature sensor 3b10135909fc4c3f
+    name: 3b10135909fc4c3f
+    <<: *temp_Z1_1_back
+    position: 22
+    tags:
+    - ecotype-44
+  3bfaf85809fc2c99:
+    info: Temperature sensor 3bfaf85809fc2c99
+    name: 3bfaf85809fc2c99
+    <<: *temp_Z1_1_back
+    position: 23
+    tags:
+    - ecotype-43
+  3b5ab75809fc0c60:
+    info: Temperature sensor 3b5ab75809fc0c60
+    name: 3b5ab75809fc0c60
+    <<: *temp_Z1_1_back
+    position: 24
+    tags:
+    - ecotype-42
+  3be4f85809fc2cd1:
+    info: Temperature sensor 3be4f85809fc2cd1
+    name: 3be4f85809fc2cd1
+    <<: *temp_Z1_1_back
+    position: 25
+    tags:
+    - ecotype-41
+  3b2fb75809fc0c13:
+    info: Temperature sensor 3b2fb75809fc0c13
+    name: 3b2fb75809fc0c13
+    <<: *temp_Z1_1_back
+    position: 26
+    tags:
+    - ecotype-40
+  3bb1b75809fc0cb1:
+    info: Temperature sensor 3bb1b75809fc0cb1
+    name: 3bb1b75809fc0cb1
+    <<: *temp_Z1_1_back
+    position: 27
+    tags:
+    - ecotype-39
+  3b7bb75809fc0ce1:
+    info: Temperature sensor 3b7bb75809fc0ce1
+    name: 3b7bb75809fc0ce1
+    <<: *temp_Z1_1_back
+    position: 28
+    tags:
+    - ecotype-38
+  3ba2f85809fc2c16:
+    info: Temperature sensor 3ba2f85809fc2c16
+    name: 3ba2f85809fc2c16
+    <<: *temp_Z1_1_back
+    position: 29
+    tags:
+    - ecotype-37
+  3ba3fb5809fc2c6f:
+    info: Temperature sensor 3ba3fb5809fc2c6f
+    name: 3ba3fb5809fc2c6f
+    <<: *temp_Z1_1_back
+    position: 37
+    tags: []
+  3bdf095909fc2c20:
+    info: Temperature sensor 3bdf095909fc2c20
+    name: 3bdf095909fc2c20
+    <<: *temp_Z1_1_back
+    position: 40
+    tags: []
+  3be70a5909fc6c64:
+    info: Temperature sensor 3be70a5909fc6c64
+    name: 3be70a5909fc6c64
+    <<: *temp_Z1_2_front
+    position: 1
+    tags: []
+  3b71f95809fc2c46:
+    info: Temperature sensor 3b71f95809fc2c46
+    name: 3b71f95809fc2c46
+    <<: *temp_Z1_2_front
+    position: 5
+    tags: []
+  3b670c5909fc6c12:
+    info: Temperature sensor 3b670c5909fc6c12
+    name: 3b670c5909fc6c12
+    <<: *temp_Z1_2_front
+    position: 18
+    tags:
+    - ecotype-36
+  3bcb0c5909fc6c33:
+    info: Temperature sensor 3bcb0c5909fc6c33
+    name: 3bcb0c5909fc6c33
+    <<: *temp_Z1_2_front
+    position: 19
+    tags:
+    - ecotype-35
+  3be9095909fc2c7f:
+    info: Temperature sensor 3be9095909fc2c7f
+    name: 3be9095909fc2c7f
+    <<: *temp_Z1_2_front
+    position: 20
+    tags:
+    - ecotype-34
+  3bb4b95809fc0cf8:
+    info: Temperature sensor 3bb4b95809fc0cf8
+    name: 3bb4b95809fc0cf8
+    <<: *temp_Z1_2_front
+    position: 21
+    tags:
+    - ecotype-33
+  3b360a5909fc2cd1:
+    info: Temperature sensor 3b360a5909fc2cd1
+    name: 3b360a5909fc2cd1
+    <<: *temp_Z1_2_front
+    position: 22
+    tags:
+    - ecotype-32
+  3bc70a5909fc6cd2:
+    info: Temperature sensor 3bc70a5909fc6cd2
+    name: 3bc70a5909fc6cd2
+    <<: *temp_Z1_2_front
+    position: 23
+    tags:
+    - ecotype-31
+  3b98fb5809fc2c7a:
+    info: Temperature sensor 3b98fb5809fc2c7a
+    name: 3b98fb5809fc2c7a
+    <<: *temp_Z1_2_front
+    position: 24
+    tags:
+    - ecotype-30
+  3bbf0c5909fc6c77:
+    info: Temperature sensor 3bbf0c5909fc6c77
+    name: 3bbf0c5909fc6c77
+    <<: *temp_Z1_2_front
+    position: 25
+    tags:
+    - ecotype-29
+  3bea055909fc2c07:
+    info: Temperature sensor 3bea055909fc2c07
+    name: 3bea055909fc2c07
+    <<: *temp_Z1_2_front
+    position: 26
+    tags:
+    - ecotype-28
+  3b880c5909fc6c1f:
+    info: Temperature sensor 3b880c5909fc6c1f
+    name: 3b880c5909fc6c1f
+    <<: *temp_Z1_2_front
+    position: 27
+    tags:
+    - ecotype-27
+  3b10b95809fc0c78:
+    info: Temperature sensor 3b10b95809fc0c78
+    name: 3b10b95809fc0c78
+    <<: *temp_Z1_2_front
+    position: 28
+    tags:
+    - ecotype-26
+  3b46f95809fc2c2e:
+    info: Temperature sensor 3b46f95809fc2c2e
+    name: 3b46f95809fc2c2e
+    <<: *temp_Z1_2_front
+    position: 29
+    tags:
+    - ecotype-25
+  3b46b95809fc0ce4:
+    info: Temperature sensor 3b46b95809fc0ce4
+    name: 3b46b95809fc0ce4
+    <<: *temp_Z1_2_front
+    position: 35
+    tags: []
+  3b3c0c5909fc6cc4:
+    info: Temperature sensor 3b3c0c5909fc6cc4
+    name: 3b3c0c5909fc6cc4
+    <<: *temp_Z1_2_front
+    position: 42
+    tags: []
+  3be20c5909fc6c13:
+    info: Temperature sensor 3be20c5909fc6c13
+    name: 3be20c5909fc6c13
+    <<: *temp_Z1_2_back
+    position: 1
+    tags: []
+  3bf5055909fc2c78:
+    info: Temperature sensor 3bf5055909fc2c78
+    name: 3bf5055909fc2c78
+    <<: *temp_Z1_2_back
+    position: 5
+    tags: []
+  3bb40c5909fc6c8f:
+    info: Temperature sensor 3bb40c5909fc6c8f
+    name: 3bb40c5909fc6c8f
+    <<: *temp_Z1_2_back
+    position: 21
+    tags:
+    - ecotype-36
+  3bce125909fc4c25:
+    info: Temperature sensor 3bce125909fc4c25
+    name: 3bce125909fc4c25
+    <<: *temp_Z1_2_back
+    position: 22
+    tags:
+    - ecotype-35
+  3b72b95809fc0cd5:
+    info: Temperature sensor 3b72b95809fc0cd5
+    name: 3b72b95809fc0cd5
+    <<: *temp_Z1_2_back
+    position: 23
+    tags:
+    - ecotype-34
+  3bc3f85809fc2ce2:
+    info: Temperature sensor 3bc3f85809fc2ce2
+    name: 3bc3f85809fc2ce2
+    <<: *temp_Z1_2_back
+    position: 24
+    tags:
+    - ecotype-33
+  3b25b95809fc0c7e:
+    info: Temperature sensor 3b25b95809fc0c7e
+    name: 3b25b95809fc0c7e
+    <<: *temp_Z1_2_back
+    position: 25
+    tags:
+    - ecotype-32
+  3b61fb5809fc2c9e:
+    info: Temperature sensor 3b61fb5809fc2c9e
+    name: 3b61fb5809fc2c9e
+    <<: *temp_Z1_2_back
+    position: 26
+    tags:
+    - ecotype-31
+  3b29065909fc2c8f:
+    info: Temperature sensor 3b29065909fc2c8f
+    name: 3b29065909fc2c8f
+    <<: *temp_Z1_2_back
+    position: 27
+    tags:
+    - ecotype-30
+  3b00065909fc2caf:
+    info: Temperature sensor 3b00065909fc2caf
+    name: 3b00065909fc2caf
+    <<: *temp_Z1_2_back
+    position: 28
+    tags:
+    - ecotype-29
+  3b840a5909fc2cb8:
+    info: Temperature sensor 3b840a5909fc2cb8
+    name: 3b840a5909fc2cb8
+    <<: *temp_Z1_2_back
+    position: 29
+    tags:
+    - ecotype-28
+  3b1ab75809fc0c15:
+    info: Temperature sensor 3b1ab75809fc0c15
+    name: 3b1ab75809fc0c15
+    <<: *temp_Z1_2_back
+    position: 30
+    tags:
+    - ecotype-27
+  3b2c0a5909fc2c45:
+    info: Temperature sensor 3b2c0a5909fc2c45
+    name: 3b2c0a5909fc2c45
+    <<: *temp_Z1_2_back
+    position: 31
+    tags:
+    - ecotype-26
+  3b0fb75809fc0ca5:
+    info: Temperature sensor 3b0fb75809fc0ca5
+    name: 3b0fb75809fc0ca5
+    <<: *temp_Z1_2_back
+    position: 32
+    tags:
+    - ecotype-25
+  3b91b75809fc0c07:
+    info: Temperature sensor 3b91b75809fc0c07
+    name: 3b91b75809fc0c07
+    <<: *temp_Z1_2_back
+    position: 37
+    tags: []
+  3b6f0a5909fc2c69:
+    info: Temperature sensor 3b6f0a5909fc2c69
+    name: 3b6f0a5909fc2c69
+    <<: *temp_Z1_2_back
+    position: 41
+    tags: []
+  3b77065909fc2cb2:
+    info: Temperature sensor 3b77065909fc2cb2
+    name: 3b77065909fc2cb2
+    <<: *temp_Z1_4_front
+    position: 1
+    tags: []
+  3b9e055909fc2c43:
+    info: Temperature sensor 3b9e055909fc2c43
+    name: 3b9e055909fc2c43
+    <<: *temp_Z1_4_front
+    position: 5
+    tags: []
+  3b7cf95809fc2c0c:
+    info: Temperature sensor 3b7cf95809fc2c0c
+    name: 3b7cf95809fc2c0c
+    <<: *temp_Z1_4_front
+    position: 10
+    tags:
+    - ecotype-24
+  3b93055909fc2c09:
+    info: Temperature sensor 3b93055909fc2c09
+    name: 3b93055909fc2c09
+    <<: *temp_Z1_4_front
+    position: 12
+    tags:
+    - ecotype-23
+  3bf20a5909fc6cd4:
+    info: Temperature sensor 3bf20a5909fc6cd4
+    name: 3bf20a5909fc6cd4
+    <<: *temp_Z1_4_front
+    position: 14
+    tags:
+    - ecotype-22
+  3b96125909fc4caa:
+    info: Temperature sensor 3b96125909fc4caa
+    name: 3b96125909fc4caa
+    <<: *temp_Z1_4_front
+    position: 16
+    tags:
+    - ecotype-21
+  3b4bfb5809fc2ce7:
+    info: Temperature sensor 3b4bfb5809fc2ce7
+    name: 3b4bfb5809fc2ce7
+    <<: *temp_Z1_4_front
+    position: 18
+    tags:
+    - ecotype-20
+  3b88055909fc2caa:
+    info: Temperature sensor 3b88055909fc2caa
+    name: 3b88055909fc2caa
+    <<: *temp_Z1_4_front
+    position: 20
+    tags:
+    - ecotype-19
+  3ba90c5909fc6c9e:
+    info: Temperature sensor 3ba90c5909fc6c9e
+    name: 3ba90c5909fc6c9e
+    <<: *temp_Z1_4_front
+    position: 22
+    tags:
+    - ecotype-18
+  3baefb5809fc2c25:
+    info: Temperature sensor 3baefb5809fc2c25
+    name: 3baefb5809fc2c25
+    <<: *temp_Z1_4_front
+    position: 24
+    tags:
+    - ecotype-17
+  3bdeb95809fc0cf4:
+    info: Temperature sensor 3bdeb95809fc0cf4
+    name: 3bdeb95809fc0cf4
+    <<: *temp_Z1_4_front
+    position: 26
+    tags:
+    - ecotype-16
+  3bd70c5909fc6c15:
+    info: Temperature sensor 3bd70c5909fc6c15
+    name: 3bd70c5909fc6c15
+    <<: *temp_Z1_4_front
+    position: 28
+    tags:
+    - ecotype-15
+  3b1f065909fc2cd0:
+    info: Temperature sensor 3b1f065909fc2cd0
+    name: 3b1f065909fc2cd0
+    <<: *temp_Z1_4_front
+    position: 30
+    tags:
+    - ecotype-14
+  3b35fb5809fc2c6c:
+    info: Temperature sensor 3b35fb5809fc2c6c
+    name: 3b35fb5809fc2c6c
+    <<: *temp_Z1_4_front
+    position: 32
+    tags:
+    - ecotype-13
+  3bf90c5909fc6cb0:
+    info: Temperature sensor 3bf90c5909fc6cb0
+    name: 3bf90c5909fc6cb0
+    <<: *temp_Z1_4_front
+    position: 35
+    tags: []
+  3bbf055909fc2cc2:
+    info: Temperature sensor 3bbf055909fc2cc2
+    name: 3bbf055909fc2cc2
+    <<: *temp_Z1_4_front
+    position: 42
+    tags: []
+  3b14065909fc2c28:
+    info: Temperature sensor 3b14065909fc2c28
+    name: 3b14065909fc2c28
+    <<: *temp_Z1_4_back
+    position: 1
+    tags: []
+  3b51b95809fc0c3a:
+    info: Temperature sensor 3b51b95809fc0c3a
+    name: 3b51b95809fc0c3a
+    <<: *temp_Z1_4_back
+    position: 5
+    tags: []
+  3b94b95809fc0c4e:
+    info: Temperature sensor 3b94b95809fc0c4e
+    name: 3b94b95809fc0c4e
+    <<: *temp_Z1_4_back
+    position: 10
+    tags:
+    - ecotype-24
+  3baf0a5909fc6cb0:
+    info: Temperature sensor 3baf0a5909fc6cb0
+    name: 3baf0a5909fc6cb0
+    <<: *temp_Z1_4_back
+    position: 12
+    tags:
+    - ecotype-23
+  3bdf055909fc2c01:
+    info: Temperature sensor 3bdf055909fc2c01
+    name: 3bdf055909fc2c01
+    <<: *temp_Z1_4_back
+    position: 14
+    tags:
+    - ecotype-22
+  3bd4055909fc2cf9:
+    info: Temperature sensor 3bd4055909fc2cf9
+    name: 3bd4055909fc2cf9
+    <<: *temp_Z1_4_back
+    position: 16
+    tags:
+    - ecotype-21
+  3b36065909fc2cf0:
+    info: Temperature sensor 3b36065909fc2cf0
+    name: 3b36065909fc2cf0
+    <<: *temp_Z1_4_back
+    position: 18
+    tags:
+    - ecotype-20
+  3b8dfb5809fc2cca:
+    info: Temperature sensor 3b8dfb5809fc2cca
+    name: 3b8dfb5809fc2cca
+    <<: *temp_Z1_4_back
+    position: 20
+    tags:
+    - ecotype-19
+  3b5cb95809fc0c70:
+    info: Temperature sensor 3b5cb95809fc0c70
+    name: 3b5cb95809fc0c70
+    <<: *temp_Z1_4_back
+    position: 22
+    tags:
+    - ecotype-18
+  3bc2125909fc4c58:
+    info: Temperature sensor 3bc2125909fc4c58
+    name: 3bc2125909fc4c58
+    <<: *temp_Z1_4_back
+    position: 24
+    tags:
+    - ecotype-17
+  3b55fb5809fc2caf:
+    info: Temperature sensor 3b55fb5809fc2caf
+    name: 3b55fb5809fc2caf
+    <<: *temp_Z1_4_back
+    position: 26
+    tags:
+    - ecotype-16
+  3b88b95809fc0c68:
+    info: Temperature sensor 3b88b95809fc0c68
+    name: 3b88b95809fc0c68
+    <<: *temp_Z1_4_back
+    position: 28
+    tags:
+    - ecotype-15
+  3b0a065909fc2c60:
+    info: Temperature sensor 3b0a065909fc2c60
+    name: 3b0a065909fc2c60
+    <<: *temp_Z1_4_back
+    position: 30
+    tags:
+    - ecotype-14
+  3b26f95809fc2ced:
+    info: Temperature sensor 3b26f95809fc2ced
+    name: 3b26f95809fc2ced
+    <<: *temp_Z1_4_back
+    position: 32
+    tags:
+    - ecotype-13
+  3b77fb5809fc2c77:
+    info: Temperature sensor 3b77fb5809fc2c77
+    name: 3b77fb5809fc2c77
+    <<: *temp_Z1_4_back
+    position: 37
+    tags: []
+  3b3ab75809fc0ca3:
+    info: Temperature sensor 3b3ab75809fc0ca3
+    name: 3b3ab75809fc0ca3
+    <<: *temp_Z1_4_back
+    position: 41
+    tags: []
+  3b10f95809fc2cb2:
+    info: Temperature sensor 3b10f95809fc2cb2
+    name: 3b10f95809fc2cb2
+    <<: *temp_Z1_5_front
+    position: 1
+    tags: []
+  3bd8f85809fc2c41:
+    info: Temperature sensor 3bd8f85809fc2c41
+    name: 3bd8f85809fc2c41
+    <<: *temp_Z1_5_front
+    position: 5
+    tags: []
+  3bcef85809fc2ca8:
+    info: Temperature sensor 3bcef85809fc2ca8
+    name: 3bcef85809fc2ca8
+    <<: *temp_Z1_5_front
+    position: 10
+    tags:
+    - ecotype-12
+  3b630a5909fc2c14:
+    info: Temperature sensor 3b630a5909fc2c14
+    name: 3b630a5909fc2c14
+    <<: *temp_Z1_5_front
+    position: 12
+    tags:
+    - ecotype-11
+  3bb8f85809fc2c82:
+    info: Temperature sensor 3bb8f85809fc2c82
+    name: 3bb8f85809fc2c82
+    <<: *temp_Z1_5_front
+    position: 14
+    tags:
+    - ecotype-10
+  3b41065909fc2ced:
+    info: Temperature sensor 3b41065909fc2ced
+    name: 3b41065909fc2ced
+    <<: *temp_Z1_5_front
+    position: 16
+    tags:
+    - ecotype-9
+  3b1bb95809fc0c80:
+    info: Temperature sensor 3b1bb95809fc0c80
+    name: 3b1bb95809fc0c80
+    <<: *temp_Z1_5_front
+    position: 18
+    tags:
+    - ecotype-8
+  3ba1125909fc4cc2:
+    info: Temperature sensor 3ba1125909fc4cc2
+    name: 3ba1125909fc4cc2
+    <<: *temp_Z1_5_front
+    position: 20
+    tags:
+    - ecotype-7
+  3b5cf95809fc2cba:
+    info: Temperature sensor 3b5cf95809fc2cba
+    name: 3b5cf95809fc2cba
+    <<: *temp_Z1_5_front
+    position: 22
+    tags:
+    - ecotype-6
+  3b65b75809fc0ca9:
+    info: Temperature sensor 3b65b75809fc0ca9
+    name: 3b65b75809fc0ca9
+    <<: *temp_Z1_5_front
+    position: 24
+    tags:
+    - ecotype-5
+  3b730c5909fc6c95:
+    info: Temperature sensor 3b730c5909fc6c95
+    name: 3b730c5909fc6c95
+    <<: *temp_Z1_5_front
+    position: 26
+    tags:
+    - ecotype-4
+  3bee125909fc4c93:
+    info: Temperature sensor 3bee125909fc4c93
+    name: 3bee125909fc4c93
+    <<: *temp_Z1_5_front
+    position: 28
+    tags:
+    - ecotype-3
+  3bd10a5909fc6c3b:
+    info: Temperature sensor 3bd10a5909fc6c3b
+    name: 3bd10a5909fc6c3b
+    <<: *temp_Z1_5_front
+    position: 30
+    tags:
+    - ecotype-2
+  3bbefa5809fc2cb3:
+    info: Temperature sensor 3bbefa5809fc2cb3
+    name: 3bbefa5809fc2cb3
+    <<: *temp_Z1_5_front
+    position: 32
+    tags:
+    - ecotype-1
+  3b67b95809fc0c65:
+    info: Temperature sensor 3b67b95809fc0c65
+    name: 3b67b95809fc0c65
+    <<: *temp_Z1_5_front
+    position: 35
+    tags: []
+  3bac125909fc4c88:
+    info: Temperature sensor 3bac125909fc4c88
+    name: 3bac125909fc4c88
+    <<: *temp_Z1_5_front
+    position: 42
+    tags: []
+  3bb8125909fc4c0f:
+    info: Temperature sensor 3bb8125909fc4c0f
+    name: 3bb8125909fc4c0f
+    <<: *temp_Z1_5_back
+    position: 1
+    tags: []
+  3b61065909fc2c5b:
+    info: Temperature sensor 3b61065909fc2c5b
+    name: 3b61065909fc2c5b
+    <<: *temp_Z1_5_back
+    position: 5
+    tags: []
+  3b05f95809fc2c02:
+    info: Temperature sensor 3b05f95809fc2c02
+    name: 3b05f95809fc2c02
+    <<: *temp_Z1_5_back
+    position: 10
+    tags:
+    - ecotype-12
+  3b010a5909fc2cb9:
+    info: Temperature sensor 3b010a5909fc2cb9
+    name: 3b010a5909fc2cb9
+    <<: *temp_Z1_5_back
+    position: 12
+    tags:
+    - ecotype-11
+  3b14fb5809fc2ced:
+    info: Temperature sensor 3b14fb5809fc2ced
+    name: 3b14fb5809fc2ced
+    <<: *temp_Z1_5_back
+    position: 14
+    tags:
+    - ecotype-10
+  3b210a5909fc2c0f:
+    info: Temperature sensor 3b210a5909fc2c0f
+    name: 3b210a5909fc2c0f
+    <<: *temp_Z1_5_back
+    position: 16
+    tags:
+    - ecotype-9
+  3b580a5909fc2c01:
+    info: Temperature sensor 3b580a5909fc2c01
+    name: 3b580a5909fc2c01
+    <<: *temp_Z1_5_back
+    position: 18
+    tags:
+    - ecotype-8
+  3b990a5909fc2ca9:
+    info: Temperature sensor 3b990a5909fc2ca9
+    name: 3b990a5909fc2ca9
+    <<: *temp_Z1_5_back
+    position: 20
+    tags:
+    - ecotype-7
+  3b9cb75809fc0c4d:
+    info: Temperature sensor 3b9cb75809fc0c4d
+    name: 3b9cb75809fc0c4d
+    <<: *temp_Z1_5_back
+    position: 22
+    tags:
+    - ecotype-6
+  3b4fb75809fc0cd0:
+    info: Temperature sensor 3b4fb75809fc0cd0
+    name: 3b4fb75809fc0cd0
+    <<: *temp_Z1_5_back
+    position: 24
+    tags:
+    - ecotype-5
+  3b8e0a5909fc2c77:
+    info: Temperature sensor 3b8e0a5909fc2c77
+    name: 3b8e0a5909fc2c77
+    <<: *temp_Z1_5_back
+    position: 26
+    tags:
+    - ecotype-4
+  3bbbb75809fc0c7e:
+    info: Temperature sensor 3bbbb75809fc0c7e
+    name: 3bbbb75809fc0c7e
+    <<: *temp_Z1_5_back
+    position: 28
+    tags:
+    - ecotype-3
+  3b96f85809fc2c27:
+    info: Temperature sensor 3b96f85809fc2c27
+    name: 3b96f85809fc2c27
+    <<: *temp_Z1_5_back
+    position: 30
+    tags:
+    - ecotype-2
+  3ba6b75809fc0c6f:
+    info: Temperature sensor 3ba6b75809fc0c6f
+    name: 3ba6b75809fc0c6f
+    <<: *temp_Z1_5_back
+    position: 32
+    tags:
+    - ecotype-1
+  3bc6b75809fc0cac:
+    info: Temperature sensor 3bc6b75809fc0cac
+    name: 3bc6b75809fc0cac
+    <<: *temp_Z1_5_back
+    position: 37
+    tags: []
+  3bd1b75809fc0c72:
+    info: Temperature sensor 3bd1b75809fc0c72
+    name: 3bd1b75809fc0c72
+    <<: *temp_Z1_5_back
+    position: 41
+    tags: []
+  28b8fb2909000003:
+    info: Temperature sensor 28b8fb2909000003
+    name: 28b8fb2909000003
+    <<: *temp_room
+    position: 1
+    tags:
+    - external-temperature
+  3bbfb95809fc0c00:
+    info: Temperature sensor 3bbfb95809fc0c00
+    name: 3bbfb95809fc0c00
+    <<: *temp_additional_card1
+    position: 10
+    tags:
+    - ecotype-12
+  3b5c0c5909fc6c07:
+    info: Temperature sensor 3b5c0c5909fc6c07
+    name: 3b5c0c5909fc6c07
+    <<: *temp_additional_card1
+    position: 12
+    tags:
+    - ecotype-11
+  3bd4b95809fc0c3b:
+    info: Temperature sensor 3bd4b95809fc0c3b
+    name: 3bd4b95809fc0c3b
+    <<: *temp_additional_card1
+    position: 14
+    tags:
+    - ecotype-10
+  3b240c5909fc6c3e:
+    info: Temperature sensor 3b240c5909fc6c3e
+    name: 3b240c5909fc6c3e
+    <<: *temp_additional_card1
+    position: 16
+    tags:
+    - ecotype-9
+  3b51f95809fc2cf0:
+    info: Temperature sensor 3b51f95809fc2cf0
+    name: 3b51f95809fc2cf0
+    <<: *temp_additional_card1
+    position: 18
+    tags:
+    - ecotype-8
+  3bf0b65809fc0c3e:
+    info: Temperature sensor 3bf0b65809fc0c3e
+    name: 3bf0b65809fc0c3e
+    <<: *temp_additional_card1
+    position: 20
+    tags:
+    - ecotype-7
+  3b9f0c5909fc6cc1:
+    info: Temperature sensor 3b9f0c5909fc6cc1
+    name: 3b9f0c5909fc6cc1
+    <<: *temp_additional_card1
+    position: 22
+    tags:
+    - ecotype-6
+  3b67f95809fc2caf:
+    info: Temperature sensor 3b67f95809fc2caf
+    name: 3b67f95809fc2caf
+    <<: *temp_additional_card1
+    position: 24
+    tags:
+    - ecotype-5
+  3b7a0a5909fc2cd9:
+    info: Temperature sensor 3b7a0a5909fc2cd9
+    name: 3b7a0a5909fc2cd9
+    <<: *temp_additional_card1
+    position: 26
+    tags:
+    - ecotype-4
+  3be3125909fc4cd9:
+    info: Temperature sensor 3be3125909fc4cd9
+    name: 3be3125909fc4cd9
+    <<: *temp_additional_card1
+    position: 28
+    tags:
+    - ecotype-3
+  3b420a5909fc2c95:
+    info: Temperature sensor 3b420a5909fc2c95
+    name: 3b420a5909fc2c95
+    <<: *temp_additional_card1
+    position: 30
+    tags:
+    - ecotype-2
+  3b05b75809fc0c6a:
+    info: Temperature sensor 3b05b75809fc0c6a
+    name: 3b05b75809fc0c6a
+    <<: *temp_additional_card1
+    position: 32
+    tags:
+    - ecotype-1
+
+pdu:
+  ecotype-37_pdu-Z1.10:
+    info: 'PDU outlet #2 of PDU pdu-Z1.10'
+    name: ecotype-37_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 2
+    tags:
+    - ecotype-37
+  ecotype-38_pdu-Z1.10:
+    info: 'PDU outlet #3 of PDU pdu-Z1.10'
+    name: ecotype-38_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 3
+    tags:
+    - ecotype-38
+  ecotype-39_pdu-Z1.10:
+    info: 'PDU outlet #4 of PDU pdu-Z1.10'
+    name: ecotype-39_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 4
+    tags:
+    - ecotype-39
+  ecotype-40_pdu-Z1.10:
+    info: 'PDU outlet #5 of PDU pdu-Z1.10'
+    name: ecotype-40_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 5
+    tags:
+    - ecotype-40
+  ecotype-41_pdu-Z1.10:
+    info: 'PDU outlet #6 of PDU pdu-Z1.10'
+    name: ecotype-41_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 6
+    tags:
+    - ecotype-41
+  ecotype-42_pdu-Z1.10:
+    info: 'PDU outlet #7 of PDU pdu-Z1.10'
+    name: ecotype-42_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 7
+    tags:
+    - ecotype-42
+  ecotype-43_pdu-Z1.10:
+    info: 'PDU outlet #9 of PDU pdu-Z1.10'
+    name: ecotype-43_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 9
+    tags:
+    - ecotype-43
+  ecotype-44_pdu-Z1.10:
+    info: 'PDU outlet #10 of PDU pdu-Z1.10'
+    name: ecotype-44_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 10
+    tags:
+    - ecotype-44
+  ecotype-45_pdu-Z1.10:
+    info: 'PDU outlet #11 of PDU pdu-Z1.10'
+    name: ecotype-45_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 11
+    tags:
+    - ecotype-45
+  ecotype-46_pdu-Z1.10:
+    info: 'PDU outlet #12 of PDU pdu-Z1.10'
+    name: ecotype-46_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 12
+    tags:
+    - ecotype-46
+  ecotype-47_pdu-Z1.10:
+    info: 'PDU outlet #13 of PDU pdu-Z1.10'
+    name: ecotype-47_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 13
+    tags:
+    - ecotype-47
+  ecotype-48_pdu-Z1.10:
+    info: 'PDU outlet #14 of PDU pdu-Z1.10'
+    name: ecotype-48_pdu-Z1.10
+    <<: *snmp_pdu_z110
+    index: 14
+    tags:
+    - ecotype-48
+  ecotype-37_pdu-Z1.11:
+    info: 'PDU outlet #2 of PDU pdu-Z1.11'
+    name: ecotype-37_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 2
+    tags:
+    - ecotype-37
+  ecotype-38_pdu-Z1.11:
+    info: 'PDU outlet #3 of PDU pdu-Z1.11'
+    name: ecotype-38_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 3
+    tags:
+    - ecotype-38
+  ecotype-39_pdu-Z1.11:
+    info: 'PDU outlet #4 of PDU pdu-Z1.11'
+    name: ecotype-39_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 4
+    tags:
+    - ecotype-39
+  ecotype-40_pdu-Z1.11:
+    info: 'PDU outlet #5 of PDU pdu-Z1.11'
+    name: ecotype-40_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 5
+    tags:
+    - ecotype-40
+  ecotype-41_pdu-Z1.11:
+    info: 'PDU outlet #6 of PDU pdu-Z1.11'
+    name: ecotype-41_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 6
+    tags:
+    - ecotype-41
+  ecotype-42_pdu-Z1.11:
+    info: 'PDU outlet #7 of PDU pdu-Z1.11'
+    name: ecotype-42_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 7
+    tags:
+    - ecotype-42
+  ecotype-43_pdu-Z1.11:
+    info: 'PDU outlet #9 of PDU pdu-Z1.11'
+    name: ecotype-43_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 9
+    tags:
+    - ecotype-43
+  ecotype-44_pdu-Z1.11:
+    info: 'PDU outlet #10 of PDU pdu-Z1.11'
+    name: ecotype-44_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 10
+    tags:
+    - ecotype-44
+  ecotype-45_pdu-Z1.11:
+    info: 'PDU outlet #11 of PDU pdu-Z1.11'
+    name: ecotype-45_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 11
+    tags:
+    - ecotype-45
+  ecotype-46_pdu-Z1.11:
+    info: 'PDU outlet #12 of PDU pdu-Z1.11'
+    name: ecotype-46_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 12
+    tags:
+    - ecotype-46
+  ecotype-47_pdu-Z1.11:
+    info: 'PDU outlet #13 of PDU pdu-Z1.11'
+    name: ecotype-47_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 13
+    tags:
+    - ecotype-47
+  ecotype-48_pdu-Z1.11:
+    info: 'PDU outlet #14 of PDU pdu-Z1.11'
+    name: ecotype-48_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 14
+    tags:
+    - ecotype-48
+  electrical_mgmt_board_pdu-Z1.11:
+    info: 'PDU outlet #1 of PDU pdu-Z1.11'
+    name: electrical_mgmt_board_pdu-Z1.11
+    <<: *snmp_pdu_z111
+    index: 1
+    tags:
+    - electrical_mgmt_board
+  ecotype-25_pdu-Z1.20:
+    info: 'PDU outlet #2 of PDU pdu-Z1.20'
+    name: ecotype-25_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 2
+    tags:
+    - ecotype-25
+  ecotype-26_pdu-Z1.20:
+    info: 'PDU outlet #3 of PDU pdu-Z1.20'
+    name: ecotype-26_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 3
+    tags:
+    - ecotype-26
+  ecotype-27_pdu-Z1.20:
+    info: 'PDU outlet #4 of PDU pdu-Z1.20'
+    name: ecotype-27_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 4
+    tags:
+    - ecotype-27
+  ecotype-28_pdu-Z1.20:
+    info: 'PDU outlet #5 of PDU pdu-Z1.20'
+    name: ecotype-28_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 5
+    tags:
+    - ecotype-28
+  ecotype-29_pdu-Z1.20:
+    info: 'PDU outlet #6 of PDU pdu-Z1.20'
+    name: ecotype-29_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 6
+    tags:
+    - ecotype-29
+  ecotype-30_pdu-Z1.20:
+    info: 'PDU outlet #7 of PDU pdu-Z1.20'
+    name: ecotype-30_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 7
+    tags:
+    - ecotype-30
+  ecotype-31_pdu-Z1.20:
+    info: 'PDU outlet #9 of PDU pdu-Z1.20'
+    name: ecotype-31_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 9
+    tags:
+    - ecotype-31
+  ecotype-32_pdu-Z1.20:
+    info: 'PDU outlet #10 of PDU pdu-Z1.20'
+    name: ecotype-32_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 10
+    tags:
+    - ecotype-32
+  ecotype-33_pdu-Z1.20:
+    info: 'PDU outlet #11 of PDU pdu-Z1.20'
+    name: ecotype-33_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 11
+    tags:
+    - ecotype-33
+  ecotype-34_pdu-Z1.20:
+    info: 'PDU outlet #12 of PDU pdu-Z1.20'
+    name: ecotype-34_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 12
+    tags:
+    - ecotype-34
+  ecotype-35_pdu-Z1.20:
+    info: 'PDU outlet #13 of PDU pdu-Z1.20'
+    name: ecotype-35_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 13
+    tags:
+    - ecotype-35
+  ecotype-36_pdu-Z1.20:
+    info: 'PDU outlet #14 of PDU pdu-Z1.20'
+    name: ecotype-36_pdu-Z1.20
+    <<: *snmp_pdu_z120
+    index: 14
+    tags:
+    - ecotype-36
+  ecotype-25_pdu-Z1.21:
+    info: 'PDU outlet #2 of PDU pdu-Z1.21'
+    name: ecotype-25_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 2
+    tags:
+    - ecotype-25
+  ecotype-26_pdu-Z1.21:
+    info: 'PDU outlet #3 of PDU pdu-Z1.21'
+    name: ecotype-26_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 3
+    tags:
+    - ecotype-26
+  ecotype-27_pdu-Z1.21:
+    info: 'PDU outlet #4 of PDU pdu-Z1.21'
+    name: ecotype-27_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 4
+    tags:
+    - ecotype-27
+  ecotype-28_pdu-Z1.21:
+    info: 'PDU outlet #5 of PDU pdu-Z1.21'
+    name: ecotype-28_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 5
+    tags:
+    - ecotype-28
+  ecotype-29_pdu-Z1.21:
+    info: 'PDU outlet #6 of PDU pdu-Z1.21'
+    name: ecotype-29_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 6
+    tags:
+    - ecotype-29
+  ecotype-30_pdu-Z1.21:
+    info: 'PDU outlet #7 of PDU pdu-Z1.21'
+    name: ecotype-30_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 7
+    tags:
+    - ecotype-30
+  ecotype-31_pdu-Z1.21:
+    info: 'PDU outlet #9 of PDU pdu-Z1.21'
+    name: ecotype-31_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 9
+    tags:
+    - ecotype-31
+  ecotype-32_pdu-Z1.21:
+    info: 'PDU outlet #10 of PDU pdu-Z1.21'
+    name: ecotype-32_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 10
+    tags:
+    - ecotype-32
+  ecotype-33_pdu-Z1.21:
+    info: 'PDU outlet #11 of PDU pdu-Z1.21'
+    name: ecotype-33_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 11
+    tags:
+    - ecotype-33
+  ecotype-34_pdu-Z1.21:
+    info: 'PDU outlet #12 of PDU pdu-Z1.21'
+    name: ecotype-34_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 12
+    tags:
+    - ecotype-34
+  ecotype-35_pdu-Z1.21:
+    info: 'PDU outlet #13 of PDU pdu-Z1.21'
+    name: ecotype-35_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 13
+    tags:
+    - ecotype-35
+  ecotype-36_pdu-Z1.21:
+    info: 'PDU outlet #14 of PDU pdu-Z1.21'
+    name: ecotype-36_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 14
+    tags:
+    - ecotype-36
+  switch_prod_2_pdu-Z1.21:
+    info: 'PDU outlet #1 of PDU pdu-Z1.21'
+    name: switch_prod_2_pdu-Z1.21
+    <<: *snmp_pdu_z121
+    index: 1
+    tags:
+    - switch_prod_2
+  ecotype-13_pdu-Z1.40:
+    info: 'PDU outlet #2 of PDU pdu-Z1.40'
+    name: ecotype-13_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 2
+    tags:
+    - ecotype-13
+  ecotype-14_pdu-Z1.40:
+    info: 'PDU outlet #3 of PDU pdu-Z1.40'
+    name: ecotype-14_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 3
+    tags:
+    - ecotype-14
+  ecotype-15_pdu-Z1.40:
+    info: 'PDU outlet #4 of PDU pdu-Z1.40'
+    name: ecotype-15_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 4
+    tags:
+    - ecotype-15
+  ecotype-16_pdu-Z1.40:
+    info: 'PDU outlet #5 of PDU pdu-Z1.40'
+    name: ecotype-16_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 5
+    tags:
+    - ecotype-16
+  ecotype-17_pdu-Z1.40:
+    info: 'PDU outlet #6 of PDU pdu-Z1.40'
+    name: ecotype-17_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 6
+    tags:
+    - ecotype-17
+  ecotype-18_pdu-Z1.40:
+    info: 'PDU outlet #7 of PDU pdu-Z1.40'
+    name: ecotype-18_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 7
+    tags:
+    - ecotype-18
+  ecotype-19_pdu-Z1.40:
+    info: 'PDU outlet #9 of PDU pdu-Z1.40'
+    name: ecotype-19_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 9
+    tags:
+    - ecotype-19
+  ecotype-20_pdu-Z1.40:
+    info: 'PDU outlet #10 of PDU pdu-Z1.40'
+    name: ecotype-20_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 10
+    tags:
+    - ecotype-20
+  ecotype-21_pdu-Z1.40:
+    info: 'PDU outlet #11 of PDU pdu-Z1.40'
+    name: ecotype-21_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 11
+    tags:
+    - ecotype-21
+  ecotype-22_pdu-Z1.40:
+    info: 'PDU outlet #12 of PDU pdu-Z1.40'
+    name: ecotype-22_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 12
+    tags:
+    - ecotype-22
+  ecotype-23_pdu-Z1.40:
+    info: 'PDU outlet #13 of PDU pdu-Z1.40'
+    name: ecotype-23_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 13
+    tags:
+    - ecotype-23
+  ecotype-24_pdu-Z1.40:
+    info: 'PDU outlet #14 of PDU pdu-Z1.40'
+    name: ecotype-24_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 14
+    tags:
+    - ecotype-24
+  switch_mgmt_pdu-Z1.40:
+    info: 'PDU outlet #1 of PDU pdu-Z1.40'
+    name: switch_mgmt_pdu-Z1.40
+    <<: *snmp_pdu_z140
+    index: 1
+    tags:
+    - switch_mgmt
+  ecotype-13_pdu-Z1.41:
+    info: 'PDU outlet #2 of PDU pdu-Z1.41'
+    name: ecotype-13_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 2
+    tags:
+    - ecotype-13
+  ecotype-14_pdu-Z1.41:
+    info: 'PDU outlet #3 of PDU pdu-Z1.41'
+    name: ecotype-14_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 3
+    tags:
+    - ecotype-14
+  ecotype-15_pdu-Z1.41:
+    info: 'PDU outlet #4 of PDU pdu-Z1.41'
+    name: ecotype-15_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 4
+    tags:
+    - ecotype-15
+  ecotype-16_pdu-Z1.41:
+    info: 'PDU outlet #5 of PDU pdu-Z1.41'
+    name: ecotype-16_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 5
+    tags:
+    - ecotype-16
+  ecotype-17_pdu-Z1.41:
+    info: 'PDU outlet #6 of PDU pdu-Z1.41'
+    name: ecotype-17_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 6
+    tags:
+    - ecotype-17
+  ecotype-18_pdu-Z1.41:
+    info: 'PDU outlet #7 of PDU pdu-Z1.41'
+    name: ecotype-18_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 7
+    tags:
+    - ecotype-18
+  ecotype-19_pdu-Z1.41:
+    info: 'PDU outlet #9 of PDU pdu-Z1.41'
+    name: ecotype-19_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 9
+    tags:
+    - ecotype-19
+  ecotype-20_pdu-Z1.41:
+    info: 'PDU outlet #10 of PDU pdu-Z1.41'
+    name: ecotype-20_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 10
+    tags:
+    - ecotype-20
+  ecotype-21_pdu-Z1.41:
+    info: 'PDU outlet #11 of PDU pdu-Z1.41'
+    name: ecotype-21_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 11
+    tags:
+    - ecotype-21
+  ecotype-22_pdu-Z1.41:
+    info: 'PDU outlet #12 of PDU pdu-Z1.41'
+    name: ecotype-22_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 12
+    tags:
+    - ecotype-22
+  ecotype-23_pdu-Z1.41:
+    info: 'PDU outlet #13 of PDU pdu-Z1.41'
+    name: ecotype-23_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 13
+    tags:
+    - ecotype-23
+  ecotype-24_pdu-Z1.41:
+    info: 'PDU outlet #14 of PDU pdu-Z1.41'
+    name: ecotype-24_pdu-Z1.41
+    <<: *snmp_pdu_z141
+    index: 14
+    tags:
+    - ecotype-24
+  ecotype-10_pdu-Z1.50:
+    info: 'PDU outlet #12 of PDU pdu-Z1.50'
+    name: ecotype-10_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 12
+    tags:
+    - ecotype-10
+  ecotype-11_pdu-Z1.50:
+    info: 'PDU outlet #13 of PDU pdu-Z1.50'
+    name: ecotype-11_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 13
+    tags:
+    - ecotype-11
+  ecotype-12_pdu-Z1.50:
+    info: 'PDU outlet #14 of PDU pdu-Z1.50'
+    name: ecotype-12_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 14
+    tags:
+    - ecotype-12
+  ecotype-1_pdu-Z1.50:
+    info: 'PDU outlet #2 of PDU pdu-Z1.50'
+    name: ecotype-1_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 2
+    tags:
+    - ecotype-1
+  ecotype-2_pdu-Z1.50:
+    info: 'PDU outlet #3 of PDU pdu-Z1.50'
+    name: ecotype-2_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 3
+    tags:
+    - ecotype-2
+  ecotype-3_pdu-Z1.50:
+    info: 'PDU outlet #4 of PDU pdu-Z1.50'
+    name: ecotype-3_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 4
+    tags:
+    - ecotype-3
+  ecotype-4_pdu-Z1.50:
+    info: 'PDU outlet #5 of PDU pdu-Z1.50'
+    name: ecotype-4_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 5
+    tags:
+    - ecotype-4
+  ecotype-5_pdu-Z1.50:
+    info: 'PDU outlet #6 of PDU pdu-Z1.50'
+    name: ecotype-5_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 6
+    tags:
+    - ecotype-5
+  ecotype-6_pdu-Z1.50:
+    info: 'PDU outlet #7 of PDU pdu-Z1.50'
+    name: ecotype-6_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 7
+    tags:
+    - ecotype-6
+  ecotype-7_pdu-Z1.50:
+    info: 'PDU outlet #9 of PDU pdu-Z1.50'
+    name: ecotype-7_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 9
+    tags:
+    - ecotype-7
+  ecotype-8_pdu-Z1.50:
+    info: 'PDU outlet #10 of PDU pdu-Z1.50'
+    name: ecotype-8_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 10
+    tags:
+    - ecotype-8
+  ecotype-9_pdu-Z1.50:
+    info: 'PDU outlet #11 of PDU pdu-Z1.50'
+    name: ecotype-9_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 11
+    tags:
+    - ecotype-9
+  ecotype-10_pdu-Z1.51:
+    info: 'PDU outlet #12 of PDU pdu-Z1.51'
+    name: ecotype-10_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 12
+    tags:
+    - ecotype-10
+  ecotype-11_pdu-Z1.51:
+    info: 'PDU outlet #13 of PDU pdu-Z1.51'
+    name: ecotype-11_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 13
+    tags:
+    - ecotype-11
+  ecotype-12_pdu-Z1.51:
+    info: 'PDU outlet #14 of PDU pdu-Z1.51'
+    name: ecotype-12_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 14
+    tags:
+    - ecotype-12
+  ecotype-1_pdu-Z1.51:
+    info: 'PDU outlet #2 of PDU pdu-Z1.51'
+    name: ecotype-1_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 2
+    tags:
+    - ecotype-1
+  ecotype-2_pdu-Z1.51:
+    info: 'PDU outlet #3 of PDU pdu-Z1.51'
+    name: ecotype-2_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 3
+    tags:
+    - ecotype-2
+  ecotype-3_pdu-Z1.51:
+    info: 'PDU outlet #4 of PDU pdu-Z1.51'
+    name: ecotype-3_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 4
+    tags:
+    - ecotype-3
+  ecotype-4_pdu-Z1.51:
+    info: 'PDU outlet #5 of PDU pdu-Z1.51'
+    name: ecotype-4_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 5
+    tags:
+    - ecotype-4
+  ecotype-5_pdu-Z1.51:
+    info: 'PDU outlet #6 of PDU pdu-Z1.51'
+    name: ecotype-5_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 6
+    tags:
+    - ecotype-5
+  ecotype-6_pdu-Z1.51:
+    info: 'PDU outlet #7 of PDU pdu-Z1.51'
+    name: ecotype-6_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 7
+    tags:
+    - ecotype-6
+  ecotype-7_pdu-Z1.51:
+    info: 'PDU outlet #9 of PDU pdu-Z1.51'
+    name: ecotype-7_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 9
+    tags:
+    - ecotype-7
+  ecotype-8_pdu-Z1.51:
+    info: 'PDU outlet #10 of PDU pdu-Z1.51'
+    name: ecotype-8_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 10
+    tags:
+    - ecotype-8
+  ecotype-9_pdu-Z1.51:
+    info: 'PDU outlet #11 of PDU pdu-Z1.51'
+    name: ecotype-9_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 11
+    tags:
+    - ecotype-9
+  switch_prod_1_pdu-Z1.51:
+    info: 'PDU outlet #1 of PDU pdu-Z1.51'
+    name: switch_prod_1_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 1
+    tags:
+    - switch_prod_1
+
+flukso:
+  watt_cooler_b232_1:
+    info: Flukso B232 (clamp1)
+    name: watt_cooler_b232_1
+    sensor_id: c6a2caade50d7532ee3a3292238fd587
+    <<: *watt_cooler_b232
+  watt_cooler_b232_2:
+    info: Flukso B232 (clamp2) - orange
+    name: watt_cooler_b232_2
+    sensor_id: ec570cfc1105d5b5683ac6e016a51e15
+    <<: *watt_cooler_b232
+  watt_cooler_b232_3:
+    info: Flukso B232 (clamp3) - blue
+    name: watt_cooler_b232_3
+    sensor_id: 7bb7b11e88cd9189837e774dea92a306
+    <<: *watt_cooler_b232
+  watt_cooler_ext_1:
+    info: Flukso exterior (clamp1)
+    name: watt_cooler_ext_1
+    sensor_id: c02e3188315a049823c2275431a64d1a
+    <<: *watt_cooler_ext
+  watt_cooler_ext_2:
+    info: Flukso exterior (clamp2)
+    name: watt_cooler_ext_2
+    sensor_id: c9ab5e2728f7de90d3186e11dc5284ff
+    <<: *watt_cooler_ext
+
+socomec:
+  wattmeter_condensator:
+    info: wattmeter condensator (socomec)
+    name: wattmeter_condensator
+    address: 18476
+    unit_id: 4
+    <<: *socomec_server_room
+  wattmeter_cooling:
+    info: wattmeter cooling (socomec)
+    name: wattmeter_cooling
+    address: 20524
+    unit_id: 4
+    sensor_id: ec570cfc1105d5b5683ac6e016a51e15
+    <<: *socomec_server_room
+  wattmeter_servers:
+    info: wattmeter servers (socomec)
+    name: wattmeter_servers
+    address: 18476
+    unit_id: 3
+    sensor_id: 7bb7b11e88cd9189837e774dea92a306
+    <<: *socomec_server_room

@@ -1,0 +1,548 @@
+Z1.1:
+  back:
+    '1':
+      serie: 3b30b95809fc0cce
+      tags: []
+    '18':
+      serie: 3b82065909fc2c2b
+      tags:
+      - ecotype-48
+    '19':
+      serie: 3b190d5909fc6c54
+      tags:
+      - ecotype-47
+    '20':
+      serie: 3b56065909fc2c33
+      tags:
+      - ecotype-46
+    '21':
+      serie: 3b6c065909fc2c11
+      tags:
+      - ecotype-45
+    '22':
+      serie: 3b10135909fc4c3f
+      tags:
+      - ecotype-44
+    '23':
+      serie: 3bfaf85809fc2c99
+      tags:
+      - ecotype-43
+    '24':
+      serie: 3b5ab75809fc0c60
+      tags:
+      - ecotype-42
+    '25':
+      serie: 3be4f85809fc2cd1
+      tags:
+      - ecotype-41
+    '26':
+      serie: 3b2fb75809fc0c13
+      tags:
+      - ecotype-40
+    '27':
+      serie: 3bb1b75809fc0cb1
+      tags:
+      - ecotype-39
+    '28':
+      serie: 3b7bb75809fc0ce1
+      tags:
+      - ecotype-38
+    '29':
+      serie: 3ba2f85809fc2c16
+      tags:
+      - ecotype-37
+    '37':
+      serie: 3ba3fb5809fc2c6f
+      tags: []
+    '40':
+      serie: 3bdf095909fc2c20
+      tags: []
+    '5':
+      serie: 3b7e0c5909fc6cdf
+      tags: []
+  front:
+    '1':
+      serie: 3bf2fa5809fc2cbb
+      tags: []
+    '18':
+      serie: 3b82fb5809fc2cee
+      tags:
+      - ecotype-48
+    '19':
+      serie: 3b510c5909fc6c4d
+      tags:
+      - ecotype-47
+    '20':
+      serie: 3bc8fa5809fc2c99
+      tags:
+      - ecotype-46
+    '21':
+      serie: 3ba9b95809fc0ce9
+      tags:
+      - ecotype-45
+    '22':
+      serie: 3bb3fa5809fc2cf9
+      tags:
+      - ecotype-44
+    '23':
+      serie: 3b1bf95809fc2c4a
+      tags:
+      - ecotype-43
+    '24':
+      serie: 3ba9055909fc2c2b
+      tags:
+      - ecotype-42
+    '25':
+      serie: 3bb9fb5809fc2cfb
+      tags:
+      - ecotype-41
+    '26':
+      serie: 3bd3095909fc2c5d
+      tags:
+      - ecotype-40
+    '27':
+      serie: 3b40fb5809fc2c1f
+      tags:
+      - ecotype-39
+    '28':
+      serie: 3b1a0c5909fc6cc0
+      tags:
+      - ecotype-38
+    '29':
+      serie: 3b4d0a5909fc2cb1
+      tags:
+      - ecotype-37
+    '35':
+      serie: 3badf85809fc2c32
+      tags: []
+    '42':
+      serie: 3baf0a5909fc2cf6
+      tags: []
+    '5':
+      serie: 3b040d5909fc6c45
+      tags: []
+Z1.2:
+  back:
+    '1':
+      serie: 3be20c5909fc6c13
+      tags: []
+    '21':
+      serie: 3bb40c5909fc6c8f
+      tags:
+      - ecotype-36
+    '22':
+      serie: 3bce125909fc4c25
+      tags:
+      - ecotype-35
+    '23':
+      serie: 3b72b95809fc0cd5
+      tags:
+      - ecotype-34
+    '24':
+      serie: 3bc3f85809fc2ce2
+      tags:
+      - ecotype-33
+    '25':
+      serie: 3b25b95809fc0c7e
+      tags:
+      - ecotype-32
+    '26':
+      serie: 3b61fb5809fc2c9e
+      tags:
+      - ecotype-31
+    '27':
+      serie: 3b29065909fc2c8f
+      tags:
+      - ecotype-30
+    '28':
+      serie: 3b00065909fc2caf
+      tags:
+      - ecotype-29
+    '29':
+      serie: 3b840a5909fc2cb8
+      tags:
+      - ecotype-28
+    '30':
+      serie: 3b1ab75809fc0c15
+      tags:
+      - ecotype-27
+    '31':
+      serie: 3b2c0a5909fc2c45
+      tags:
+      - ecotype-26
+    '32':
+      serie: 3b0fb75809fc0ca5
+      tags:
+      - ecotype-25
+    '37':
+      serie: 3b91b75809fc0c07
+      tags: []
+    '41':
+      serie: 3b6f0a5909fc2c69
+      tags: []
+    '5':
+      serie: 3bf5055909fc2c78
+      tags: []
+  front:
+    '1':
+      serie: 3be70a5909fc6c64
+      tags: []
+    '18':
+      serie: 3b670c5909fc6c12
+      tags:
+      - ecotype-36
+    '19':
+      serie: 3bcb0c5909fc6c33
+      tags:
+      - ecotype-35
+    '20':
+      serie: 3be9095909fc2c7f
+      tags:
+      - ecotype-34
+    '21':
+      serie: 3bb4b95809fc0cf8
+      tags:
+      - ecotype-33
+    '22':
+      serie: 3b360a5909fc2cd1
+      tags:
+      - ecotype-32
+    '23':
+      serie: 3bc70a5909fc6cd2
+      tags:
+      - ecotype-31
+    '24':
+      serie: 3b98fb5809fc2c7a
+      tags:
+      - ecotype-30
+    '25':
+      serie: 3bbf0c5909fc6c77
+      tags:
+      - ecotype-29
+    '26':
+      serie: 3bea055909fc2c07
+      tags:
+      - ecotype-28
+    '27':
+      serie: 3b880c5909fc6c1f
+      tags:
+      - ecotype-27
+    '28':
+      serie: 3b10b95809fc0c78
+      tags:
+      - ecotype-26
+    '29':
+      serie: 3b46f95809fc2c2e
+      tags:
+      - ecotype-25
+    '35':
+      serie: 3b46b95809fc0ce4
+      tags: []
+    '42':
+      serie: 3b3c0c5909fc6cc4
+      tags: []
+    '5':
+      serie: 3b71f95809fc2c46
+      tags: []
+Z1.4:
+  back:
+    '1':
+      serie: 3b14065909fc2c28
+      tags: []
+    '10':
+      serie: 3b94b95809fc0c4e
+      tags:
+      - ecotype-24
+    '12':
+      serie: 3baf0a5909fc6cb0
+      tags:
+      - ecotype-23
+    '14':
+      serie: 3bdf055909fc2c01
+      tags:
+      - ecotype-22
+    '16':
+      serie: 3bd4055909fc2cf9
+      tags:
+      - ecotype-21
+    '18':
+      serie: 3b36065909fc2cf0
+      tags:
+      - ecotype-20
+    '20':
+      serie: 3b8dfb5809fc2cca
+      tags:
+      - ecotype-19
+    '22':
+      serie: 3b5cb95809fc0c70
+      tags:
+      - ecotype-18
+    '24':
+      serie: 3bc2125909fc4c58
+      tags:
+      - ecotype-17
+    '26':
+      serie: 3b55fb5809fc2caf
+      tags:
+      - ecotype-16
+    '28':
+      serie: 3b88b95809fc0c68
+      tags:
+      - ecotype-15
+    '30':
+      serie: 3b0a065909fc2c60
+      tags:
+      - ecotype-14
+    '32':
+      serie: 3b26f95809fc2ced
+      tags:
+      - ecotype-13
+    '37':
+      serie: 3b77fb5809fc2c77
+      tags: []
+    '41':
+      serie: 3b3ab75809fc0ca3
+      tags: []
+    '5':
+      serie: 3b51b95809fc0c3a
+      tags: []
+  front:
+    '1':
+      serie: 3b77065909fc2cb2
+      tags: []
+    '10':
+      serie: 3b7cf95809fc2c0c
+      tags:
+      - ecotype-24
+    '12':
+      serie: 3b93055909fc2c09
+      tags:
+      - ecotype-23
+    '14':
+      serie: 3bf20a5909fc6cd4
+      tags:
+      - ecotype-22
+    '16':
+      serie: 3b96125909fc4caa
+      tags:
+      - ecotype-21
+    '18':
+      serie: 3b4bfb5809fc2ce7
+      tags:
+      - ecotype-20
+    '20':
+      serie: 3b88055909fc2caa
+      tags:
+      - ecotype-19
+    '22':
+      serie: 3ba90c5909fc6c9e
+      tags:
+      - ecotype-18
+    '24':
+      serie: 3baefb5809fc2c25
+      tags:
+      - ecotype-17
+    '26':
+      serie: 3bdeb95809fc0cf4
+      tags:
+      - ecotype-16
+    '28':
+      serie: 3bd70c5909fc6c15
+      tags:
+      - ecotype-15
+    '30':
+      serie: 3b1f065909fc2cd0
+      tags:
+      - ecotype-14
+    '32':
+      serie: 3b35fb5809fc2c6c
+      tags:
+      - ecotype-13
+    '35':
+      serie: 3bf90c5909fc6cb0
+      tags: []
+    '42':
+      serie: 3bbf055909fc2cc2
+      tags: []
+    '5':
+      serie: 3b9e055909fc2c43
+      tags: []
+Z1.5:
+  back:
+    '1':
+      serie: 3bb8125909fc4c0f
+      tags: []
+    '10':
+      serie: 3b05f95809fc2c02
+      tags:
+      - ecotype-12
+    '12':
+      serie: 3b010a5909fc2cb9
+      tags:
+      - ecotype-11
+    '14':
+      serie: 3b14fb5809fc2ced
+      tags:
+      - ecotype-10
+    '16':
+      serie: 3b210a5909fc2c0f
+      tags:
+      - ecotype-9
+    '18':
+      serie: 3b580a5909fc2c01
+      tags:
+      - ecotype-8
+    '20':
+      serie: 3b990a5909fc2ca9
+      tags:
+      - ecotype-7
+    '22':
+      serie: 3b9cb75809fc0c4d
+      tags:
+      - ecotype-6
+    '24':
+      serie: 3b4fb75809fc0cd0
+      tags:
+      - ecotype-5
+    '26':
+      serie: 3b8e0a5909fc2c77
+      tags:
+      - ecotype-4
+    '28':
+      serie: 3bbbb75809fc0c7e
+      tags:
+      - ecotype-3
+    '30':
+      serie: 3b96f85809fc2c27
+      tags:
+      - ecotype-2
+    '32':
+      serie: 3ba6b75809fc0c6f
+      tags:
+      - ecotype-1
+    '37':
+      serie: 3bc6b75809fc0cac
+      tags: []
+    '41':
+      serie: 3bd1b75809fc0c72
+      tags: []
+    '5':
+      serie: 3b61065909fc2c5b
+      tags: []
+  front:
+    '1':
+      serie: 3b10f95809fc2cb2
+      tags: []
+    '10':
+      serie: 3bcef85809fc2ca8
+      tags:
+      - ecotype-12
+    '12':
+      serie: 3b630a5909fc2c14
+      tags:
+      - ecotype-11
+    '14':
+      serie: 3bb8f85809fc2c82
+      tags:
+      - ecotype-10
+    '16':
+      serie: 3b41065909fc2ced
+      tags:
+      - ecotype-9
+    '18':
+      serie: 3b1bb95809fc0c80
+      tags:
+      - ecotype-8
+    '20':
+      serie: 3ba1125909fc4cc2
+      tags:
+      - ecotype-7
+    '22':
+      serie: 3b5cf95809fc2cba
+      tags:
+      - ecotype-6
+    '24':
+      serie: 3b65b75809fc0ca9
+      tags:
+      - ecotype-5
+    '26':
+      serie: 3b730c5909fc6c95
+      tags:
+      - ecotype-4
+    '28':
+      serie: 3bee125909fc4c93
+      tags:
+      - ecotype-3
+    '30':
+      serie: 3bd10a5909fc6c3b
+      tags:
+      - ecotype-2
+    '32':
+      serie: 3bbefa5809fc2cb3
+      tags:
+      - ecotype-1
+    '35':
+      serie: 3b67b95809fc0c65
+      tags: []
+    '42':
+      serie: 3bac125909fc4c88
+      tags: []
+    '5':
+      serie: 3bd8f85809fc2c41
+      tags: []
+Z1.5TC.exp:
+  front:
+    '10':
+      serie: 3bbfb95809fc0c00
+      tags:
+      - ecotype-12
+    '12':
+      serie: 3b5c0c5909fc6c07
+      tags:
+      - ecotype-11
+    '14':
+      serie: 3bd4b95809fc0c3b
+      tags:
+      - ecotype-10
+    '16':
+      serie: 3b240c5909fc6c3e
+      tags:
+      - ecotype-9
+    '18':
+      serie: 3b51f95809fc2cf0
+      tags:
+      - ecotype-8
+    '20':
+      serie: 3bf0b65809fc0c3e
+      tags:
+      - ecotype-7
+    '22':
+      serie: 3b9f0c5909fc6cc1
+      tags:
+      - ecotype-6
+    '24':
+      serie: 3b67f95809fc2caf
+      tags:
+      - ecotype-5
+    '26':
+      serie: 3b7a0a5909fc2cd9
+      tags:
+      - ecotype-4
+    '28':
+      serie: 3be3125909fc4cd9
+      tags:
+      - ecotype-3
+    '30':
+      serie: 3b420a5909fc2c95
+      tags:
+      - ecotype-2
+    '32':
+      serie: 3b05b75809fc0c6a
+      tags:
+      - ecotype-1
+room:
+  top:
+    '1':
+      serie: 28b8fb2909000003
+      tags:
+      - external-temperature

@@ -1,0 +1,159 @@
+name: ecotype
+racks:
+  Z1.1:
+    ecotype-37:
+      position: 32
+      type: compute
+    ecotype-38:
+      position: 30
+      type: compute
+    ecotype-39:
+      position: 28
+      type: compute
+    ecotype-40:
+      position: 26
+      type: compute
+    ecotype-41:
+      position: 24
+      type: compute
+    ecotype-42:
+      position: 22
+      type: compute
+    ecotype-43:
+      position: 20
+      type: compute
+    ecotype-44:
+      position: 18
+      type: compute
+    ecotype-45:
+      position: 16
+      type: compute
+    ecotype-46:
+      position: 14
+      type: compute
+    ecotype-47:
+      position: 12
+      type: compute
+    ecotype-48:
+      position: 10
+      type: compute
+  Z1.2:
+    ecotype-25:
+      position: 32
+      type: compute
+    ecotype-26:
+      position: 30
+      type: compute
+    ecotype-27:
+      position: 28
+      type: compute
+    ecotype-28:
+      position: 26
+      type: compute
+    ecotype-29:
+      position: 24
+      type: compute
+    ecotype-30:
+      position: 22
+    ecotype-31:
+      position: 20
+      type: compute
+    ecotype-32:
+      position: 18
+      type: compute
+    ecotype-33:
+      position: 16
+      type: compute
+    ecotype-34:
+      position: 14
+      type: compute
+    ecotype-35:
+      position: 12
+      type: compute
+    ecotype-36:
+      position: 10
+      type: compute
+    switch-prod-2:
+      position: 42
+      type: switch
+  Z1.4:
+    ecotype-13:
+      position: 22
+      type: compute
+    ecotype-14:
+      position: 21
+      type: compute
+    ecotype-15:
+      position: 20
+      type: compute
+    ecotype-16:
+      position: 19
+      type: compute
+    ecotype-17:
+      position: 18
+      type: compute
+    ecotype-18:
+      position: 17
+      type: compute
+    ecotype-19:
+      position: 16
+      type: compute
+    ecotype-20:
+      position: 15
+      type: compute
+    ecotype-21:
+      position: 14
+      type: compute
+    ecotype-22:
+      position: 13
+      type: compute
+    ecotype-23:
+      position: 12
+      type: compute
+    ecotype-24:
+      position: 11
+      type: compute
+    switch-mgmt:
+      position: 42
+      type: switch
+  Z1.5:
+    ecotype-1:
+      position: 22
+      type: compute
+    ecotype-10:
+      position: 13
+      type: compute
+    ecotype-11:
+      position: 12
+      type: compute
+    ecotype-12:
+      position: 11
+      type: compute
+    ecotype-2:
+      position: 21
+      type: compute
+    ecotype-3:
+      position: 20
+      type: compute
+    ecotype-4:
+      position: 19
+      type: compute
+    ecotype-5:
+      position: 18
+      type: compute
+    ecotype-6:
+      position: 17
+      type: compute
+    ecotype-7:
+      position: 16
+      type: compute
+    ecotype-8:
+      position: 15
+      type: compute
+    ecotype-9:
+      position: 14
+      type: compute
+    switch-prod-1:
+      position: 42
+      type: switch
+site: nantes.grid5000.fr

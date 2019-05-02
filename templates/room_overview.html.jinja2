@@ -77,13 +77,13 @@
                                         <style>
                                             a { cursor: pointer; }
                                         </style>
-                                        {% for sensors_array in sensors_arrays %}
+                                        {% for (sensors_array_name, sensors_array) in sensors_arrays.items() %}
                                             <a xlink:href="{{ url_for('webapp.room_overview', sensors_array_name=sensors_array.name) }}">
                                                 {% if sensors_array.name == selected_sensors_array.name %}
                                                 <circle onlick="alert('rouge')" cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="3.5%" fill="rgb(218, 74, 41)" />
                                                 <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2.5%" fill="white" />
                                                 {% else %}
-                                                {% if sensors_array.sensor_type == "wattmeter" %}
+                                                {% if sensors_array.color == "blue" %}
                                                 <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="rgb(74, 179, 193)" />
                                                 {% else %}
                                                 <circle cx="{{ sensors_array.coordinates.x }}" cy="{{ sensors_array.coordinates.y }}" r="2%" fill="orange" />

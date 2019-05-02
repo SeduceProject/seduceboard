@@ -1,5 +1,6 @@
 flask
 natsort
+flask_profiler
 #influxdb
 git+https://github.com/influxdata/influxdb-python.git
 pymodbus
@@ -28,3 +29,6 @@ Flask-SQLAlchemy==2.1
 paho-mqtt
 redlock
 numpy
+influxdb
+pyyaml
+oyaml

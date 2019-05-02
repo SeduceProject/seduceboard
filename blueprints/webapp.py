@@ -87,7 +87,7 @@ def sensors():
     sensors_arrays_with_children = get_sensors_arrays_with_children()
     now_time = time.time()
 
-    for sensors_array in sensors_arrays_with_children:
+    for (sensors_array_name, sensors_array) in sensors_arrays_with_children.items():
         for child in sensors_array["children"]:
             child_last_update = filter(lambda x: x["sensor"] == child["name"], last_updates)
             if len(child_last_update) > 0:
@@ -181,16 +181,17 @@ def rack_temperature_errors_overview():
 @webapp_blueprint.route("/room_overview.html/by_selected/<selected_sensor>")
 @flask_login.login_required
 def room_overview(sensors_array_name=None, selected_sensor=None):
-    from core.data.sensors import get_sensors_arrays, get_sensor_by_name
+    from core.data.sensors import get_sensors_arrays, get_sensor_by_name, get_sensors_array_by_name, get_sensors_array_from_sensor_name
     sensors_arrays = get_sensors_arrays()
     sensors_array = None
     sensor = None
     if selected_sensor is not None:
         sensor = get_sensor_by_name(selected_sensor)
         if sensors_array_name is None:
-            sensors_array_name = sensor["parent"]
+            sensors_array = get_sensors_array_from_sensor_name(sensor.get("name"))
+            sensors_array_name = sensors_array.get("name")
     if sensors_array_name is not None:
-        sensors_array = get_sensor_by_name(sensors_array_name)
+        sensors_array = get_sensors_array_by_name(sensors_array_name)
     return render_template("room_overview.html.jinja2",
                            sensors_arrays=sensors_arrays,
                            selected_sensors_array=sensors_array,
@@ -202,7 +203,7 @@ def room_overview(sensors_array_name=None, selected_sensor=None):
 @flask_login.login_required
 def sensors_array(sensors_array_name, selected_sensor=None):
     from core.data.sensors import get_sensors_in_sensor_array
-    sensors = map(lambda x: x["name"], get_sensors_in_sensor_array(sensors_array_name))
+    sensors = [sensor.get("name") for sensor in get_sensors_in_sensor_array(sensors_array_name)]
     return render_template("sensors_array.html.jinja2",
                            sensors=sensors,
                            sensors_array_name=sensors_array_name,
