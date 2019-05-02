@@ -34,7 +34,7 @@ def new_modbus_reading(config):
     modbus_register = config["register"]
 
     sensor_name = config.get("sensor_name", config["generated_sensor_id"])
-    sensor_type = config["type"]
+    sensor_type = config["sensor_type"]
     sensor_unit = config["unit"]
     sensor_location = config.get("location", "not specified")
     divide_factor = config.get("modbus_divide_by", 1)
