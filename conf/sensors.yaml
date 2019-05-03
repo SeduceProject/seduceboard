@@ -187,26 +187,143 @@ classes:
     parent: snmp_pdu_z110
 
 inrow:
-  inrow_fanspeed:
+  # Group
+  inrow_group_cool_output:
+    name: inrow_group_cool_output
+    register: 1001
+    modbus_length: 2
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_group_cool_demand:
+    name: inrow_group_cool_demand
+    register: 1003
+    modbus_length: 2
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" demand'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+  inrow_group_airflow:
+    name: inrow_group_airflow
+    register: 1017
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: L/s
+    info: 'Group airflow'
+    sensor_type: airflow_meter
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+  inrow_group_maximum_inlet_temperature:
+    name: inrow_group_maximum_inlet_temperature
+    register: 1019
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: 'Group maximum inlet temperature'
+    sensor_type: temperature
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_group_minimum_inlet_temperature:
+    name: inrow_group_minimum_inlet_temperature
+    register: 1021
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: 'Group minimum inlet temperature'
+    sensor_type: temperature
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+  inrow_group_cool_setpoint:
+    name: inrow_group_cool_setpoint
+    register: 1023
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: 'Group cool setpoint'
+    sensor_type: temperature
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_group_supply_air_setpoint:
+    name: inrow_group_supply_air_setpoint
+    register: 1033
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: 'Group supply air setpoint'
+    sensor_type: temperature
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+  inrow_group_fanspeed_preference:
+    name: inrow_group_fanspeed_preference
+    register: 1054
+    modbus_length: 1
+    unit: Unit
+    info: 'Group fanspeed preference'
+    sensor_type: fanspeed_preference
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_group_maximum_fan_speed:
+    name: inrow_group_maximum_fan_speed
+    register: 1062
+    modbus_length: 2
+    unit: '%'
+    info: 'Group maximum fanspeed'
+    sensor_type: fanspeed
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+  inrow_group_humidify_setpoint:
+    name: inrow_group_humidify_setpoint
+    register: 1025
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: '%RH'
+    info: 'Group humidify setpoint'
+    sensor_type: humidity_meter
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_group_dehumidify_setpoint:
+    name: inrow_group_dehumidify_setpoint
+    register: 1027
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: '%RH'
+    info: 'Group dehumidify setpoint'
+    sensor_type: humidity_meter
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+  # Unit
+  inrow_unit_fanspeed:
     register: 1235
     modbus_length: 2
-    name: inrow_fanspeed
+    name: inrow_unit_fanspeed
     unit: '%'
+    modbus_divide_by: 10
     info: Speed of the fans (percentage of the maximum speed)
     sensor_type: fan
     <<: *modbus_inrow
-  inrow_supply_temp:
+  inrow_unit_supply_air_temp:
     register: 1225
     modbus_length: 2
-    name: inrow_supply_temp
+    name: inrow_unit_supply_air_temp
     modbus_divide_by: 10
     unit: C
     info: Temperature of the air supplied by the cooling system
     sensor_type: temperature
     exclude_from_aggregation: true
     <<: *modbus_inrow
-  inrow_return_temp:
-    name: inrow_return_temp
+  inrow_unit_return_air_temp:
+    name: inrow_unit_return_air_temp
     register: 1227
     modbus_length: 2
     modbus_divide_by: 10
@@ -215,14 +332,44 @@ inrow:
     sensor_type: temperature
     exclude_from_aggregation: true
     <<: *modbus_inrow
-  inrow_cool_demand:
-    name: inrow_cool_demand
+  inrow_unit_cool_demand:
+    name: inrow_unit_cool_demand
     register: 1209
     modbus_length: 2
-    modbus_divide_by: 10
+    modbus_multiply_by: 100
     unit: W
     info: '"Cool" demand'
     sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_unit_rack_inlet_temperature_1:
+    name: inrow_unit_rack_inlet_temperature_1
+    register: 1238
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: 'Unit inlet temperature 1'
+    sensor_type: temperature
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_unit_rack_inlet_temperature_2:
+    name: inrow_unit_rack_inlet_temperature_2
+    register: 1240
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: 'Unit inlet temperature 2'
+    sensor_type: temperature
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+  inrow_unit_rack_inlet_temperature_3:
+    name: inrow_unit_rack_inlet_temperature_3
+    register: 1242
+    modbus_length: 2
+    modbus_divide_by: 10
+    unit: C
+    info: 'Unit inlet temperature 3'
+    sensor_type: temperature
     exclude_from_aggregation: true
     <<: *modbus_inrow
 

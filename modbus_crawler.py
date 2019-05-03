@@ -38,13 +38,14 @@ def new_modbus_reading(config):
     sensor_unit = config["unit"]
     sensor_location = config.get("location", "not specified")
     divide_factor = config.get("modbus_divide_by", 1)
+    multiply_factor = config.get("modbus_multiply_by", 1)
 
     insertion_count = 0
 
     modbus_client = ModbusClient(host=modbus_ip, port=502, auto_open=True, auto_close=True)
 
     try:
-        sensor_value = modbus_read_int(modbus_client, modbus_register, 2) / divide_factor
+        sensor_value = multiply_factor * modbus_read_int(modbus_client, modbus_register, 2) / divide_factor
     except:
         traceback.print_exc()
         print("[%s] failed to read a value from socomec (%s:%s:%s)" % (sensor_name,

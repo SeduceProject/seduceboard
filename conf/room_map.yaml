@@ -445,7 +445,21 @@ sensors_inrow:
   color: blue
   name: sensors_inrow
   sensors:
-  - inrow_fanspeed
-  - inrow_supply_temp
-  - inrow_return_temp
-  - inrow_cool_demand
+  - inrow_group_cool_output
+  - inrow_group_cool_demand
+  - inrow_group_airflow
+  - inrow_group_maximum_inlet_temperature
+  - inrow_group_minimum_inlet_temperature
+  - inrow_group_cool_setpoint
+  - inrow_group_supply_air_setpoint
+  - inrow_group_fanspeed_preference
+  - inrow_group_maximum_fan_speed
+  - inrow_group_humidify_setpoint
+  - inrow_group_dehumidify_setpoint
+  - inrow_unit_fanspeed
+  - inrow_unit_supply_air_temp
+  - inrow_unit_return_air_temp
+  - inrow_unit_cool_demand
+  - inrow_unit_rack_inlet_temperature_1
+  - inrow_unit_rack_inlet_temperature_2
+  - inrow_unit_rack_inlet_temperature_3
