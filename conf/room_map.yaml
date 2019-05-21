@@ -388,6 +388,7 @@ temp.z1.5tc.exp.front:
   location: B232
   color: yellow
   name: temp.z1.5tc.exp.front
+  exclude_from_rack_temperature_overview: true
   sensors:
   - 3b05b75809fc0c6a
   - 3b420a5909fc2c95

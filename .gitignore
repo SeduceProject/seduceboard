@@ -1,3 +1,5 @@
+database/database.db
+
 *.log
 test.db
 celerybeat-schedule.db

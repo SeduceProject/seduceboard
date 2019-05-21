@@ -99,6 +99,7 @@ classes:
     parent: temp_additional_card1
     rack: Z1.5
     side: front
+    exclude_from_rack_temperature_overview: true
 
   temp_room: &temp_room
     <<: *temperature

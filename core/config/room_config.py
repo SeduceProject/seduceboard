@@ -26,6 +26,8 @@ def get_temperature_sensors_infrastructure():
         sensors = yaml.load(f)
         temperature_sensors = sensors["temperature"]
         for temperature_sensor_name, temperature_sensor in temperature_sensors.items():
+            if temperature_sensor.get("exclude_from_rack_temperature_overview", False):
+                continue
             rack_side_key = ("%s.%s" % (temperature_sensor.get("rack"), temperature_sensor.get("side"))).lower()
             position = temperature_sensor.get("position")
             if rack_side_key not in result:
