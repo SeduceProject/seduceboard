@@ -164,7 +164,7 @@
         multitree_selected_sensors_getter: function () {
             return selected_series;
         },
-        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", how="hourly") }}"
+        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", aggregation_preferences="daily,hourly") }}"
     }
     hc_create_chart(hc_options);
 </script>

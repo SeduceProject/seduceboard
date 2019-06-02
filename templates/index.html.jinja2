@@ -166,7 +166,7 @@
 
     <section class="section">
         <div class="row sameheight-container">
-            <div class="col col-12 col-sm-12 col-md-6 col-xl-12 history-col">
+            <div class="col col-12 col-sm-12 col-md-12 col-xl-12 history-col">
                 <div class="card sameheight-item" data-exclude="xs" id="dashboard-history">
                     <div class="card-header card-header-sm bordered">
                         <div class="header-block">
@@ -211,7 +211,7 @@
 		multitree_selected_sensors_getter: function() {
 		    return ["datacenter"];
         },
-        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="wattmeter", how="hourly") }}"
+        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="wattmeter", aggregation_preferences="daily,hourly") }}"
     }
     hc_create_chart(hc_wattmeters_options);
 
@@ -222,7 +222,7 @@
         sensor_type: "external_temperature",
         aggregated: true,
         show_range: false,
-        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", how="hourly") }}"
+        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", aggregation_preferences="daily,hourly") }}"
     }
     hc_create_chart(hc_thermometers_options);
 </script>

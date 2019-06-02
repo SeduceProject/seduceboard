@@ -456,7 +456,7 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
             maxs.append(point['max'])
 
     # Add a last empty point to enable streaming on the webapp
-    query = "SELECT last(*) from sensors where sensor_type='%s'" % (sensor_type)
+    query = "SELECT last(*) from sensors where sensor_type='%s' and time > now() - 1d" % (sensor_type)
     points = list(db_client.query(query).get_points())
     last_empty_date = None
     if points:
@@ -626,7 +626,7 @@ def db_oldest_point_in_serie(serie_name):
 def db_last_temperature_values():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    query = """SELECT last(*), *, sensor from sensors WHERE sensor_type = 'temperature' group by sensor"""
+    query = """SELECT last(*), *, sensor from sensors WHERE sensor_type = 'temperature' and time > now() - 1d group by sensor"""
     points = list(db_client.query(query).get_points())
 
     result = []
@@ -649,11 +649,10 @@ def db_last_temperature_values():
 def db_last_temperature_mean():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    query = """SELECT last(*), *, sensor from sensors WHERE sensor_type = 'temperature' group by sensor"""
+    query = """select mean(*) from sensors where time > now() - 1h and sensor_type='temperature' group by time(1m)"""
     points = list(db_client.query(query).get_points())
 
-    temperatures = [x["value"] for x in points if x["value"] < 84]
-    result = sum(temperatures) / len(temperatures)
+    result = points[-1].get("mean_value")
 
     db_client.close()
 
@@ -665,7 +664,7 @@ def db_multitree_last_wattmeter_value(multitree_node):
 
     cq_name = "cq_%s_1m" % (multitree_node["id"])
 
-    query = "SELECT last(*) from %s" % (cq_name)
+    query = "SELECT last(*) from %s where time > now() - 1d" % (cq_name)
     points = db_client.query(query).get_points()
 
     for point in points:
@@ -679,29 +678,23 @@ def db_multitree_last_wattmeter_value(multitree_node):
 def db_multitree_last_wattmeter_query(multitree_node):
     cq_name = "cq_%s_1m" % (multitree_node["id"])
 
-    query = "SELECT last(*) from %s" % (cq_name)
+    query = "SELECT last(*) from %s where time > now() - 1d" % (cq_name)
 
-    return query
+    return (query, cq_name)
 
 
 def db_multitree_last_wattmeter_all_in_one_query(queries):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
-    all_in_one_query = ";".join(queries)
     result = {}
 
-    result_sets = db_client.query(all_in_one_query)
+    all_in_one_query = "select last(*) from %s where time > now() - 1d" % (",".join(queries.get("cq_names")))
 
-    for result_set in result_sets:
-        points = result_set.get_points()
+    points = db_client.query(all_in_one_query)
 
-        # If there was no data in the requested serie, the resultSet is empty
-        if not "series" in result_set._raw:
-            continue
-
-        serie_name = result_set._raw["series"][0]["name"]
-
-        for point in points:
-            result[serie_name] = point["last_mean"]
+    for cq_name, result_set in points.items():
+        cq_values = list(result_set)
+        if len(cq_name) >= 2 and  len(cq_values) >= 1:
+            result[cq_name[0]] = cq_values[0].get("last_mean")
 
     db_client.close()
 

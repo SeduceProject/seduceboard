@@ -243,10 +243,10 @@
         subtitle: "Displaying data from {{ selected_sensor.name }}",
         {% if selected_sensor.sensor_type == "temperature" %}
 		sensor_type: "temperature",
-        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", how="hourly") }}",
+        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", aggregation_preferences="daily,hourly") }}",
 		{% else %}
 		sensor_type: "{{ selected_sensor.sensor_type }}",
-        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type=selected_sensor.sensor_type, how="hourly") }}",
+        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type=selected_sensor.sensor_type, aggregation_preferences="daily,hourly") }}",
 		{% endif %}
 		selected_sensor: "{{ selected_sensor.name }}"
     }
