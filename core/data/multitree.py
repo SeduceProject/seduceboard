@@ -76,9 +76,13 @@ def _get_last_node_consumption_query(node_id):
 
 def _get_consumption_index(root_node, level=0, result=None):
     if result is None:
-        result = []
-    current_node_consumption_query = _get_last_node_consumption_query(root_node)
-    result += [current_node_consumption_query]
+        result = {
+            "queries": [],
+            "cq_names": []
+        }
+    (current_node_consumption_query, cq_name) = _get_last_node_consumption_query(root_node)
+    result["queries"] += [current_node_consumption_query]
+    result["cq_names"] += [cq_name]
 
     if "children" in root_node:
         for child in root_node["children"]:

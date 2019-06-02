@@ -1,9 +1,32 @@
 import flask
 import flask_login
+import time
+from dateutil import parser
+
 from flask import Blueprint
 from flask import render_template
-from dateutil import parser
 from core.decorators.admin_login_required import admin_login_required
+from core.decorators.profile import profile
+
+from core.misc import _display_time
+from core.data.sensors import get_sensors_arrays_with_children
+from core.data.influx import db_last_sensors_updates
+
+from core.data.multitree import get_node_by_id, _get_last_node_consumption
+from core.data.influx import db_last_temperature_mean
+from core.data.influx import db_aggregated_multitree_sensor_data
+from core.data.influx import db_sensor_data
+
+from core.data.sensors import get_sensors_in_sensor_array
+from core.data.redis_counters import redis_clear_error_count
+
+from core.data.sensors import get_sensors_arrays, get_sensor_by_name, get_sensors_array_by_name, get_sensors_array_from_sensor_name
+from core.data.influx import db_last_temperature_values
+
+from core.config.room_config import get_temperature_sensors_infrastructure
+from core.data.redis_counters import redis_get_sensors_data
+
+import numpy as np
 
 webapp_blueprint = Blueprint('webapp', __name__,
                              template_folder='templates')
@@ -20,13 +43,6 @@ def validate(date_text):
 @webapp_blueprint.route("/")
 @flask_login.login_required
 def index():
-    from core.data.multitree import get_node_by_id, _get_last_node_consumption
-    from core.data.influx import db_last_temperature_mean
-    from core.data.influx import db_aggregated_multitree_sensor_data
-    from core.data.influx import db_sensor_data
-    from core.config.room_config import get_temperature_sensors_infrastructure
-    import numpy as np
-
     datacenter_node = get_node_by_id("datacenter")
     cluster_hardware = get_node_by_id("hardware_cluster")
     datacenter_consumption = _get_last_node_consumption(datacenter_node)
@@ -78,11 +94,6 @@ def index():
 @webapp_blueprint.route("/sensors.html")
 @flask_login.login_required
 def sensors():
-    from core.data.sensors import get_sensors_arrays_with_children
-    from core.data.influx import db_last_sensors_updates
-    from core.misc import _display_time
-    import time
-
     last_updates = db_last_sensors_updates()
     sensors_arrays_with_children = get_sensors_arrays_with_children()
     now_time = time.time()
@@ -125,8 +136,6 @@ def weighted_tree_consumption():
 @webapp_blueprint.route("/rack_temperature_overview.html")
 @flask_login.login_required
 def rack_temperature_overview():
-    from core.config.room_config import get_temperature_sensors_infrastructure
-    from core.data.influx import db_last_temperature_values
     temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
     last_temperature_values = db_last_temperature_values()
 
@@ -142,10 +151,7 @@ def rack_temperature_overview():
 @webapp_blueprint.route("/rack_temperature_errors_clear.html")
 @admin_login_required
 def rack_temperature_errors_clear():
-    from core.data.redis_counters import redis_clear_error_count
-
     redis_clear_error_count()
-
     return flask.redirect(flask.url_for("webapp.rack_temperature_errors_overview"))
 
 
@@ -153,10 +159,7 @@ def rack_temperature_errors_clear():
 @webapp_blueprint.route("/rack_temperature_overview_errors.html")
 @admin_login_required
 def rack_temperature_errors_overview():
-    from core.config.room_config import get_temperature_sensors_infrastructure
-    from core.data.redis_counters import redis_get_sensors_data
     temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
-
     temperature_errors_data = redis_get_sensors_data()
 
     for sensor_array_name in temperature_sensors_infrastructure:
@@ -181,10 +184,10 @@ def rack_temperature_errors_overview():
 @webapp_blueprint.route("/room_overview.html/by_selected/<selected_sensor>")
 @flask_login.login_required
 def room_overview(sensors_array_name=None, selected_sensor=None):
-    from core.data.sensors import get_sensors_arrays, get_sensor_by_name, get_sensors_array_by_name, get_sensors_array_from_sensor_name
     sensors_arrays = get_sensors_arrays()
     sensors_array = None
     sensor = None
+
     if selected_sensor is not None:
         sensor = get_sensor_by_name(selected_sensor)
         if sensors_array_name is None:
@@ -202,7 +205,6 @@ def room_overview(sensors_array_name=None, selected_sensor=None):
 @webapp_blueprint.route("/sensors_array.html/<sensors_array_name>/<selected_sensor>")
 @flask_login.login_required
 def sensors_array(sensors_array_name, selected_sensor=None):
-    from core.data.sensors import get_sensors_in_sensor_array
     sensors = [sensor.get("name") for sensor in get_sensors_in_sensor_array(sensors_array_name)]
     return render_template("sensors_array.html.jinja2",
                            sensors=sensors,

@@ -3,6 +3,29 @@ from flask import request
 import flask_login
 from flask import jsonify
 from dateutil import parser
+from core.data.influx import db_sensor_data
+from core.data.influx import db_sensors
+from core.data.influx import db_sensor_types
+from core.data.multitree import get_tree
+
+from core.data.influx import db_last_temperature_values
+from core.data.influx import db_last_sensors_updates
+from core.data.multitree import get_datacenter_weighted_tree_consumption_data
+from core.data.redis_counters import redis_get_sensors_data
+from core.data.redis_counters import redis_increment_sensor_error_count
+from core.data.influx import db_get_running_queries
+from core.data.influx import db_get_navigation_data
+from core.config.room_config import get_temperature_sensors_infrastructure
+from core.data.influx import db_wattmeters_data
+from core.data.influx import db_datainfo
+from core.data.multitree import get_root_nodes
+from core.data.influx import db_aggregated_multitree_sensor_data
+from core.data.multitree import get_node_by_id
+from core.data.multitree import get_sensors_tree
+from core.data.influx import db_aggregated_sensor_data
+from core.data.influx import db_locations
+
+from core.decorators.profile import profile
 
 webapp_api_blueprint = Blueprint('webapp_api', __name__,
                                  template_folder='templates')
@@ -18,8 +41,6 @@ def validate(date_text):
 
 @webapp_api_blueprint.route("/sensor_data/<sensor_name>")
 def sensor_data(sensor_name):
-    from core.data.influx import db_sensor_data
-
     start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
@@ -46,7 +67,6 @@ def sensor_data(sensor_name):
 @webapp_api_blueprint.route("/sensors/all")
 @webapp_api_blueprint.route("/sensors/<sensor_type>")
 def sensors(sensor_type=None):
-    from core.data.influx import db_sensors
     _sensors = db_sensors(sensor_type=sensor_type)
     return jsonify(_sensors)
 
@@ -54,22 +74,17 @@ def sensors(sensor_type=None):
 @webapp_api_blueprint.route("/sensors_types")
 @webapp_api_blueprint.route("/sensor_types")
 def sensor_types():
-    from core.data.influx import db_sensor_types
-
     _sensor_types = db_sensor_types()
     return jsonify(_sensor_types)
 
 
 @webapp_api_blueprint.route("/multitree/root")
 def multitree_root_nodes():
-    from core.data.multitree import get_root_nodes
     return jsonify(get_root_nodes())
 
 
 @webapp_api_blueprint.route("/multitree/query/tree/<node_id>")
 def multitree_tree_query(node_id):
-    from core.data.multitree import get_node_by_id
-    from core.data.multitree import get_tree
     starting_node = get_node_by_id(node_id)
     if starting_node is not None:
         tree = get_tree(starting_node, False)
@@ -80,8 +95,6 @@ def multitree_tree_query(node_id):
 
 @webapp_api_blueprint.route("/multitree/query/sensors/<node_id>")
 def multitree_sensors_query(node_id):
-    from core.data.multitree import get_node_by_id
-    from core.data.multitree import get_sensors_tree
     starting_node = get_node_by_id(node_id)
     if starting_node is not None:
         sensors = get_sensors_tree(starting_node)
@@ -92,8 +105,6 @@ def multitree_sensors_query(node_id):
 
 @webapp_api_blueprint.route("/multitree/query/sensors/<node_id>/data")
 def multitree_sensors_data_query(node_id):
-    from core.data.multitree import get_node_by_id
-    from core.data.multitree import get_sensors_tree
     starting_node = get_node_by_id(node_id)
     if starting_node is not None:
         sensors = get_sensors_tree(starting_node)
@@ -104,8 +115,6 @@ def multitree_sensors_data_query(node_id):
 
 @webapp_api_blueprint.route("/locations")
 def locations():
-    from core.data.influx import db_locations
-
     _locations = db_locations()
     return jsonify(_locations)
 
@@ -113,8 +122,6 @@ def locations():
 @webapp_api_blueprint.route("/sensor_data/<sensor_name>/aggregated")
 @webapp_api_blueprint.route("/sensor_data/<sensor_name>/aggregated/<how>")
 def aggregated_sensor_data(sensor_name, how="daily"):
-    from core.data.influx import db_aggregated_sensor_data
-
     start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
@@ -135,8 +142,6 @@ def aggregated_sensor_data(sensor_name, how="daily"):
 @webapp_api_blueprint.route("/multitree_sensor_data/<sensor_name>/aggregated")
 @webapp_api_blueprint.route("/multitree_sensor_data/<sensor_name>/aggregated/<how>")
 def aggregated_multitree_sensor_data(sensor_name, how="minutely"):
-    from core.data.influx import db_aggregated_multitree_sensor_data
-
     start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
@@ -156,8 +161,6 @@ def aggregated_multitree_sensor_data(sensor_name, how="minutely"):
 
 @webapp_api_blueprint.route("/data/<how>")
 def datainfo(how="daily"):
-    from core.data.influx import db_datainfo
-
     start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
@@ -170,8 +173,6 @@ def datainfo(how="daily"):
 
 @webapp_api_blueprint.route("/data/hardcoded/<sensor_type>/<how>")
 def wattmeters_data(sensor_type, how="daily"):
-    from core.data.influx import db_wattmeters_data
-
     start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
@@ -184,8 +185,6 @@ def wattmeters_data(sensor_type, how="daily"):
 
 @webapp_api_blueprint.route("/data/generated/pue/<how>")
 def pue_data(how="daily"):
-    from core.data.influx import db_aggregated_multitree_sensor_data
-
     start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
@@ -208,10 +207,6 @@ def pue_data(how="daily"):
 
 @webapp_api_blueprint.route("/data/generated/external_temperature/<how>")
 def external_temperature_data(how="daily"):
-    from core.data.influx import db_aggregated_multitree_sensor_data
-    from core.data.influx import db_aggregated_sensor_data
-    from core.config.room_config import get_temperature_sensors_infrastructure
-
     start_date = None
     if "start_date" in request.args:
         start_date = request.args["start_date"]
@@ -229,31 +224,37 @@ def external_temperature_data(how="daily"):
     return jsonify(sensor_data)
 
 
-@webapp_api_blueprint.route("/ui/data/navigation/<sensor_type>/<how>")
-def get_navigation_data(sensor_type, how="daily"):
-    from core.data.influx import db_get_navigation_data
+@webapp_api_blueprint.route("/ui/data/navigation/<sensor_type>/<aggregation_preferences>")
+def get_navigation_data(sensor_type, aggregation_preferences="daily,hourly"):
 
-    start_date = None
-    if "start_date" in request.args:
-        start_date = request.args["start_date"]
-        if validate(start_date):
-            start_date = "'%s'" % start_date
+    if "," in aggregation_preferences:
+        aggregation_preferences = aggregation_preferences.split(",")
+    else:
+        aggregation_preferences = [aggregation_preferences]
 
-    _navigation_data = db_get_navigation_data(sensor_type, start_date, how)
-    return jsonify(_navigation_data)
+    for time_periodicity in aggregation_preferences:
+        start_date = None
+        if "start_date" in request.args:
+            start_date = request.args["start_date"]
+            if validate(start_date):
+                start_date = "'%s'" % start_date
+
+        _navigation_data = db_get_navigation_data(sensor_type, start_date, time_periodicity)
+
+        if len(_navigation_data['range']['timestamps']) > 10:
+            return jsonify(_navigation_data)
+
+    return jsonify({})
 
 
 @webapp_api_blueprint.route("/monitoring/queries")
 def queries():
-    from core.data.influx import db_get_running_queries
-
     queries = db_get_running_queries()
     return jsonify(queries)
 
 
 @webapp_api_blueprint.route("/last_sensors_updates")
 def last_sensors_updates():
-    from core.data.influx import db_last_sensors_updates
     last_updates = db_last_sensors_updates()
     return jsonify(last_updates)
 
@@ -261,24 +262,19 @@ def last_sensors_updates():
 @webapp_api_blueprint.route("/weighted_tree_consumption_data")
 @flask_login.login_required
 def weighted_tree_consumption_data():
-    from core.data.multitree import get_datacenter_weighted_tree_consumption_data
     return jsonify(get_datacenter_weighted_tree_consumption_data())
 
 
 @webapp_api_blueprint.route("/rack_temperature/sensors")
 @flask_login.login_required
 def rack_temperature_sensors():
-    from core.config.room_config import get_temperature_sensors_infrastructure
     temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
-
     return jsonify(temperature_sensors_infrastructure)
 
 
 @webapp_api_blueprint.route("/rack_temperature/sensors/last_values")
 @flask_login.login_required
 def rack_temperature_sensors_last_values():
-    from core.config.room_config import get_temperature_sensors_infrastructure
-    from core.data.influx import db_last_temperature_values
     temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
     last_temperature_values = db_last_temperature_values()
 
@@ -293,10 +289,7 @@ def rack_temperature_sensors_last_values():
 @webapp_api_blueprint.route("/rack_temperature_errors/sensors/last_values")
 @flask_login.login_required
 def rack_temperature_sensors_errors_last_values():
-    from core.config.room_config import get_temperature_sensors_infrastructure
-    from core.data.redis_counters import redis_get_sensors_data
     temperature_sensors_infrastructure = get_temperature_sensors_infrastructure()
-
     temperature_errors_data = redis_get_sensors_data()
 
     for sensor_array_name in temperature_sensors_infrastructure:
@@ -317,9 +310,6 @@ def rack_temperature_sensors_errors_last_values():
 @webapp_api_blueprint.route("/rack_temperature_overview.html/errors/increment/<sensor_name>")
 @flask_login.login_required
 def rack_temperature_errors_incr(sensor_name):
-    from core.data.redis_counters import redis_get_sensors_data
-    from core.data.redis_counters import redis_increment_sensor_error_count
-
     redis_increment_sensor_error_count(sensor_name)
     sensors_data = redis_get_sensors_data()
 
