@@ -85,7 +85,11 @@
                                     <i class="fa fa-thermometer-three-quarters"></i>
                                 </div>
                                 <div class="stat">
+                                  {% if last_external_temperature_mean %}
                                     <div class="value"> {{ last_external_temperature_mean | round(2) }} °C</div>
+                                  {% else %}
+                                    <div class="value"> Not collected </div>
+                                  {% endif %}
                                     <div class="name"> Temperature (outside)</div>
                                 </div>
                                 <div class="">
