@@ -181,6 +181,13 @@ def measurements(sensor_id):
     from core.data.influx import db_sensor_data
     start_date = request.args["start_date"]
     end_date = request.args["end_date"]
+
+    if "s" not in start_date:
+        start_date = "%ss" % start_date
+
+    if "s" not in end_date:
+        end_date = "%ss" % end_date
+
     result = db_sensor_data(sensor_id, start_date=start_date, end_date=end_date)
     return jsonify(result)
 
