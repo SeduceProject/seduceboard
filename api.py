@@ -159,12 +159,12 @@ def measurements(sensor_id):
         in: "query"
         description: "A start date (epochTime)"
         required: true
-        type: int
+        type: string
       - name: "end_date"
         in: "query"
         description: "A end date (epochTime)"
         required: true
-        type: int
+        type: string
     responses:
       200:
         description: A object containing what kind of sensors are part of the Seduce infrastructure.
