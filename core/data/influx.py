@@ -2,6 +2,8 @@ from influxdb import InfluxDBClient
 from dateutil import parser
 from datetime import timedelta
 from core.config.config_loader import load_config
+from core.config.room_config import get_temperature_sensors_infrastructure
+import functools
 
 DB_HOST = load_config().get("influx").get("address")
 DB_PORT = load_config().get("influx").get("port")
@@ -211,6 +213,70 @@ def db_aggregated_sensor_data(sensor_name, start_date=None, end_date=None, how="
         "counts": counts,
         "is_downsampled": True,
         "sensor_name": sensor_name
+    }
+
+    db_client.close()
+
+    return result
+
+
+def db_rack_side_temperature_data(side, start_date=None, end_date=None, how="daily"):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    temperature_infra = get_temperature_sensors_infrastructure()
+    back_temperature_sensors = functools.reduce(lambda x,y: x+y, [v.get("sensors") for k, v in temperature_infra.items() if "back" in k])
+
+    criterion = " or ".join(["sensor='%s'" % s for s in back_temperature_sensors])
+
+    if not (start_date is None or start_date == "undefined"):
+        criterion += "and time >= %s " % (start_date)
+
+    if not (end_date is None or end_date == "undefined"):
+        criterion += "and time <= %s " % (end_date)
+
+    query = """SELECT mean("value"), stddev("value"), median("value"), max("value"), min("value") FROM "sensors" WHERE %s GROUP BY time(1m)""" % (criterion)
+    points = db_client.query(query).get_points()
+
+    start_date = -1
+    end_date = -1
+
+    timestamps = []
+    means = []
+    medians = []
+    stddevs = []
+    mins = []
+    maxs = []
+
+    points_as_list = list(points)
+    for point in points_as_list:
+        timestamp = point['time']
+        if point['mean'] is not None:
+            if start_date == -1 or start_date > timestamp:
+                start_date = timestamp
+            if end_date == -1 or end_date < timestamp:
+                end_date = timestamp
+
+    for point in points_as_list:
+        timestamp = point['time']
+        if timestamp >= start_date and timestamp <= end_date:
+            timestamps.append(point['time'])
+            means.append(point['mean'])
+            medians.append(point['median'])
+            stddevs.append(point['stddev'])
+            mins.append(point['min'])
+            maxs.append(point['max'])
+
+    result = {
+        "start_date": start_date,
+        "end_date": end_date,
+        "timestamps": timestamps,
+        "means": means,
+        "medians": medians,
+        "stddevs": stddevs,
+        "mins": mins,
+        "maxs": maxs,
+        "is_downsampled": True,
+        "side": side
     }
 
     db_client.close()

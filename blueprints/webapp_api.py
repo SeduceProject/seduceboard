@@ -10,6 +10,7 @@ from core.data.multitree import get_tree
 
 from core.data.influx import db_last_temperature_values
 from core.data.influx import db_last_sensors_updates
+from core.data.influx import db_rack_side_temperature_data
 from core.data.multitree import get_datacenter_weighted_tree_consumption_data
 from core.data.redis_counters import redis_get_sensors_data
 from core.data.redis_counters import redis_increment_sensor_error_count
@@ -138,6 +139,27 @@ def aggregated_sensor_data(sensor_name, how="daily"):
                                                         end_date=end_date, how=how)
     return jsonify(_aggregated_sensor_data)
 
+
+@webapp_api_blueprint.route("/rack/<side>/temperatures/aggregated")
+@webapp_api_blueprint.route("/rack/<side>/temperatures/aggregated/<how>")
+def aggregated_rack_side_temperatures(side, how="daily"):
+    start_date = None
+    if "start_date" in request.args:
+        start_date = request.args["start_date"]
+        if validate(start_date):
+            start_date = "'%s'" % start_date
+
+    end_date = None
+    if "end_date" in request.args:
+        end_date = request.args["end_date"]
+        if validate(end_date):
+            end_date = "'%s'" % end_date
+
+    _aggregated_sensor_data = db_rack_side_temperature_data(side=side,
+                                                            start_date=start_date,
+                                                            end_date=end_date,
+                                                            how=how)
+    return jsonify(_aggregated_sensor_data)
 
 @webapp_api_blueprint.route("/multitree_sensor_data/<sensor_name>/aggregated")
 @webapp_api_blueprint.route("/multitree_sensor_data/<sensor_name>/aggregated/<how>")

@@ -5,6 +5,7 @@ import yaml
 
 TEMPERATURE_SENSOR_INFRASTRUCTURE = None
 
+
 def get_temperature_sensors_infrastructure():
     global TEMPERATURE_SENSOR_INFRASTRUCTURE
     if TEMPERATURE_SENSOR_INFRASTRUCTURE is None:
