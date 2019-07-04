@@ -224,7 +224,7 @@ def db_rack_side_temperature_data(side, start_date=None, end_date=None, how="dai
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
     temperature_infra = get_temperature_sensors_infrastructure()
-    back_temperature_sensors = functools.reduce(lambda x,y: x+y, [v.get("sensors") for k, v in temperature_infra.items() if "back" in k])
+    back_temperature_sensors = functools.reduce(lambda x,y: x+y, [v.get("sensors") for k, v in temperature_infra.items() if side in k])
 
     criterion = " or ".join(["sensor='%s'" % s for s in back_temperature_sensors])
 
