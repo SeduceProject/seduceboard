@@ -284,6 +284,65 @@ def db_rack_side_temperature_data(side, start_date=None, end_date=None, how="dai
     return result
 
 
+def db_dump_all_aggregated_data(start_date=None, end_date=None, group_by="1h"):
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    if start_date is None or start_date == "undefined":
+        start_date = "now()-1d"
+
+    if end_date is None or end_date == "undefined":
+        end_date = "now()"
+
+    criterions = []
+    criterions += ["time >= %s " % (start_date)]
+    criterions += ["time <= %s " % (end_date)]
+
+    where_clause = " and ".join(criterions)
+
+    query = """select mean("value"), max("value") from sensors where %s group by time(%s), sensor""" % (where_clause, group_by)
+    query_result = db_client.query(query)
+    points = query_result.get_points()
+
+    start_date = -1
+    end_date = -1
+
+    sensors_data = {}
+    timestamps = []
+    means = []
+
+    points_as_list = list(points)
+
+    for point in points_as_list:
+        timestamp = point['time']
+        if point['mean'] is not None:
+            if start_date == -1 or start_date > timestamp:
+                start_date = timestamp
+            if end_date == -1 or end_date < timestamp:
+                end_date = timestamp
+
+    for serie in query_result.raw.get("series"):
+        sensor_name = serie.get("tags").get("sensor")
+
+        sensors_data[sensor_name] = {
+            "timestamps": [x[0] for x in serie.get("values")],
+            "means": [x[1] for x in serie.get("values")],
+            "maxs": [x[2] for x in serie.get("values")]
+        }
+
+    result = {
+        "start_date": start_date,
+        "end_date": end_date,
+        "timestamps": timestamps,
+        "means": means,
+        "sensors_data": sensors_data,
+        "is_downsampled": True,
+    }
+
+    db_client.close()
+
+    return result
+
+
 def _get_aggregate_multitree_serie_name(name, how):
     if how == "daily":
         return "cq_%s_1d" % name

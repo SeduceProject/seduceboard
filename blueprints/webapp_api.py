@@ -25,6 +25,7 @@ from core.data.multitree import get_node_by_id
 from core.data.multitree import get_sensors_tree
 from core.data.influx import db_aggregated_sensor_data
 from core.data.influx import db_locations
+from core.data.influx import db_dump_all_aggregated_data
 
 from core.decorators.profile import profile
 
@@ -160,6 +161,31 @@ def aggregated_rack_side_temperatures(side, how="daily"):
                                                             end_date=end_date,
                                                             how=how)
     return jsonify(_aggregated_sensor_data)
+
+
+@webapp_api_blueprint.route("/dump/all/aggregated")
+def dump_all_aggregated_data(group_by="1h"):
+    start_date = None
+    if "start_date" in request.args:
+        start_date = request.args["start_date"]
+        if validate(start_date):
+            start_date = "'%s'" % start_date
+
+    end_date = None
+    if "end_date" in request.args:
+        end_date = request.args["end_date"]
+        if validate(end_date):
+            end_date = "'%s'" % end_date
+
+    group_by = None
+    if "group_by" in request.args:
+        group_by = request.args["group_by"]
+
+    _aggregated_sensor_data = db_dump_all_aggregated_data(start_date=start_date,
+                                                          end_date=end_date,
+                                                          group_by=group_by)
+    return jsonify(_aggregated_sensor_data)
+
 
 @webapp_api_blueprint.route("/multitree_sensor_data/<sensor_name>/aggregated")
 @webapp_api_blueprint.route("/multitree_sensor_data/<sensor_name>/aggregated/<how>")
