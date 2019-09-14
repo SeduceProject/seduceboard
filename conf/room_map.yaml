@@ -471,7 +471,7 @@ poe_raspberrypi:
   info: Power over Ethernet consumption of the raspberry pi cluster
   location: B232
   color: blue
-  name: snmp_poe_pi_seduce
+  name: poe_raspberrypi
   sensors:
   - node1
   - node2
