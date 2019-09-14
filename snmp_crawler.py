@@ -94,13 +94,18 @@ def read_one_snmp_sensor(sensor_config):
     # Find the values returned by snmpget
     sensor_value = None
     for line in snmp_output_str.split("\n"):
-        line = re.sub(r'.*\.9\.4\.3\.1\.7\.', '', line)
-        line = re.sub(r'INTEGER: ', '', line)
-        line = line.strip()
-        if len(line) == 0:
+
+        address_and_type, value = snmp_output_str.split(": ")
+
+        if "INTEGER" in address_and_type:
+            outlet_value = value
+        elif "STRING" in address_and_type:
+            outlet_value = value.replace("\"", "")
+        else:
             continue
-        (outlet_oid_suffix, outlet_value) = line.split(" = ")
+
         sensor_value = float(outlet_value)
+        print(sensor_value)
 
     # Prepare a database record for each of the outlets
     data = []

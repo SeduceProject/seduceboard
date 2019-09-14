@@ -187,6 +187,14 @@ classes:
     array: true
     parent: snmp_pdu_z110
 
+  snmp_poe_pi_seduce: &snmp_poe_pi_seduce
+    <<: *wattmeter
+    method: snmp
+    ip: 192.168.1.23
+    oid: 1.3.6.1.4.1.171.11.153.1000.22.1.1.9.1
+    array: true
+    parent: snmp_poe_pi_seduce
+
 inrow:
   # Group
   inrow_group_cool_output:
@@ -2081,3 +2089,173 @@ socomec:
     unit_id: 4
     sensor_id: 7bb7b11e88cd9189837e774dea92a306
     <<: *socomec_server_room
+
+poe:
+  node1:
+    info: 'PoE consumption of node1'
+    name: node1_poe
+    <<: *snmp_poe_pi_seduce
+    index: 1
+    tags:
+    - node1
+  node2:
+    info: 'PoE consumption of node2'
+    name: node2_poe
+    <<: *snmp_poe_pi_seduce
+    index: 2
+    tags:
+    - node2
+  node3:
+    info: 'PoE consumption of node3'
+    name: node3_poe
+    <<: *snmp_poe_pi_seduce
+    index: 3
+    tags:
+      - node3
+  node4:
+    info: 'PoE consumption of node4'
+    name: node4_poe
+    <<: *snmp_poe_pi_seduce
+    index: 4
+    tags:
+      - node4
+  node5:
+    info: 'PoE consumption of node5'
+    name: node5_poe
+    <<: *snmp_poe_pi_seduce
+    index: 5
+    tags:
+      - node5
+  node6:
+    info: 'PoE consumption of node6'
+    name: node6_poe
+    <<: *snmp_poe_pi_seduce
+    index: 6
+    tags:
+      - node6
+  node7:
+    info: 'PoE consumption of node7'
+    name: node7_poe
+    <<: *snmp_poe_pi_seduce
+    index: 7
+    tags:
+      - node7
+  node8:
+    info: 'PoE consumption of node8'
+    name: node8_poe
+    <<: *snmp_poe_pi_seduce
+    index: 8
+    tags:
+      - node8
+  node9:
+    info: 'PoE consumption of node9'
+    name: node9_poe
+    <<: *snmp_poe_pi_seduce
+    index: 9
+    tags:
+      - node9
+  node10:
+    info: 'PoE consumption of node10'
+    name: node10_poe
+    <<: *snmp_poe_pi_seduce
+    index: 10
+    tags:
+      - node10
+  node11:
+    info: 'PoE consumption of node11'
+    name: node11_poe
+    <<: *snmp_poe_pi_seduce
+    index: 11
+    tags:
+      - node11
+  node12:
+    info: 'PoE consumption of node12'
+    name: node12_poe
+    <<: *snmp_poe_pi_seduce
+    index: 12
+    tags:
+      - node12
+  node13:
+    info: 'PoE consumption of node13'
+    name: node13_poe
+    <<: *snmp_poe_pi_seduce
+    index: 13
+    tags:
+      - node13
+  node14:
+    info: 'PoE consumption of node14'
+    name: node14_poe
+    <<: *snmp_poe_pi_seduce
+    index: 14
+    tags:
+      - node14
+  node15:
+    info: 'PoE consumption of node15'
+    name: node15_poe
+    <<: *snmp_poe_pi_seduce
+    index: 15
+    tags:
+      - node15
+  node16:
+    info: 'PoE consumption of node16'
+    name: node16_poe
+    <<: *snmp_poe_pi_seduce
+    index: 16
+    tags:
+      - node16
+  node17:
+    info: 'PoE consumption of node17'
+    name: node17_poe
+    <<: *snmp_poe_pi_seduce
+    index: 17
+    tags:
+      - node17
+  node18:
+    info: 'PoE consumption of node18'
+    name: node18_poe
+    <<: *snmp_poe_pi_seduce
+    index: 18
+    tags:
+      - node18
+  node19:
+    info: 'PoE consumption of node19'
+    name: node19_poe
+    <<: *snmp_poe_pi_seduce
+    index: 19
+    tags:
+      - node19
+  node20:
+    info: 'PoE consumption of node20'
+    name: node20_poe
+    <<: *snmp_poe_pi_seduce
+    index: 20
+    tags:
+      - node20
+  node21:
+    info: 'PoE consumption of node21'
+    name: node21_poe
+    <<: *snmp_poe_pi_seduce
+    index: 21
+    tags:
+      - node21
+  node22:
+    info: 'PoE consumption of node22'
+    name: node22_poe
+    <<: *snmp_poe_pi_seduce
+    index: 22
+    tags:
+      - node22
+  node23:
+    info: 'PoE consumption of node23'
+    name: node23_poe
+    <<: *snmp_poe_pi_seduce
+    index: 23
+    tags:
+      - node23
+  node24:
+    info: 'PoE consumption of node24'
+    name: node24_poe
+    <<: *snmp_poe_pi_seduce
+    index: 24
+    tags:
+      - node24
