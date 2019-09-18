@@ -2,18 +2,16 @@ from __future__ import absolute_import, unicode_literals
 
 import traceback
 import sys
-import re
-
+import subprocess
 import time
 import threading
 from core.config.crawlers_config import get_snmp_sensors
-from threading import Timer
-import subprocess
 
 from docopt import docopt
 from core.data.influx import *
 
 NO_PAUSE = -1
+SENSOR_ERROR_PAUSE_S = 3.0
 
 DEBUG = True
 LAST_TIMESTAMP_INSERTED = {}
@@ -68,38 +66,53 @@ def flush_records(args):
     return False
 
 
-def read_one_snmp_sensor(sensor_config):
+def read_all_sensors(snmp_sensors):
     global influx_lock
     global RECORDS
 
-    sensor_name = sensor_config.get("name")
-    print("Crawling '%s'" % sensor_name)
+    data = []
+
+    oids_sensors_map = dict([
+        (sensor.get('name'), "%s.%s" % (sensor.get('oid'), sensor.get('index')))
+        for sensor in snmp_sensors
+    ])
+
+    oids = " ".join(oids_sensors_map.values())
+    sensors_names = " ".join(oids_sensors_map.keys())
+
+    print("Crawling %s" % (sensors_names))
 
     timestamp = int(time.time())
 
-    sensor_ip = sensor_config["ip"]
-    sensor_oid = sensor_config["oid"]
-    sensor_index = sensor_config["index"]
+    ip_candidates = list(set([sensor.get("ip") for sensor in snmp_sensors]))
+    if len(ip_candidates) > 1:
+        raise Exception("ip candidates are too numerous: %s, I don't know which sensor I should contact!" % ip_candidates)
+    sensor_ip = ip_candidates[0]
 
-    sensor_unit = sensor_config.get("unit")
-    sensor_type = sensor_config.get("sensor_type")
-
-    snmpget_cmd = "snmpget -v2c -c public %s " % (sensor_ip)
-    snmpget_cmd += " %s.%s" % (sensor_oid, sensor_index)
+    snmpget_cmd = "snmpget -On -v2c -c public %s %s" % (sensor_ip, oids)
 
     # Execute the snmpget command
-    snmp_output = subprocess.check_output([x for x in snmpget_cmd.split(" ") if x != ''])
+    try:
+        snmp_output = subprocess.check_output([x for x in snmpget_cmd.split(" ") if x != ''])
+    except subprocess.CalledProcessError:
+        print("There was an error when contacting the sensor, I will wait %s seconds" % (SENSOR_ERROR_PAUSE_S))
+        time.sleep(SENSOR_ERROR_PAUSE_S)
+        return True
+
     snmp_output_str = snmp_output.decode("utf8")
 
     # Find the values returned by snmpget
-    sensor_value = None
     for line in snmp_output_str.split("\n"):
 
-        address_and_type, value = snmp_output_str.split(": ")
+        if "=" not in line:
+            continue
 
-        if "INTEGER" in address_and_type:
+        address_and_type, value = line.split(": ")
+        address, data_type = address_and_type.split(" = ")
+
+        if "INTEGER" in data_type:
             outlet_value = value
-        elif "STRING" in address_and_type:
+        elif "STRING" in data_type:
             outlet_value = value.replace("\"", "")
         else:
             continue
@@ -107,15 +120,19 @@ def read_one_snmp_sensor(sensor_config):
         sensor_value = float(outlet_value)
         print(sensor_value)
 
-    # Prepare a database record for each of the outlets
-    data = []
+        [corresponding_sensor] = [sensor for sensor in snmp_sensors if ".%s.%s" % (sensor.get("oid"), sensor.get("index")) == address]
 
-    if "pdu" in sensor_config.get("name"):
-        location, pdu_short_id = sensor_config.get("name").split("_pdu-")
-    else:
-        location = sensor_config.get("name")
+        # Prepare a database record for the current value
+        sensor_name = corresponding_sensor.get("name")
+        sensor_unit = corresponding_sensor.get("unit")
+        sensor_type = corresponding_sensor.get("type")
 
-    data += process_one_outlet(sensor_name, location, timestamp, sensor_value, sensor_unit, sensor_type)
+        if "pdu" in corresponding_sensor.get("name"):
+            location, pdu_short_id = corresponding_sensor.get("name").split("_pdu-")
+        else:
+            location = corresponding_sensor.get("name")
+
+        data += process_one_outlet(sensor_name, location, timestamp, sensor_value, sensor_unit, sensor_type)
 
     # Put the outlets' consumption values in the list of values that should be inserted in DB
     influx_lock.acquire()
@@ -134,6 +151,7 @@ def set_interval(f, args, interval):
             self.args = args
             self.interval = interval
             self.stop_execution = False
+            self.daemon = True
 
         def run(self):
             while not self.stop_execution:
@@ -177,20 +195,15 @@ Options:
     else:
         pdu_candidate = arguments["--pdu"]
 
-        readers = []
-        for sensor_config in snmp_sensors:
-            if pdu_candidate not in sensor_config.get("name"):
-                continue
+        selected_sensors = [sensor for sensor in snmp_sensors if pdu_candidate in sensor.get("name")]
 
-            last_pdu_reader = None
-            time.sleep(0.1)
-            reader = set_interval(read_one_snmp_sensor, (sensor_config), 1)
-            readers += [reader]
+        snmp_readers = []
+        for selected_sensor in selected_sensors:
+            snmp_readers += [set_interval(read_all_sensors, ([selected_sensor]), 1)]
 
-        flusher = set_interval(flush_records, (snmp_sensors), 30)
-        readers += [flusher]
+        flusher = set_interval(flush_records, (selected_sensors), 30)
 
-        for reader in readers:
-            reader.join()
+        for snmp_reader in snmp_readers:
+            snmp_reader.join()
 
         sys.exit(0)
