@@ -6,6 +6,7 @@ import subprocess
 import time
 import threading
 from core.config.crawlers_config import get_snmp_sensors
+from itertools import groupby
 
 from docopt import docopt
 from core.data.influx import *
@@ -66,34 +67,43 @@ def flush_records(args):
     return False
 
 
-def read_all_sensors(snmp_sensors):
+def chunks(l, n):
+    return [l[i:i + n] for i in range(0, len(l), n)]
+
+
+def read_all_sensors(snmp_sensors, group_calls_factor=1):
     global influx_lock
     global RECORDS
 
     data = []
-
-    oids_sensors_map = dict([
-        (sensor.get('name'), "%s.%s" % (sensor.get('oid'), sensor.get('index')))
-        for sensor in snmp_sensors
-    ])
-
-    oids = " ".join(oids_sensors_map.values())
-    sensors_names = " ".join(oids_sensors_map.keys())
-
-    print("Crawling %s" % (sensors_names))
-
-    timestamp = int(time.time())
 
     ip_candidates = list(set([sensor.get("ip") for sensor in snmp_sensors]))
     if len(ip_candidates) > 1:
         raise Exception("ip candidates are too numerous: %s, I don't know which sensor I should contact!" % ip_candidates)
     sensor_ip = ip_candidates[0]
 
-    snmpget_cmd = "snmpget -On -v2c -c public %s %s" % (sensor_ip, oids)
+    oids_sensors_map = dict([
+        (sensor.get('name'), "%s.%s" % (sensor.get('oid'), sensor.get('index')))
+        for sensor in snmp_sensors
+    ])
+
+    sensors_names = " ".join(oids_sensors_map.keys())
+    oids = oids_sensors_map.values()
+
+    oids = chunks(list(oids), group_calls_factor)
+
+    print("Crawling %s" % (sensors_names))
+
+    timestamp = int(time.time())
+
+    snmpget_cmd = ""
+
+    for oid in oids:
+        snmpget_cmd += "snmpget -On -v2c -c public %s %s; " % (sensor_ip, " ".join(oid))
 
     # Execute the snmpget command
     try:
-        snmp_output = subprocess.check_output([x for x in snmpget_cmd.split(" ") if x != ''])
+        snmp_output = subprocess.check_output(snmpget_cmd, shell=True)
     except subprocess.CalledProcessError:
         print("There was an error when contacting the sensor, I will wait %s seconds" % (SENSOR_ERROR_PAUSE_S))
         time.sleep(SENSOR_ERROR_PAUSE_S)
@@ -155,13 +165,17 @@ def set_interval(f, args, interval):
 
         def run(self):
             while not self.stop_execution:
+                before = time.time()
                 try:
-                    self.f(self.args)
+                    self.f(*self.args)
                 except:
                     traceback.print_exc()
                     print("Something bad happened here :-(")
                     pass
-                time.sleep(self.interval)
+                execution_duration = time.time() - before
+                time_to_wait = self.interval - execution_duration
+                if time_to_wait > 0:
+                    time.sleep(time_to_wait)
 
         def stop(self):
             self.stop_execution = True
@@ -176,7 +190,7 @@ if __name__ == "__main__":
     help = """PDUs crawler
 
 Usage:
-  pdus_crawler.py --pdu=<pdu>
+  pdus_crawler.py --pdu=<pdu> [--mode=<mode>] [--group_calls_factor=<mode>]
   pdus_crawler.py -l
 
 Options:
@@ -185,6 +199,12 @@ Options:
 """
     arguments = docopt(help)
     snmp_sensors = get_snmp_sensors()
+
+    mode = arguments.get("--mode", "parallel")
+    group_calls_factor_arg = arguments.get("--group_calls_factor", "1")
+
+    if group_calls_factor_arg and str.isdigit(group_calls_factor_arg):
+        group_calls_factor = int(group_calls_factor_arg)
 
     if arguments["--list"]:
         print("Available pdus:")
@@ -198,10 +218,13 @@ Options:
         selected_sensors = [sensor for sensor in snmp_sensors if pdu_candidate in sensor.get("name")]
 
         snmp_readers = []
-        for selected_sensor in selected_sensors:
-            snmp_readers += [set_interval(read_all_sensors, ([selected_sensor]), 1)]
+        if mode == "iterative":
+            snmp_readers += [set_interval(read_all_sensors, (selected_sensors, group_calls_factor, ), 1)]
+        else:
+            for selected_sensor in selected_sensors:
+                snmp_readers += [set_interval(read_all_sensors, ([selected_sensor], ), 1)]
 
-        flusher = set_interval(flush_records, (selected_sensors), 30)
+        flusher = set_interval(flush_records, (selected_sensors, ), 30)
 
         for snmp_reader in snmp_readers:
             snmp_reader.join()
