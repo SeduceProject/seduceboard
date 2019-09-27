@@ -95,13 +95,13 @@
                                     <td>{{ cq_recomputation.id }}</td>
                                     <td>{{ cq_recomputation.cq_name }}</td>
                                     <td>{{ cq_recomputation.priority }}</td>
-                                    <td>{{ cq_recomputation.time_interval_start.strftime('%Y-%m-%d') }} to {{ cq_recomputation.time_interval_end.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ cq_recomputation.time_interval_start.strftime('%Y-%m-%d %H:%M:%S') }} to {{ cq_recomputation.time_interval_end.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                     {% if cq_recomputation.last_run_start != None %}
-                                    <td>{{ cq_recomputation.last_run_start.strftime('%Y-%m-%d') }} to {{ cq_recomputation.time_interval_end.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ cq_recomputation.last_run_start.strftime('%Y-%m-%d %H:%M:%S') }} to {{ cq_recomputation.time_interval_end.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                     {% else %}
                                     <td>Not started</td>
                                     {% endif %}
-                                    <td>{{ (cq_recomputation.progress * 100) | int }}%</td>
+                                    <td>{{ (cq_recomputation.progress * 100) | round(2, 'floor') }}%</td>
                                     {% if cq_recomputation.last_execution_time %}
                                     <td>{{ cq_recomputation.last_execution_time | round(1, 'floor') }} seconds</td>
                                     {% else %}

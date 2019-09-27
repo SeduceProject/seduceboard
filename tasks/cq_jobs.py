@@ -9,6 +9,8 @@ import re
 from core.data.influx import influx_run_query
 
 
+MAX_EXECUTION_TIME_PER_RUN = 5.0
+
 @celery.task()
 def run_job():
     print("Checking cq_jobs in 'created' or 'waiting' state")
@@ -25,9 +27,15 @@ def run_job():
             last_run_start_ts = float(time.mktime(recomputation_job.last_run_start.timetuple()))
 
             if last_run_start_ts > time_interval_start_ts:
+
+                if recomputation_job.last_execution_time:
+                    interval_processed = recomputation_job.last_run_end.timestamp() - recomputation_job.last_run_start.timestamp()
+                    time_delta = interval_processed * (MAX_EXECUTION_TIME_PER_RUN / recomputation_job.last_execution_time)
+                else:
+                    time_delta = 12 * 3600
+
                 recomputation_job.last_run_end = recomputation_job.last_run_start
-                time_delta = 7
-                recomputation_job.last_run_start = recomputation_job.last_run_end - datetime.timedelta(days=time_delta)
+                recomputation_job.last_run_start = recomputation_job.last_run_end - datetime.timedelta(seconds=time_delta)
                 recomputation_job.run()
                 db.session.add(recomputation_job)
                 db.session.commit()

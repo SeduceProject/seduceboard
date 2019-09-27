@@ -14,9 +14,9 @@ def detect_unresponsive_temperature_sensors():
     sensors_arrays_with_children = get_sensors_arrays_with_children()
     now_time = time.time()
 
-    for sensors_array in sensors_arrays_with_children:
+    for sensors_array_key, sensors_array in sensors_arrays_with_children.items():
         for child in sensors_array["children"]:
-            child_last_update = filter(lambda x: x["sensor"] == child["name"], last_updates)
+            child_last_update = [x for x in last_updates if x.get("sensor") == child.get("name")]
             if len(child_last_update) > 0:
                 last_update_since_epoch = int(time.mktime(parser.parse(child_last_update[0]["time"]).timetuple())) - time.timezone
                 time_since_last_update_secs = now_time - last_update_since_epoch

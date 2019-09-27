@@ -705,23 +705,51 @@ def db_wattmeters_data(sensor_type, start_date=None, how="daily"):
     return result
 
 
+def db_get_sensors_with_tags():
+    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+
+    query = "show series from sensors"
+    points = db_client.query(query).get_points()
+
+    raw_results = [s.get("key") for s in points]
+    series = {}
+    for result in raw_results:
+        serie_type, *properties_raw = result.split(",")
+
+        serie_dict = {}
+        for prop in properties_raw:
+            key, value = prop.split("=")
+            serie_dict[key] = value
+
+        series[serie_dict.get("sensor")] = serie_dict
+    db_client.close()
+
+    return series
+
+
 def db_last_sensors_updates():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    # query = "SELECT last(*), *, sensor from sensors group by sensor"
-    query = "SELECT last(*), *, sensor from sensors where time > now() - 36600s group by sensor"
-    points = db_client.query(query).get_points()
+    series = db_get_sensors_with_tags()
+
+    query = "SELECT last(*) from sensors where time > now() - 36600s group by sensor"
+    rs = db_client.query(query)
 
     result = []
 
-    for point in points:
+    for point in rs.raw.get("series"):
+        sensor = point.get("tags").get("sensor")
+        [[time, last_value]] = point.get("values")
+
+        corresponding_serie = series.get(sensor)
+
         result += [{
-            "time": point["time"],
-            "last_value": point["last_value"],
-            "location": point["location"],
-            "unit": point["unit"],
-            "sensor_type": point["sensor_type"],
-            "sensor": point["sensor"],
+            "time": time,
+            "last_value": last_value,
+            "location": corresponding_serie.get("location"),
+            "unit": corresponding_serie.get("unit"),
+            "sensor_type": corresponding_serie.get("sensor_type"),
+            "sensor": corresponding_serie.get("sensor"),
         }]
 
     db_client.close()
@@ -732,38 +760,66 @@ def db_last_sensors_updates():
 def db_oldest_point_in_serie(serie_name):
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    query = "SELECT first(*), *, sensor from sensors where sensor='%s'" % (serie_name)
-    points = db_client.query(query).get_points()
+    series = db_get_sensors_with_tags()
+
+    if serie_name == "*":
+        query = """SELECT time, location, sensor, sensor_type, unit, value from sensors ORDER BY ASC LIMIT 1"""
+    else:
+        query = """SELECT first(*) from sensors where sensor='%s'""" % (serie_name)
+    rs = db_client.query(query)
+
+    result = []
+
+    for point in rs.raw.get("series"):
+
+        if serie_name == "*":
+            [[time, location, sensor, sensor_type, unit, first_value]] = point.get("values")
+        else:
+            [[time, first_value]] = point.get("values")
+            location = corresponding_serie.get("location")
+            unit = corresponding_serie.get("unit")
+            sensor_type = corresponding_serie.get("sensor_type")
+            sensor = corresponding_serie.get("sensor")
+
+        corresponding_serie = series.get(serie_name)
+
+        result = {
+            "time": time,
+            "first_value": first_value,
+            "location": location,
+            "unit": unit,
+            "sensor_type": sensor_type,
+            "sensor": sensor,
+        }
+
     db_client.close()
 
-    for point in points:
-        return {
-            "time": point["time"],
-            "first_value": point["first_value"],
-            "location": point["location"],
-            "unit": point["unit"],
-            "sensor_type": point["sensor_type"],
-            "sensor": point["sensor"],
-        }
-    return None
+    return result
 
 
 def db_last_temperature_values():
     db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
-    query = """SELECT last(*), *, sensor from sensors WHERE sensor_type = 'temperature' and time > now() - 1d group by sensor"""
-    points = list(db_client.query(query).get_points())
+    series = db_get_sensors_with_tags()
+
+    query = """SELECT last(*) from sensors WHERE sensor_type = 'temperature' and time > now() - 1d group by sensor"""
+    rs = db_client.query(query)
 
     result = []
 
-    for point in points:
+    for point in rs.raw.get("series"):
+        sensor = point.get("tags").get("sensor")
+        [[time, last_value]] = point.get("values")
+
+        corresponding_serie = series.get(sensor)
+
         result += [{
-            "time": point["time"],
-            "last_value": point["last_value"],
-            "location": point["location"],
-            "unit": point["unit"],
-            "sensor_type": point["sensor_type"],
-            "sensor": point["sensor"],
+            "time": time,
+            "last_value": last_value,
+            "location": corresponding_serie.get("location"),
+            "unit": corresponding_serie.get("unit"),
+            "sensor_type": corresponding_serie.get("sensor_type"),
+            "sensor": corresponding_serie.get("sensor"),
         }]
 
     db_client.close()

@@ -14,6 +14,10 @@ def _extend_description_of_cq(cq, multitree_nodes_cq_ids):
     m = re.search("sensor = '(.+?)'", cq.get("query"))
     if m:
         cq["influx_sensor_id"] = m.group(1)
+    elif "downsample_all" in cq_name:
+        cq["influx_sensor_id"] = "*"
+    else:
+        cq["influx_sensor_id"] = "*"
 
     if sensor_id in multitree_nodes_cq_ids:
         cq["is_multitree_query"] = True
@@ -89,9 +93,6 @@ def cq_generate_update_query(cqname, start, end):
             return None
 
         return raw_query
-
-    # SELECT sum(mean) FROM (SELECT mean(value) FROM pidiou.autogen.sensors WHERE (sensor = 'ecotype-5_pdu-Z1.51') and time > now() - 31d group by time(30s), sensor) where time > now() - 31d group by time(30s)
-    # SELECT sum(mean) from (SELECT mean(value) FROM pidiou.autogen.sensors WHERE (sensor = 'wattmeter_cooling') and time > now() -30d GROUP BY time(1d), sensor) where time > now() -30d group by time(1d)
 
     return None
 
