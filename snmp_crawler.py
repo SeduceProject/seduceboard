@@ -13,6 +13,7 @@ from core.data.influx import *
 
 NO_PAUSE = -1
 SENSOR_ERROR_PAUSE_S = 3.0
+FLUSH_FREQUENCY_SECONDS = 3.0
 
 DEBUG = True
 LAST_TIMESTAMP_INSERTED = {}
@@ -224,7 +225,7 @@ Options:
             for selected_sensor in selected_sensors:
                 snmp_readers += [set_interval(read_all_sensors, ([selected_sensor], ), 1)]
 
-        flusher = set_interval(flush_records, (selected_sensors, ), 5)
+        flusher = set_interval(flush_records, (selected_sensors, ), FLUSH_FREQUENCY_SECONDS)
 
         for snmp_reader in snmp_readers:
             snmp_reader.join()

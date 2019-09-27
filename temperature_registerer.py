@@ -19,7 +19,8 @@ app = Flask(__name__)
 influx_lock = threading.Lock()
 
 TIME_LAST_UPDATE = None
-FLUSH_FREQUENCY_SECONDS = 5.0
+FLUSH_FREQUENCY_SECONDS = 3.0
+
 
 @app.route("/temperature/list", methods=['POST'])
 def temperature_list():
