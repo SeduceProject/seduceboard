@@ -18,11 +18,14 @@ app = Flask(__name__)
 
 influx_lock = threading.Lock()
 
+TIME_LAST_UPDATE = None
+FLUSH_FREQUENCY_SECONDS = 5.0
 
 @app.route("/temperature/list", methods=['POST'])
 def temperature_list():
     global influx_lock
     global RECORDS
+    global TIME_LAST_UPDATE
 
     data = []
     for obj in request.json:
@@ -53,11 +56,12 @@ def temperature_list():
             }
         }]
 
+    now = time.time()
     influx_lock.acquire()
-    if len(RECORDS) > 100:
+    RECORDS += data
+    if TIME_LAST_UPDATE is None or now - TIME_LAST_UPDATE > FLUSH_FREQUENCY_SECONDS:
         flush_records()
-    else:
-        RECORDS += data
+        TIME_LAST_UPDATE = now
     influx_lock.release()
 
     return jsonify({"status": "success", "update_count": len(data)})
