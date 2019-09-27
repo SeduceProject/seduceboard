@@ -54,7 +54,7 @@ def temperature_list():
         }]
 
     influx_lock.acquire()
-    if len(RECORDS) > 1000:
+    if len(RECORDS) > 100:
         flush_records()
     else:
         RECORDS += data

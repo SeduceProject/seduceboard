@@ -224,7 +224,7 @@ Options:
             for selected_sensor in selected_sensors:
                 snmp_readers += [set_interval(read_all_sensors, ([selected_sensor], ), 1)]
 
-        flusher = set_interval(flush_records, (selected_sensors, ), 30)
+        flusher = set_interval(flush_records, (selected_sensors, ), 5)
 
         for snmp_reader in snmp_readers:
             snmp_reader.join()
