@@ -464,7 +464,7 @@ function hc_create_chart(hc_options) {
             if (hc_snap_to_right_edge) {
                 load_data(chart, true);
             }
-        }, 2000);
+        }, 500);
 
         // Periodically update data of the navigator (bottom bar)
         setInterval(function () {
@@ -502,7 +502,7 @@ function hc_create_chart(hc_options) {
                 navigator_data = unique_sorted_navigator_data;
                 chart.navigator.series[0].setData(navigator_data);
             });
-        }, 2000);
+        }, 500);
 
 
         // Check outdated graph due to a lose of connection
@@ -512,7 +512,7 @@ function hc_create_chart(hc_options) {
             if (hc_last_successful_update < current_xaxis_max_date && last_navigator_update > current_xaxis_max_date) {
                 load_data(chart);
             }
-        }, 2000);
+        }, 500);
 
 
         // Delete unselected series
@@ -548,7 +548,7 @@ function hc_create_chart(hc_options) {
                 console.log("Navigator.maxDate = " + navigator_max_datetime);
                 console.log("hc_snap_to_right_edge = " + hc_snap_to_right_edge);
                 console.log("downsample_scale = " + downsample_scale);
-            }, 2000);
+            }, 500);
         }
 
     });
