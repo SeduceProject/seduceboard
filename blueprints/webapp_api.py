@@ -289,7 +289,7 @@ def get_navigation_data(sensor_type, aggregation_preferences="daily,hourly"):
 
         _navigation_data = db_get_navigation_data(sensor_type, start_date, time_periodicity)
 
-        if len(_navigation_data['range']['timestamps']) > 10:
+        if len(_navigation_data['range']['timestamps']) > 1:
             return jsonify(_navigation_data)
 
     return jsonify({})

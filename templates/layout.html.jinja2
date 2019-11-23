@@ -7,16 +7,15 @@
         <title> Seduce Dashboard </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+{#        <link rel="apple-touch-icon" href="apple-touch-icon.png">#}
         <!-- Place favicon.ico in the root directory -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.css') }}">
 		<link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/app-blue.css') }}">
 		<link rel="stylesheet" id="theme-style" href="{{ url_for('static', filename='css/custom.css') }}">
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://code.highcharts.com/stock/highstock.js"></script>
-        <script src="https://code.highcharts.com/stock/highstock.js"></script>
-        <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/stock/6.1.0/highstock.js"></script>
+        <script src="https://code.highcharts.com/6.1.0/modules/exporting.js"></script>
 
         <style >
         {% block header_css %}
@@ -131,8 +130,7 @@
                     <div class="sidebar-container">
                         <div class="sidebar-header">
                             <div class="brand">
-								<img class="seduce_logo" src="{{ url_for('static', filename='assets/seduce_logo.svg') }}"/>
-                                Seduce Dashboard </div>
+								<img class="seduce_logo" src="{{ url_for('static', filename='assets/seduce_logo_small_dark.png') }}"/>SeDuCe <small>dashboard</small></div>
                         </div>
                         <nav class="menu">
                             {% block navbar %}

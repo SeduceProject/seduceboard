@@ -33,3 +33,4 @@ influxdb
 pyyaml
 oyaml
 pyinstrument
+Flask-Migrate

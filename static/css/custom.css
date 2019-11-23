@@ -1,9 +1,17 @@
 
 .seduce_logo {
-    width: 40px;
-    margin-right: 5px;
+    width: 50px;
+    /*margin-right: 5px;*/
     position: relative;
-    left: -5px;
+    left: -10px;
+    top: -2px;
+}
+
+.seduce_logo_login_screen {
+    width: 100px;
+    /*margin-right: 5px;*/
+    position: relative;
+    left: -10px;
     top: -2px;
 }
 
