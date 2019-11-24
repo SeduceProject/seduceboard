@@ -1,15 +1,12 @@
 from flask_bcrypt import Bcrypt
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
 from core.finite_state_machine.fsm import user_initial_state, cq_initial_state
-from frontend import app
+from app import app
 from sqlalchemy import event
 from transitions import Machine
+from app import db
 
 bcrypt = Bcrypt(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-db = SQLAlchemy(app)
 
 
 class User(db.Model):
@@ -27,6 +24,7 @@ class User(db.Model):
 
     email_confirmation_token = db.Column(db.Text, nullable=True, default=None)
     admin_authorization_token = db.Column(db.Text, nullable=True, default=None)
+    forgotten_password_token = db.Column(db.Text, nullable=True, default=None)
 
     @hybrid_property
     def password(self):
@@ -43,8 +41,8 @@ class ContinuousQueryRecomputeJob(db.Model):
 
     cq_name = db.Column(db.Text)
     priority = db.Column(db.String(120), default="low")
-    time_interval_start = db.Column(db.DateTime, nullable=False)
-    time_interval_end = db.Column(db.DateTime, nullable=False)
+    time_interval_start = db.Column(db.DateTime, nullable=True)
+    time_interval_end = db.Column(db.DateTime, nullable=True)
 
     last_run_start = db.Column(db.DateTime)
     last_run_end = db.Column(db.DateTime)

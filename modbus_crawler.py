@@ -142,4 +142,3 @@ if __name__ == "__main__":
     except:
         for modbus_reader in modbus_readers:
             modbus_reader.stop()
-

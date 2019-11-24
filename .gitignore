@@ -2,7 +2,9 @@ database/database.db
 
 *.log
 test.db
+test_save.db
 celerybeat-schedule.db
+Pipfile
 
 ## INTELLIJ / PyCharm GITIGNORE
 
