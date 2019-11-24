@@ -66,6 +66,62 @@ def signup():
     return 'Bad login'
 
 
+@login_blueprint.route('/request_reset_password', methods=['GET', 'POST'])
+def request_reset_password():
+    from database import User
+    from core.email.notification import send_reset_password_link
+    from database import db
+    if flask.request.method == 'GET':
+        next_url = flask.request.args.get("next")
+        return render_template("request_reset_password.html.jinja2", next_url=next_url, msg="")
+    email = flask.request.form['email']
+    if email is not None and email != "":
+        user = User.query.filter_by(email=email).first()
+
+        if user is None:
+            return render_template("request_reset_password.html.jinja2", msg="No user is registered with this email")
+        else:
+
+            response = send_reset_password_link(user)
+            reset_password_token = response.get("token")
+            user.forgotten_password_token = reset_password_token
+
+            db.session.add(user)
+            db.session.commit()
+
+            redirect_url = flask.url_for("login.login", msg="We just sent you an email to help you reset your password!")
+    else:
+        redirect_url = flask.url_for("login.login")
+    return flask.redirect(redirect_url)
+
+
+@login_blueprint.route('/reset_password/token/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    from database import User
+    from core.email.notification import send_reset_password_link
+    from database import db
+    if flask.request.method == 'GET':
+        return render_template("reset_password.html.jinja2", msg="", token=token)
+    password1 = flask.request.form['password1']
+    password2 = flask.request.form['password2']
+    if password1 is not None and password1 != "" and password1 == password2:
+        user = User.query.filter_by(forgotten_password_token=token).first()
+
+        if user is None:
+            redirect_url = flask.url_for("login.login", msg="The password request is invalid (bad token)")
+        else:
+            user.password = password1
+            user.forgotten_password_token = ""
+
+            db.session.add(user)
+            db.session.commit()
+
+            redirect_url = flask.url_for("login.login", msg="We just updated your password!")
+    else:
+        return render_template("reset_password.html.jinja2", msg="Passwords don't match!", token=token)
+    return flask.redirect(redirect_url)
+
+
 @login_blueprint.route('/confirmation_account_creation')
 def confirmation_account_creation():
     return render_template("confirmation_account_creation.html.jinja2")

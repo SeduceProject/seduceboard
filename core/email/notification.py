@@ -148,3 +148,52 @@ Seduce system
     return {
         "success": True,
     }
+
+
+def send_reset_password_link(user):
+    email_configuration = get_email_configuration()
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
+
+    token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
+
+    fromaddr = email_configuration.get("email")
+    toaddr = user.email
+
+    msg = MIMEMultipart()
+
+    msg['From'] = email_configuration.get("email")
+    msg['To'] = toaddr
+    msg['Subject'] = "Password reset - SeDuCe testbed"
+
+    body = """Hello %s,
+
+Hello,
+
+We got a request to reset your password on the SeDuCe testbed.
+ 
+If you ignore this message, your password won't be changed.
+
+If you didn't request a password reset, let us know.
+
+Here is the link to reset your password:
+https://%s/reset_password/token/%s
+
+Best Regards,
+Seduce system
+""" % (user.firstname, frontend_public_address, token)
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    smtp_server = smtplib.SMTP(email_configuration.get("smtp_server_url"), email_configuration.get("smtp_server_port"))
+    smtp_server.ehlo()
+    smtp_server.starttls()
+    smtp_server.ehlo()
+    smtp_server.login(fromaddr, email_configuration.get("password"))
+    text = msg.as_string()
+    smtp_server.sendmail(fromaddr, toaddr, text)
+    smtp_server.quit()
+
+    return {
+        "success": True,
+        "token": token
+    }
