@@ -108,6 +108,7 @@
                                 {% endif %}
                                 </td>
                                 <td>
+                                <a href="{{ url_for("login.delete_user", user_id=user.id) }}" class="btn btn-danger">Delete</a>
                                 {% if user.is_admin %}
                                 <a href="{{ url_for("login.demote_user", user_id=user.id) }}" class="btn btn-danger">Demote</a>
                                 {% else %}

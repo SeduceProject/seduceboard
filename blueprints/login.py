@@ -37,18 +37,54 @@ def login(msg=None):
     return flask.redirect(flask.url_for("login.login", msg="You are not authorized to log in"))
 
 
+def verify_captcha(site_key, secret_key, token, remote_ip=None):
+    import requests
+
+    data = {
+        "secret": secret_key,
+        "response": token,
+    }
+
+    if remote_ip is not None:
+        data["remoteip"] = remote_ip
+
+    result = requests.post("https://www.google.com/recaptcha/api/siteverify", data=data).json()
+
+    return result.get("success", False)
+
+
 @login_blueprint.route('/signup', methods=['GET', 'POST'])
 def signup():
     from database import User
     from database import db
+    from core.config.config_loader import load_config
+
+    config = load_config()
+
+    recaptcha_site_key = config.get("captcha").get("site_key")
+    recaptcha_secret_key = config.get("captcha").get("secret_key")
+
     if flask.request.method == 'GET':
         next_url = flask.request.args.get("next")
-        return render_template("signup.html.jinja2", next_url=next_url)
+        return render_template("signup.html.jinja2", next_url=next_url, recaptcha_site_key=recaptcha_site_key)
     email = flask.request.form['email']
     firstname = flask.request.form['firstname']
     lastname = flask.request.form['lastname']
     password = flask.request.form['password']
     confirm_password = flask.request.form['confirm_password']
+    recaptcha_token = flask.request.form['recaptcha_token']
+
+    remote_ip = None
+
+    if ".ru" in email:
+        remote_ip = flask.request.remote_addr
+
+    if recaptcha_token == "" or recaptcha_token is None:
+        return "Captcha is empty"
+
+    if not verify_captcha(recaptcha_site_key, recaptcha_secret_key, recaptcha_token, remote_ip):
+        return "Invalid recaptcha"
+
     if password == confirm_password:
         user = User()
         user.email = email
@@ -167,7 +203,7 @@ def approve_user(token):
         send_authorization_confirmation(user_candidate)
         return flask.redirect(flask.url_for("admin_app.manage_users"))
 
-    return "Bad request: could not the find given token '%s'" % (token)
+    return "Bad request: could not approve a user with the given token '%s'" % (token)
 
 
 @login_blueprint.route('/disapprove_user/token/<token>')
@@ -184,7 +220,7 @@ def disapprove_user(token):
         db.session.commit()
         return flask.redirect(flask.url_for("admin_app.manage_users"))
 
-    return "Bad request: could not find givent token '%s'" % (token)
+    return "Bad request: could not disapprove find givent token '%s'" % (token)
 
 
 @login_blueprint.route('/promote_user/<user_id>')
@@ -200,7 +236,7 @@ def promote_user(user_id):
         db.session.add(user_candidate)
         db.session.commit()
         return flask.redirect(flask.url_for("admin_app.manage_users"))
-    return "Bad request: could not a user with given id '%s'" % (user_id)
+    return "Bad request: could not promote a user with given id '%s'" % (user_id)
 
 
 @login_blueprint.route('/demote_user/<user_id>')
@@ -216,7 +252,7 @@ def demote_user(user_id):
         db.session.add(user_candidate)
         db.session.commit()
         return flask.redirect(flask.url_for("admin_app.manage_users"))
-    return "Bad request: could not a user with given id '%s'" % (user_id)
+    return "Bad request: could not demote a user with given id '%s'" % (user_id)
 
 
 @login_blueprint.route('/authorize_user/<user_id>')
@@ -236,7 +272,7 @@ def authorize_user(user_id):
         db.session.add(user_candidate)
         db.session.commit()
         return flask.redirect(flask.url_for("admin_app.manage_users"))
-    return "Bad request: could not a user with given id '%s'" % (user_id)
+    return "Bad request: could not authorize a user with given id '%s'" % (user_id)
 
 
 @login_blueprint.route('/deauthorize_user/<user_id>')
@@ -253,7 +289,22 @@ def deauthorize_user(user_id):
         db.session.add(user_candidate)
         db.session.commit()
         return flask.redirect(flask.url_for("admin_app.manage_users"))
-    return "Bad request: could not a user with given id '%s'" % (user_id)
+    return "Bad request: could not deauthorize a user with given id '%s'" % (user_id)
+
+
+@login_blueprint.route('/delete_user/<user_id>')
+@admin_login_required
+def delete_user(user_id):
+    from database import User
+    from database import db
+    db.session.expire_all()
+    user_candidate = User.query.filter_by(id=user_id).first()
+
+    if user_candidate is not None:
+        db.session.delete(user_candidate)
+        db.session.commit()
+        return flask.redirect(flask.url_for("admin_app.manage_users"))
+    return "Bad request: could not delete a user with given id '%s'" % (user_id)
 
 
 @login_blueprint.route("/logout")
