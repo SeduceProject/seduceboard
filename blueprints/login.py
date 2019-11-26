@@ -72,20 +72,27 @@ def signup():
     lastname = flask.request.form['lastname']
     password = flask.request.form['password']
     confirm_password = flask.request.form['confirm_password']
-    recaptcha_token = flask.request.form['recaptcha_token']
+    recaptcha_token = flask.request.form['g-recaptcha-response']
 
     remote_ip = None
 
+    error = False
+    error_msg = ""
+
     if ".ru" in email:
         remote_ip = flask.request.remote_addr
+        error = True
+        error_msg = "russian email detected"
 
     if recaptcha_token == "" or recaptcha_token is None:
-        return "Captcha is empty"
+        error = True
+        error_msg = "no recaptcha token provided"
 
     if not verify_captcha(recaptcha_site_key, recaptcha_secret_key, recaptcha_token, remote_ip):
-        return "Invalid recaptcha"
+        error = True
+        error_msg = "invalid recaptcha token"
 
-    if password == confirm_password:
+    if not error and password == confirm_password:
         user = User()
         user.email = email
         user.firstname = firstname
@@ -98,6 +105,8 @@ def signup():
 
         redirect_url = flask.url_for("login.confirmation_account_creation")
         return flask.redirect(redirect_url)
+    else:
+        print("SPAM: %s (%s)" % (remote_ip, error_msg))
 
     return 'Bad login'
 

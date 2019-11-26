@@ -27,7 +27,9 @@
             }
         </script>
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+{#        <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>#}
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
     </head>
     <body>
@@ -64,8 +66,16 @@
                                         <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
                                     </div>
                                 </div>
-                                <input type="hidden" name="next_url" value="{{ next_url }}">
-                                <input type="hidden" id="recaptcha_token" name="recaptcha_token" value="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Anti spam</label>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                                        <input type="hidden" name="next_url" value="{{ next_url }}">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -93,14 +103,23 @@
         <script src="js/app.js"></script>
         </div>
 
-        <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
-        <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'homepage'}).then(function(token) {
-               $("#recaptcha_token")[0].value = token;
-            });
-        });
-        </script>
+{#        <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>#}
+{#        <script>#}
+{#        grecaptcha.ready(function() {#}
+{#            grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'homepage'}).then(function(token) {#}
+{#               $("#recaptcha_token")[0].value = token;#}
+{#            });#}
+{#        });#}
+{#        </script>#}
+
+{#        <script type="text/javascript">#}
+{#          var onloadCallback = function() {#}
+{#            grecaptcha.render('recaptcha_token', {#}
+{#              'sitekey' : '{{ recaptcha_site_key }}'#}
+{#            });#}
+{#          };#}
+{#        </script>#}
+
 
     </body>
 </html>
