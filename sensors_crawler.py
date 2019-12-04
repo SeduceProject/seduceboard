@@ -8,7 +8,6 @@ import requests
 from influxdb import InfluxDBClient
 from pyModbusTCP.client import ModbusClient
 
-# DB_HOST = "192.168.1.8"
 DB_HOST = "localhost"
 DB_USER = 'root'
 DB_PASSWORD = 'root'

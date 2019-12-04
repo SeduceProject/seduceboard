@@ -37,3 +37,4 @@ pyyaml
 oyaml
 pyinstrument
 Flask-Migrate
+Arrow

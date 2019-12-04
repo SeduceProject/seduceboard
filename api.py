@@ -2,10 +2,12 @@ from flask import Flask, jsonify
 from flasgger import Swagger
 from core.data.influx import *
 from flask import request
+import arrow
+from core.config.rack_config import extract_nodes_configuration
 
 app = Flask(__name__)
 app.config['SWAGGER'] = {
-    'title': 'Seduce API',
+    'title': 'SeDuCe API',
     'uiversion': 3
 }
 swagger = Swagger(app)
@@ -114,14 +116,6 @@ def sensors_of_specified_sensors_type(sensor_type):
         description: "A sensor type"
         required: true
         type: string
-    definitions:
-      MeasurementsDict:
-        type: object
-        properties:
-          sensors_types:
-            type: array
-            items:
-              type: string
     responses:
       200:
         description: A object containing what kind of sensors are part of the Seduce infrastructure.
@@ -140,6 +134,81 @@ def sensors_of_specified_sensors_type(sensor_type):
     return jsonify(result)
 
 
+@app.route('/servers/all/sensors')
+def servers_and_sensors():
+    """Endpoint returning servers and network switches, including the sensors associated with them.
+    ---
+    tags:
+      - servers
+      - sensors
+    definitions:
+      ServerDict:
+        type: object
+        properties:
+          name:
+            type: string
+          temp:
+            type: object
+            properties:
+              front:
+                type: string
+              back:
+                type: string
+          power:
+            type: array
+            items:
+              type: string
+    responses:
+      200:
+        description: An object describing the sensors associated to servers of SeDuCe.
+        schema:
+          $ref: '#/definitions/ServerDict'
+        examples:
+          response: [{
+              "name": "ecotype-1",
+              "temp": {
+                "front": "temp_front_ecotype1",
+                "back": "temp_back_ecotype1",
+              },
+              "power": [
+                "pdu1.ecotype1",
+                "pdu2.ecotype1"
+              ]
+            }]
+    """
+
+    result = []
+
+    ecotype_configuration = extract_nodes_configuration("nantes", "ecotype")
+
+    for server_short_name in ecotype_configuration.get("power").keys():
+
+        temperature_sensors_of_the_server = {
+        }
+
+        power_sensors_of_the_server = []
+
+        # Find the temperature sensors
+        for rack_name, rack_sensors_per_side in ecotype_configuration.get("temperature", {}).items():
+            for side, sensor_dict in rack_sensors_per_side.items():
+                sensor_matches = [sensor for sensor in sensor_dict.values() if server_short_name in sensor.get("tags", [])]
+                if len(sensor_matches) > 0:
+                    sensor_serie = sensor_matches[0].get("serie")
+                    temperature_sensors_of_the_server[side] = sensor_serie
+
+        # Find the power sensors
+        for pdu_name, sensor_name in ecotype_configuration.get("power").get(server_short_name).items():
+            power_sensors_of_the_server += [sensor_name]
+
+        result += [{
+            "name": server_short_name,
+            "temp": temperature_sensors_of_the_server,
+            "power": power_sensors_of_the_server
+        }]
+
+    return jsonify(result)
+
+
 @app.route('/sensors/<sensor_id>/measurements')
 def measurements(sensor_id):
     """Endpoint returning sensors that corresponds to a specified kind of sensors.
@@ -149,6 +218,34 @@ def measurements(sensor_id):
       - sensors
       - sensors_types
       - measurements
+    definitions:
+      MeasurementsDict:
+        type: object
+        properties:
+          start_date:
+            type: string
+          end_date:
+            type: string
+          timestamps:
+            type: array
+            items:
+              type: string
+          epoch_ts:
+            type: array
+            items:
+              type: int
+          values:
+            type: array
+            items:
+                type: any
+          epoch_ts:
+            type: array
+            items:
+              type: int
+          is_downsampled:
+            type: boolean
+          sensor_name:
+            type: string
     parameters:
       - name: "sensor_id"
         in: "path"
@@ -189,6 +286,9 @@ def measurements(sensor_id):
         end_date = "%ss" % end_date
 
     result = db_sensor_data(sensor_id, start_date=start_date, end_date=end_date)
+
+    result["epoch_ts"] = [arrow.get(ts).timestamp for ts in result.get("timestamps")]
+
     return jsonify(result)
 
 
