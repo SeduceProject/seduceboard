@@ -1,22 +1,40 @@
-from core.config.multitree_config import MULTITREE_CONFIG, MULTITREE_INDEX
+# from core.config.multitree_config import MULTITREE_CONFIG, MULTITREE_INDEX
 from core.data.influx import db_multitree_last_wattmeter_value
 from core.data.influx import db_multitree_last_wattmeter_query
 from core.data.influx import db_multitree_last_wattmeter_all_in_one_query
+import yaml
+
+
+MULTITREE_CONFIG = None
+
+
+def get_multitree_config():
+    global MULTITREE_CONFIG
+    if MULTITREE_CONFIG is None:
+        with open("conf/multitree.yaml") as f:
+            yaml_as_dict = yaml.load(f)
+            MULTITREE_CONFIG = yaml_as_dict
+    return MULTITREE_CONFIG
+
+
+def get_multitree_index():
+    return get_multitree_config()
 
 
 def get_root_nodes():
-    return [node for node in MULTITREE_CONFIG if "root" in node and node["root"]]
+    return [node for node in get_multitree_config().values() if "root" in node and node["root"]]
 
 
 def get_nodes():
-    return [node for node in MULTITREE_CONFIG]
+    return [node for node in get_multitree_config()]
 
 
 def get_node_by_id(node_id):
-    if node_id in MULTITREE_INDEX:
-        return MULTITREE_INDEX[node_id]
+    multitree_index = get_multitree_index()
+    if node_id in multitree_index:
+        return multitree_index[node_id]
 
-    candidates = [node for node in MULTITREE_CONFIG if node["id"] == node_id]
+    candidates = [node for node in get_multitree_config().values() if node["id"] == node_id]
     if len(candidates) > 0:
         return candidates[0]
     return None
@@ -122,10 +140,11 @@ def _get_weighted_tree_consumption_data(root_node, level=0, total_consumption=No
     else:
         radius = 1.0
 
+    root_node_name = root_node.get("name", root_node.get("id"))
 
     result = {
         "node": root_node,
-        "name": root_node["name"],
+        "name": root_node_name,
         "id": root_node["id"],
         "level": level,
         "consumption": current_node_consumption,

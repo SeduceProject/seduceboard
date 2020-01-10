@@ -1,10 +1,10 @@
 from flask_bcrypt import Bcrypt
 from sqlalchemy.ext.hybrid import hybrid_property
 from core.finite_state_machine.fsm import user_initial_state, cq_initial_state
-from app import app
+from bin.app import app
 from sqlalchemy import event
 from transitions import Machine
-from app import db
+from bin.app import db
 
 bcrypt = Bcrypt(app)
 

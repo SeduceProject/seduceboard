@@ -50,3 +50,22 @@ def _display_time(seconds, granularity=2):
                 name = name.rstrip('s')
             result.append("{} {}".format(value, name))
     return ', '.join(result[:granularity])
+
+
+def ensure_admin_user_exists(db):
+    from database import User as DbUser
+    from core.config.config_loader import load_config
+    admin = DbUser.query.filter_by(email=load_config().get("admin").get("user")).first()
+    if admin is None:
+        admin = DbUser()
+        admin.email = load_config().get("admin").get("user")
+        admin.firstname = load_config().get("admin").get("firstname")
+        admin.lastname = load_config().get("admin").get("lastname")
+        admin.password = load_config().get("admin").get("password")
+        admin.state = "authorized"
+        admin.email_confirmed = True
+        admin.user_authorized = True
+        admin.is_admin = True
+        admin.url_picture = load_config().get("admin").get("url_picture")
+        db.session.add(admin)
+        db.session.commit()

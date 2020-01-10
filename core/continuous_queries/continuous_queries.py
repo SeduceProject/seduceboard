@@ -1,6 +1,7 @@
-from core.data.influx import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
-from influxdb import InfluxDBClient
+# from core.data.influx import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+# from influxdb import InfluxDBClient
 from core.data.multitree import get_nodes
+from core.data.influx import get_influxdb_client, get_influxdb_parameters
 import re
 
 
@@ -38,11 +39,13 @@ def _extend_description_of_cq(cq, multitree_nodes_cq_ids):
 
 
 def list_continuous_queries():
-    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+    db_client = get_influxdb_client()
 
     query = "show continuous queries"
 
-    cqs = list(db_client.query(query, database=DB_NAME).get_points())
+    db_name = get_influxdb_parameters().get("database")
+
+    cqs = list(db_client.query(query, database=db_name).get_points())
 
     multitree_nodes = get_nodes()
     multitree_nodes_cq_ids = [n.get("id") for n in multitree_nodes if "target" not in n]
@@ -54,11 +57,13 @@ def list_continuous_queries():
 
 
 def get_continuous_query_by_name(query_name):
-    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+    db_client = get_influxdb_client()
 
     query = "show continuous queries"
 
-    cqs = list(db_client.query(query, database=DB_NAME).get_points())
+    db_name = get_influxdb_parameters().get("database")
+
+    cqs = list(db_client.query(query, database=db_name).get_points())
 
     multitree_nodes = get_nodes()
     multitree_nodes_cq_ids = [n.get("id") for n in multitree_nodes if "target" not in n]

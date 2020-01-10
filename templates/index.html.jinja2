@@ -72,7 +72,7 @@
                                     <i class="fa fa-thermometer-three-quarters"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> {{ last_temperature_mean  | round(2) }} °C</div>
+                                    <div class="value"> {{ last_temperature_mean | default(-1) | round(2) }} °C</div>
                                     <div class="name"> Temperature (inside)</div>
                                 </div>
                                 <div class="">
@@ -86,7 +86,7 @@
                                 </div>
                                 <div class="stat">
                                   {% if last_external_temperature_mean %}
-                                    <div class="value"> {{ last_external_temperature_mean | round(2) }} °C</div>
+                                    <div class="value"> {{ last_external_temperature_mean | default(-1) | round(2) }} °C</div>
                                   {% else %}
                                     <div class="value"> Not collected </div>
                                   {% endif %}
@@ -101,7 +101,7 @@
                                     <i class="fa fa-bolt"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> {{datacenter_consumption  | round(2) }} W</div>
+                                    <div class="value"> {{datacenter_consumption | default(-1)  | round(2) }} W</div>
                                     <div class="name"> Instant consumption</div>
                                 </div>
                                 <div class="">
@@ -114,7 +114,7 @@
                                     <i class="fa fa-users"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> {{ pue_ratio  | round(2) }} </div>
+                                    <div class="value"> {{ pue_ratio | default(-1)  | round(2) }} </div>
                                     <div class="name"> PUE (week)</div>
                                 </div>
                                 <div class="">
@@ -183,7 +183,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#thermometers" role="tab"
-                                   data-toggle="tab">Thermometers</a>
+                                   data-toggle="tab">Temperature outside racks</a>
                             </li>
                         </ul>
                     </div>
@@ -221,12 +221,13 @@
 
     let hc_thermometers_options = {
         div_id: "thermometers-container",
-        title: "Average temperature",
-        subtitle: "Displaying data from thermometers",
-        sensor_type: "external_temperature",
-        aggregated: true,
-        show_range: false,
-        navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="temperature", aggregation_preferences="daily,hourly") }}"
+        title: "Temperature outside racks",
+        subtitle: "Displaying data from temperature sensor outside racks",
+
+		sensor_type: "temperature",
+        navigator_data_url: "/ui/data/navigation/temperature/daily%2Chourly",
+
+		selected_sensor: "28b8fb2909000003"
     }
     hc_create_chart(hc_thermometers_options);
 </script>
@@ -344,7 +345,7 @@
 <script src="https://omnipotent.net/jquery.sparkline/2.0/jquery.sparkline.js"></script>
 <script>
     function draw_sparklines() {
-        let internal_temperature_last_week_url = "data/hardcoded/external_temperature/hourly?start_date=now()-2d";
+        let internal_temperature_last_week_url = "/rack/front/temperatures/aggregated/hourly?start_date=now()-2d&only_mean=true";
         let temperature_last_week_url = "/data/generated/external_temperature/hourly?start_date=now()-2d";
         let power_last_week_url = "multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-2d";
         let pue_last_week_url = "data/generated/pue/hourly?start_date=now()-2d";
@@ -352,10 +353,10 @@
         let internal_temperature_sparkline = $("#inside_temperature_sparkline");
         $.getJSON(internal_temperature_last_week_url, function (data) {
             console.log("Updating the sparkline for internal temperature");
-            let filtered_data = data["range"]["means"].filter(x => x != null);
+            let filtered_data = data["means"].filter(x => x != null);
 
             function selectValueForTooltip(sparkline, options, fields) {
-                let date = new Date(data["range"]["timestamps"][fields["x"]]);
+                let date = new Date(data["timestamps"][fields["x"]]);
                 let datestring = date.toDateString()+" "+date.toLocaleTimeString()
                 return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
             }

@@ -1,5 +1,6 @@
 import configparser
 import os
+from os.path import expanduser
 
 
 CONFIG_FILES_PATH = ["/etc/seduce.conf", "~/seduce.conf", "conf/seduce/seduce.conf"]
@@ -26,8 +27,9 @@ def load_config():
     if CONFIG_SINGLETON is not None:
         return CONFIG_SINGLETON
     for config_file_path in CONFIG_FILES_PATH:
-        if os.path.exists(config_file_path):
-            with open(config_file_path) as config_file:
-                CONFIG_SINGLETON = config_file_to_dict(config_file_path)
+        expanded_config_file_path = expanduser(config_file_path)
+        if os.path.exists(expanded_config_file_path):
+            with open(expanded_config_file_path) as config_file:
+                CONFIG_SINGLETON = config_file_to_dict(expanded_config_file_path)
                 return CONFIG_SINGLETON
     raise LookupError("No configuration file found, please create a configuration file in one of these locations: %s" % (CONFIG_FILES_PATH))

@@ -17,7 +17,7 @@ from core.data.redis_counters import redis_increment_sensor_error_count
 from core.data.influx import db_get_running_queries
 from core.data.influx import db_get_navigation_data
 from core.config.room_config import get_temperature_sensors_infrastructure
-from core.data.influx import db_wattmeters_data
+# from core.data.influx import db_wattmeters_data
 from core.data.influx import db_datainfo
 from core.data.multitree import get_root_nodes
 from core.data.influx import db_aggregated_multitree_sensor_data
@@ -156,10 +156,17 @@ def aggregated_rack_side_temperatures(side, how="daily"):
         if validate(end_date):
             end_date = "'%s'" % end_date
 
+    only_mean = False
+    if "only_mean" in request.args:
+        only_mean_str = request.args["only_mean"]
+        if only_mean_str == "true":
+            only_mean = True
+
     _aggregated_sensor_data = db_rack_side_temperature_data(side=side,
                                                             start_date=start_date,
                                                             end_date=end_date,
-                                                            how=how)
+                                                            how=how,
+                                                            only_mean=only_mean)
     return jsonify(_aggregated_sensor_data)
 
 
@@ -217,18 +224,6 @@ def datainfo(how="daily"):
 
     _datainfo = db_datainfo(start_date=start_date, how=how)
     return jsonify(_datainfo)
-
-
-@webapp_api_blueprint.route("/data/hardcoded/<sensor_type>/<how>")
-def wattmeters_data(sensor_type, how="daily"):
-    start_date = None
-    if "start_date" in request.args:
-        start_date = request.args["start_date"]
-        if validate(start_date):
-            start_date = "'%s'" % start_date
-
-    _wattmeters_data = db_wattmeters_data(sensor_type=sensor_type, start_date=start_date, how=how)
-    return jsonify(_wattmeters_data)
 
 
 @webapp_api_blueprint.route("/data/generated/pue/<how>")

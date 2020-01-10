@@ -1,12 +1,11 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
-from core.data.influx import *
+from core.data.influx import get_influxdb_client
 from core.data.redis_counters import redis_increment_sensor_error_count
 import sys
 import time
 import threading
-from influxdb import InfluxDBClient
 import traceback
 
 DEBUG = True
@@ -28,7 +27,7 @@ def temperature_list():
 
     data = []
     for obj in request.json:
-        for key in ["sensor", "t", "v"]:
+        for key in ["sensor", "v"]:
             if key not in obj:
                 return jsonify({"status": "failure", "reason": "missing \"%s\" parameter" % (key)})
 
@@ -69,7 +68,7 @@ def temperature_list():
 def flush_records():
     global influx_lock
     global RECORDS
-    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+    db_client = get_influxdb_client()
 
     flush_data = RECORDS[:]
     RECORDS = []

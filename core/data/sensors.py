@@ -34,10 +34,14 @@ def get_sensors_arrays_with_children():
     sensors_arrays = load_sensors_arrays_data()
     sensors = load_sensors_data()
 
-    flatten_sensors_map = dict([(y.get("name"), y) for (k, v) in sensors.items() if k != "classes" for y in v.values()])
+    flatten_sensors_map = dict([(y.get("name"), y) for (k, v) in sensors.items() if k != "classes" for y in v.values() if "name" in y])
 
     for (sensors_array_name, sensors_array) in sensors_arrays.items():
         sensors_array["children"] = [flatten_sensors_map.get(s) for s in sensors_array.get("sensors")]
+
+        if None in sensors_array["children"]:
+            none_children = [s for s in sensors_array.get("sensors") if flatten_sensors_map.get(s) is None]
+            raise Exception(f"One of the children could not be fetch (sensors_array_name: {sensors_array_name}, none_children: {none_children})")
 
     return sensors_arrays
 

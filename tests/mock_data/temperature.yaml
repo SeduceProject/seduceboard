@@ -1,0 +1,25 @@
+test_cluster:
+  back:
+    '30':
+      serie: 3b96f85809fc2c27
+      tags:
+      - ecotype-2
+    '32':
+      serie: 3ba6b75809fc0c6f
+      tags:
+      - ecotype-1
+  front:
+    '30':
+      serie: 3bd10a5909fc6c3b
+      tags:
+      - ecotype-2
+    '32':
+      serie: 3bbefa5809fc2cb3
+      tags:
+      - ecotype-1
+room:
+  top:
+    '1':
+      serie: 28b8fb2909000003
+      tags:
+      - external-temperature

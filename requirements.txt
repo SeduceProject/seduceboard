@@ -38,3 +38,5 @@ oyaml
 pyinstrument
 Flask-Migrate
 Arrow
+nose
+requests_mock

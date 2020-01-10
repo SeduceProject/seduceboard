@@ -1,0 +1,10 @@
+name: test_cluster
+racks:
+  first_rack:
+    server-1:
+      position: 32
+      type: compute
+    server-2:
+      position: 30
+      type: compute
+site: test.infrastructure.fr

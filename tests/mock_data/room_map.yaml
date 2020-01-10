@@ -1,0 +1,27 @@
+test_cluster:
+  coordinates:
+    x: 50.0%
+    y: 50.0%
+  info: PDU (pdu-test_cluster) of rack test_cluster
+  location: B232
+  name: test_cluster
+  color: blue
+  sensors:
+  - ecotype-1_pdu-Z1.50
+  - ecotype-1_pdu-Z1.51
+  - ecotype-2_pdu-Z1.50
+  - ecotype-2_pdu-Z1.51
+test_cluster_temp:
+  coordinates:
+    x: 51.0%
+    y: 51.0%
+  info: Temperatures of rack test_cluster
+  location: B232
+  name: test_cluster_temp
+  color: orange
+  sensors:
+  - 3b96f85809fc2c27
+  - 3ba6b75809fc0c6f
+  - 3bd10a5909fc6c3b
+  - 3bbefa5809fc2cb3
+  - 28b8fb2909000003

@@ -3,12 +3,11 @@ from __future__ import absolute_import, unicode_literals
 import threading
 import time
 import traceback
-
-import requests
-from influxdb import InfluxDBClient
 from pyModbusTCP.client import ModbusClient
 
-from core.data.influx import *
+from core.data.influx import get_influxdb_client
+from core.collecters.utils import set_interval
+
 
 DEBUG = True
 LAST_TIMESTAMP_INSERTED = {}
@@ -28,21 +27,22 @@ def modbus_read_int(client, address, nb_char):
 
 
 def new_modbus_reading(config):
-    db_client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+    db_client = get_influxdb_client()
 
-    modbus_ip = config["ip"]
-    modbus_register = config["register"]
+    modbus_ip = config.get("ip")
+    modbus_port = config.get("port", 502)
+    modbus_register = config.get("register")
 
     sensor_name = config.get("name", config["generated_sensor_id"])
-    sensor_type = config["sensor_type"]
-    sensor_unit = config["unit"]
+    sensor_type = config.get("sensor_type")
+    sensor_unit = config.get("unit")
     sensor_location = config.get("location", "not specified")
     divide_factor = config.get("modbus_divide_by", 1)
     multiply_factor = config.get("modbus_multiply_by", 1)
 
     insertion_count = 0
 
-    modbus_client = ModbusClient(host=modbus_ip, port=502, auto_open=True, auto_close=True)
+    modbus_client = ModbusClient(host=modbus_ip, port=modbus_port, auto_open=True, auto_close=True)
 
     try:
         sensor_value = 1.0 * multiply_factor * modbus_read_int(modbus_client, modbus_register, 2) / divide_factor
@@ -96,34 +96,6 @@ def new_modbus_reading(config):
 
     print("[%s] %s rows have been inserted in the database" % (sensor_name, insertion_count))
     return {"status": "success", "update_count": insertion_count}
-
-
-def set_interval(f, args, interval):
-    class StoppableThread(threading.Thread):
-
-        def __init__(self, f, args, interval):
-            threading.Thread.__init__(self)
-            self.f = f
-            self.args = args
-            self.interval = interval
-            self.stop_execution = False
-
-        def run(self):
-            while not self.stop_execution:
-                try:
-                    self.f(self.args)
-                except:
-                    traceback.print_exc()
-                    print("Something bad happened here :-(")
-                    pass
-                time.sleep(self.interval)
-
-        def stop(self):
-            self.stop_execution = True
-
-    t = StoppableThread(f, args, interval)
-    t.start()
-    return t
 
 
 if __name__ == "__main__":

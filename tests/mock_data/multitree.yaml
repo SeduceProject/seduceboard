@@ -1,0 +1,56 @@
+datacenter:
+  children:
+  - cluster
+  id: datacenter
+  name: Datacenter
+  root: true
+cluster:
+  children:
+  - hardware_cluster
+  id: cluster
+  name: Cluster
+hardware_cluster:
+  children:
+  - servers
+  id: hardware_cluster
+  name: Hardware cluster
+  simplified_children:
+  - cluster_hardware
+cluster_hardware:
+  id: cluster_hardware
+  name: Hardware
+  target: wattmeter_servers
+servers:
+  id: servers
+  name: Servers
+  children:
+  - ecotype_1
+  - ecotype_2
+ecotype_1:
+  children:
+  - ecotype_1_Z1_51
+  - ecotype_1_Z1_50
+  id: ecotype_1
+  name: ecotype-1
+ecotype_1_Z1_50:
+  id: ecotype_1_Z1_50
+  name: ecotype-1-Z1.50
+  target: ecotype-1_pdu-Z1.50
+ecotype_1_Z1_51:
+  id: ecotype_1_Z1_51
+  name: ecotype-1-Z1.51
+  target: ecotype-1_pdu-Z1.51
+ecotype_2:
+  children:
+  - ecotype_2_Z1_50
+  - ecotype_2_Z1_51
+  id: ecotype_2
+  name: ecotype-2
+ecotype_2_Z1_50:
+  id: ecotype_2_Z1_50
+  name: ecotype-2-Z1.50
+  target: ecotype-2_pdu-Z1.50
+ecotype_2_Z1_51:
+  id: ecotype_2_Z1_51
+  name: ecotype-2-Z1.51
+  target: ecotype-2_pdu-Z1.51

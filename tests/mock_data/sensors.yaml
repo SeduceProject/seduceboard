@@ -1,0 +1,165 @@
+classes:
+
+  wattmeter: &wattmeter
+    sensor_type: wattmeter
+    unit: W
+
+  snmp_pdu_z150: &snmp_pdu_z150
+    <<: *wattmeter
+    method: snmp
+    ip: 127.0.0.1:1161
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z150
+
+  snmp_pdu_z151: &snmp_pdu_z151
+    <<: *wattmeter
+    method: snmp
+    ip: localhost:1161
+    oid: 1.3.6.1.4.1.318.1.1.26.9.4.3.1.7
+    array: true
+    parent: snmp_pdu_z151
+
+  flukso_test: &flukso_test
+    <<: *wattmeter
+    method: flukso
+    ip: 192.168.1.3
+    port: 8080
+    location: B232
+    parent: watt_cooler_ext
+
+  modbus_inrow: &modbus_inrow
+    method: modbus
+    ip: 127.0.0.1
+    port: 5020
+    parent: modbus_inrow
+
+  socomec_server_room: &socomec_server_room
+    <<: *wattmeter
+    method: socomec
+    ip: 127.0.0.1
+    port: 5021
+    unit_id: 4
+    location: B232
+    parent: socomec_server_room
+
+  temperature: &temperature
+    sensor_type: temperature
+    unit: T
+
+  temp_Z1_5_back: &temp_Z1_5_back
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_5_back
+    rack: Z1.5
+    side: back
+
+  temp_Z1_5_front: &temp_Z1_5_front
+    <<: *temperature
+    method: temperature_push
+    parent: temp_Z1_5_front
+    rack: Z1.5
+    side: front
+
+  temp_room: &temp_room
+    <<: *temperature
+    method: temperature_push
+    parent: temp_room
+    rack: room
+    side: top
+
+pdus:
+  ecotype-1_pdu-Z1.50:
+    info: 'PDU outlet #1 of PDU pdu-Z1.50'
+    name: ecotype-1_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 1
+    tags:
+    - ecotype-1
+  ecotype-1_pdu-Z1.51:
+    info: 'PDU outlet #1 of PDU pdu-Z1.51'
+    name: ecotype-1_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 1
+    tags:
+      - ecotype-1
+  ecotype-2_pdu-Z1.50:
+    info: 'PDU outlet #2 of PDU pdu-Z1.50'
+    name: ecotype-2_pdu-Z1.50
+    <<: *snmp_pdu_z150
+    index: 2
+    tags:
+    - ecotype-1
+  ecotype-2_pdu-Z1.51:
+    info: 'PDU outlet #2 of PDU pdu-Z1.51'
+    name: ecotype-2_pdu-Z1.51
+    <<: *snmp_pdu_z151
+    index: 2
+    tags:
+      - ecotype-1
+
+flukso:
+  watt_cooler_b232_1:
+    info: Flukso B232 (clamp1)
+    name: watt_cooler_b232_1
+    sensor_id: c6a2caade50d7532ee3a3292238fd587
+    <<: *flukso_test
+
+inrow:
+  # Group
+  inrow_group_cool_output:
+    name: inrow_group_cool_output
+    register: 18476
+    modbus_length: 2
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: *modbus_inrow
+
+socomec:
+  wattmeter_condensator:
+    info: wattmeter condensator (socomec)
+    name: wattmeter_condensator
+    address: 18476
+    unit_id: 3
+    <<: *socomec_server_room
+
+temperature:
+  3b96f85809fc2c27:
+    info: Temperature sensor 3b96f85809fc2c27
+    name: 3b96f85809fc2c27
+    <<: *temp_Z1_5_back
+    position: 30
+    tags:
+      - ecotype-2
+  3ba6b75809fc0c6f:
+    info: Temperature sensor 3ba6b75809fc0c6f
+    name: 3ba6b75809fc0c6f
+    <<: *temp_Z1_5_back
+    position: 32
+    tags:
+      - ecotype-1
+  3bd10a5909fc6c3b:
+    info: Temperature sensor 3b96f85809fc2c27
+    name: 3bd10a5909fc6c3b
+    <<: *temp_Z1_5_front
+    position: 30
+    tags:
+      - ecotype-2
+  3bbefa5809fc2cb3:
+    info: Temperature sensor 3ba6b75809fc0c6f
+    name: 3bbefa5809fc2cb3
+    <<: *temp_Z1_5_front
+    position: 32
+    tags:
+      - ecotype-1
+
+  28b8fb2909000003:
+    info: Temperature sensor 28b8fb2909000003
+    name: 28b8fb2909000003
+    <<: *temp_room
+    position: 1
+    tags:
+      - external-temperature

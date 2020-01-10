@@ -5,14 +5,9 @@ import time
 import traceback
 
 import requests
-from influxdb import InfluxDBClient
 from pyModbusTCP.client import ModbusClient
-
-DB_HOST = "localhost"
-DB_USER = 'root'
-DB_PASSWORD = 'root'
-DB_NAME = 'pidiou'
-OUTPUT_FILE = 'temperatures.json'
+from core.data.influx import get_influxdb_client
+from core.collecters.utils import set_interval
 
 
 DEBUG = True
@@ -21,7 +16,7 @@ LAST_TIMESTAMP_INSERTED = {}
 
 def new_flukso_reading(config):
     global LAST_TIMESTAMP_INSERTED
-    db_client = InfluxDBClient(DB_HOST, 8086, DB_USER, DB_PASSWORD, DB_NAME)
+    db_client = get_influxdb_client()
 
     flukso_name = config["name"]
     flukso_ip = config["ip"]
@@ -95,24 +90,25 @@ def socomec_read_int(client, address, nb_char):
 
 
 def new_socomec_reading(config):
-    db_client = InfluxDBClient(DB_HOST, 8086, DB_USER, DB_PASSWORD, DB_NAME)
+    db_client = get_influxdb_client()
 
-    socomec_ip = config["ip"]
-    socomec_name = config["name"]
-    socomec_address = config["address"]
-    socomec_unit_id = config["unit_id"]
-    socomec_info = config["info"]
-    socomec_unit = config["unit"]
-    socomec_sensor_type = config["sensor_type"]
-    socomec_location = config["location"]
+    socomec_ip = config.get("ip")
+    socomec_name = config.get("name")
+    socomec_address = config.get("address")
+    socomec_unit_id = config.get("unit_id")
+    socomec_info = config.get("info")
+    socomec_unit = config.get("unit")
+    socomec_sensor_type = config.get("sensor_type")
+    socomec_location = config.get("location")
+    socomec_port = config.get("port", 502)
 
     insertion_count = 0
 
     modbus_client = None
     if 'unit_id' in config:
-        modbus_client = ModbusClient(host=socomec_ip, unit_id=socomec_unit_id, auto_open=True, auto_close=True)
+        modbus_client = ModbusClient(host=socomec_ip, port=socomec_port, unit_id=socomec_unit_id, auto_open=True, auto_close=True)
     else:
-        modbus_client = ModbusClient(host=socomec_ip, auto_open=True, auto_close=True)
+        modbus_client = ModbusClient(host=socomec_ip, port=socomec_port, auto_open=True, auto_close=True)
 
     try:
         socomec_value = socomec_read_int(modbus_client, socomec_address, 2)
@@ -165,35 +161,6 @@ def new_socomec_reading(config):
 
     print("[%s] %s rows have been inserted in the database" % (socomec_name, insertion_count))
     return {"status": "success", "update_count": insertion_count}
-
-
-def set_interval(f, args, interval):
-    class StoppableThread(threading.Thread):
-
-        def __init__(self, f, args, interval):
-            threading.Thread.__init__(self)
-            self.f = f
-            self.args = args
-            self.interval = interval
-            self.stop_execution = False
-            self.daemon = True
-
-        def run(self):
-            while not self.stop_execution:
-                try:
-                    self.f(self.args)
-                except:
-                    traceback.print_exc()
-                    print("Something bad happened here :-(")
-                    pass
-                time.sleep(self.interval)
-
-        def stop(self):
-            self.stop_execution = True
-
-    t = StoppableThread(f, args, interval)
-    t.start()
-    return t
 
 
 if __name__ == "__main__":
