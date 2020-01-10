@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     modbus_readers = []
     for config in get_modbus_sensors():
-        modbus_readers += [set_interval(new_modbus_reading, (config), 1)]
+        modbus_readers += [set_interval(new_modbus_reading, (config, ), 1)]
 
         # To prevent all sensors to crawl in parallel
         time.sleep(2)

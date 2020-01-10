@@ -169,14 +169,14 @@ if __name__ == "__main__":
 
     readers = []
     for config in get_flukso_sensors():
-        flukso_reader = set_interval(new_flukso_reading, (config), 1)
+        flukso_reader = set_interval(new_flukso_reading, (config, ), 1)
         readers += [flukso_reader]
 
         # To prevent all sensors to crawl in parallel
         time.sleep(2)
 
     for config in get_socomec_sensors():
-        socomec_reader = set_interval(new_socomec_reading, (config), 1)
+        socomec_reader = set_interval(new_socomec_reading, (config, ), 1)
         readers += [socomec_reader]
 
         # To prevent all sensors to crawl in parallel
