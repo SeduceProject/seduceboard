@@ -138,7 +138,7 @@ def read_all_sensors(raw_snmp_sensors, group_calls_factor=1):
             # Prepare a database record for the current value
             sensor_name = corresponding_sensor.get("name")
             sensor_unit = corresponding_sensor.get("unit")
-            sensor_type = corresponding_sensor.get("type")
+            sensor_type = corresponding_sensor.get("sensor_type")
 
             if "pdu" in corresponding_sensor.get("name"):
                 location, pdu_short_id = corresponding_sensor.get("name").split("_pdu-")

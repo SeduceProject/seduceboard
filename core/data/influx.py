@@ -3,6 +3,7 @@ from dateutil import parser
 from datetime import timedelta
 from core.config.config_loader import load_config
 import functools
+import datetime
 
 DB_HOST = load_config().get("influx").get("address")
 DB_PORT = load_config().get("influx").get("port")
@@ -621,11 +622,12 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
             maxs.append(point['max'])
 
     # Add a last empty point to enable streaming on the webapp
-    query = "SELECT last(*) from sensors where sensor_type='%s' and time > now() - 1d" % (sensor_type)
-    points = list(db_client.query(query).get_points())
+    query = "SELECT last(*), time from sensors where sensor_type='%s' and time > now() - 1d" % (sensor_type)
+    points = list(db_client.query(query, epoch="s").get_points())
     last_empty_date = None
     if points:
-        last_empty_date = points[0]['time']
+        last_empty_date_epoch = datetime.datetime.fromtimestamp(points[0]['time'])
+        last_empty_date = f"{last_empty_date_epoch}"
         timestamps.append(last_empty_date)
         sums.append(sums[-1] if sums else -1)
         means.append(means[-1] if means else -1)

@@ -26,7 +26,7 @@ def get_root_nodes():
 
 
 def get_nodes():
-    return [node for node in get_multitree_config()]
+    return [node for node in get_multitree_config().values()]
 
 
 def get_node_by_id(node_id):
