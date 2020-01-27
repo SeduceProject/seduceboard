@@ -497,3 +497,78 @@ poe_raspberrypi:
   - node22_poe
   - node23_poe
   - node24_poe
+
+entech_sensors:
+  coordinates:
+    x: 25%
+    y: -5%
+  info: Sensors provided by ENTECH
+  location: outside
+  color: yellow
+  name: entech_sensors
+  sensors:
+    - weather_temp0
+    - weather_temp5
+    - weather_temp30
+    - weather_lux0
+    - weather_lux5
+    - weather_lux30
+    - weather_weather_temp
+    - weather_weather_sol
+    - weather_weather_hygro
+    - weather_weather_pres
+    - weather_weather_wind_spd
+    - weather_weather_wind_dir
+    - net1_active_power
+    - net1_reactive_power
+    - net1_apparent_power
+    - net2_active_power
+    - net2_reactive_power
+    - net2_apparent_power
+    - net3_active_power
+    - net3_reactive_power
+    - net3_apparent_power
+    - net4_active_power
+    - net4_reactive_power
+    - net4_apparent_power
+    - net5_active_power
+    - net5_reactive_power
+    - net5_apparent_power
+    - net6_active_power
+    - net6_reactive_power
+    - net6_apparent_power
+    - net7_active_power
+    - net7_reactive_power
+    - net7_apparent_power
+    - net8_active_power
+    - net8_reactive_power
+    - net8_apparent_power
+    - netaux_active_power
+    - netaux_reactive_power
+    - netaux_apparent_power
+    - solar1_sol1_P_AC
+    - solar2_sol2_P_AC
+    - solar3_sol3_P_AC
+    - solar4_sol4_P_AC
+    - solar5_sol5_P_AC
+    - solar6_sol6_P_AC
+    - solar7_sol7_P_AC
+    - solar8_sol8_P_AC
+    - solar9_sol9_P_AC
+    - solar10_sol10_P_AC
+    - solar11_sol11_P_AC
+    - solar12_sol12_P_AC
+    - solar13_sol13_P_AC
+    - solar14_sol14_P_AC
+    - battery1_ond1_P_AC
+    - battery2_ond1_P_AC
+    - battery3_ond1_P_AC
+    - battery4_ond1_P_AC
+    - battery5_ond1_P_AC
+    - battery6_ond1_P_AC
+    - lead_battery1_soc
+    - lead_battery2_soc
+    - lead_battery3_soc
+    - lion_battery1_soc
+    - lion_battery2_soc
+    - lion_battery3_soc
