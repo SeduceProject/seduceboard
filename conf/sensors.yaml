@@ -339,7 +339,7 @@ inrow:
     info: 'Group fanspeed preference'
     sensor_type: fanspeed_preference
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *big_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int16]
   inrow_group_maximum_fan_speed:
     name: inrow_group_maximum_fan_speed
     register: 1062
