@@ -2325,61 +2325,73 @@ poe:
 ##########################
 entech_sensors:
   weather_temp0:
+    name: "weather_temp0"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1020
     sensor_type: "temperature"
     unit: "C"
   weather_temp5:
+    name: "weather_temp5"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1022
     sensor_type: "temperature"
     unit: "C"
   weather_temp30:
+    name: "weather_temp30"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1024
     sensor_type: "temperature"
     unit: "C"
   weather_lux0:
+    name: "weather_lux0"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1026
     sensor_type: "luminosity"
     unit: "lux"
   weather_lux5:
+    name: "weather_lux5"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1028
     sensor_type: "luminosity"
     unit: "lux"
   weather_lux30:
+    name: "weather_lux30"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1030
     sensor_type: "luminosity"
     unit: "lux"
   weather_weather_temp:
+    name: "weather_weather_temp"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1032
     sensor_type: "temperature"
     unit: "C"
   weather_weather_sol:
+    name: "weather_weather_sol"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1034
     sensor_type: "luminosity"
     unit: "lux"
   weather_weather_hygro:
+    name: "weather_weather_hygro"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1036
     sensor_type: "humidity"
     unit: "%"
   weather_weather_pres:
+    name: "weather_weather_pres"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1038
     sensor_type: "pressure"
     unit: "bar"
   weather_weather_wind_spd:
+    name: "weather_weather_wind_spd"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1040
     sensor_type: "wind_speed"
     unit: "m/s"
   weather_weather_wind_dir:
+    name: "weather_weather_wind_dir"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1042
     sensor_type: "wind_direction"
@@ -2387,144 +2399,172 @@ entech_sensors:
 
   # Networks
   net1_active_power:
+    name: "Networks
+  net1_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1106
     sensor_type: "active power"
     unit: "W"
   net1_reactive_power:
+    name: "net1_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1108
     sensor_type: "reactive power"
     unit: "VAr"
   net1_apparent_power:
+    name: "net1_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1110
     sensor_type: "apparent power"
     unit: "VA"
 
   net2_active_power:
+    name: "net2_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1136
     sensor_type: "active power"
     unit: "W"
   net2_reactive_power:
+    name: "net2_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1138
     sensor_type: "reactive power"
     unit: "VAr"
   net2_apparent_power:
+    name: "net2_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1140
     sensor_type: "apparent power"
     unit: "VA"
 
   net3_active_power:
+    name: "net3_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1166
     sensor_type: "active power"
     unit: "W"
   net3_reactive_power:
+    name: "net3_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1168
     sensor_type: "reactive power"
     unit: "VAr"
   net3_apparent_power:
+    name: "net3_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1170
     sensor_type: "apparent power"
     unit: "VA"
 
   net4_active_power:
+    name: "net4_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1196
     sensor_type: "active power"
     unit: "W"
   net4_reactive_power:
+    name: "net4_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1198
     sensor_type: "reactive power"
     unit: "VAr"
   net4_apparent_power:
+    name: "net4_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1200
     sensor_type: "apparent power"
     unit: "VA"
 
   net5_active_power:
+    name: "net5_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1216
     sensor_type: "active power"
     unit: "W"
   net5_reactive_power:
+    name: "net5_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1218
     sensor_type: "reactive power"
     unit: "VAr"
   net5_apparent_power:
+    name: "net5_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1220
     sensor_type: "apparent power"
     unit: "VA"
 
   net6_active_power:
+    name: "net6_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1246
     sensor_type: "active power"
     unit: "W"
   net6_reactive_power:
+    name: "net6_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1248
     sensor_type: "reactive power"
     unit: "VAr"
   net6_apparent_power:
+    name: "net6_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1250
     sensor_type: "apparent power"
     unit: "VA"
 
   net7_active_power:
+    name: "net7_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1276
     sensor_type: "active power"
     unit: "W"
   net7_reactive_power:
+    name: "net7_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1278
     sensor_type: "reactive power"
     unit: "VAr"
   net7_apparent_power:
+    name: "net7_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1280
     sensor_type: "apparent power"
     unit: "VA"
 
   net8_active_power:
+    name: "net8_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1306
     sensor_type: "active power"
     unit: "W"
   net8_reactive_power:
+    name: "net8_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1308
     sensor_type: "reactive power"
     unit: "VAr"
   net8_apparent_power:
+    name: "net8_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1310
     sensor_type: "apparent power"
     unit: "VA"
 
   netaux_active_power:
+    name: "netaux_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1346
     sensor_type: "active power"
     unit: "W"
   netaux_reactive_power:
+    name: "netaux_reactive_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1348
     sensor_type: "reactive power"
     unit: "VAr"
   netaux_apparent_power:
+    name: "netaux_apparent_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1350
     sensor_type: "apparent power"
@@ -2532,71 +2572,86 @@ entech_sensors:
 
   # Solar converter
   solar1_sol1_P_AC:
+    name: "Solar converter
+  solar1_sol1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1406
     sensor_type: "solar_production"
     unit: "W"
   solar2_sol2_P_AC:
+    name: "solar2_sol2_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1426
     sensor_type: "solar_production"
     unit: "W"
   solar3_sol3_P_AC:
+    name: "solar3_sol3_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1446
     sensor_type: "solar_production"
     unit: "W"
   solar4_sol4_P_AC:
+    name: "solar4_sol4_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1466
     sensor_type: "solar_production"
     unit: "W"
   solar5_sol5_P_AC:
+    name: "solar5_sol5_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1486
     sensor_type: "solar_production"
     unit: "W"
   solar6_sol6_P_AC:
+    name: "solar6_sol6_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1506
     sensor_type: "solar_production"
     unit: "W"
   solar7_sol7_P_AC:
+    name: "solar7_sol7_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1526
     sensor_type: "solar_production"
     unit: "W"
   solar8_sol8_P_AC:
+    name: "solar8_sol8_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1546
     sensor_type: "solar_production"
     unit: "W"
   solar9_sol9_P_AC:
+    name: "solar9_sol9_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1566
     sensor_type: "solar_production"
     unit: "W"
   solar10_sol10_P_AC:
+    name: "solar10_sol10_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1566
     sensor_type: "solar_production"
     unit: "W"
   solar11_sol11_P_AC:
+    name: "solar11_sol11_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1586
     sensor_type: "solar_production"
     unit: "W"
   solar12_sol12_P_AC:
+    name: "solar12_sol12_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1606
     sensor_type: "solar_production"
     unit: "W"
   solar13_sol13_P_AC:
+    name: "solar13_sol13_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1626
     sensor_type: "solar_production"
     unit: "W"
   solar14_sol14_P_AC:
+    name: "solar14_sol14_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1646
     sensor_type: "solar_production"
@@ -2604,31 +2659,38 @@ entech_sensors:
 
   # Batteries converter
   battery1_ond1_P_AC:
+    name: "Batteries converter
+  battery1_ond1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1812
     sensor_type: "active_power"
     unit: "kW"
   battery2_ond1_P_AC:
+    name: "battery2_ond1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1832
     sensor_type: "active_power"
     unit: "kW"
   battery3_ond1_P_AC:
+    name: "battery3_ond1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1852
     sensor_type: "active_power"
     unit: "kW"
   battery4_ond1_P_AC:
+    name: "battery4_ond1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1872
     sensor_type: "active_power"
     unit: "kW"
   battery5_ond1_P_AC:
+    name: "battery5_ond1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1892
     sensor_type: "active_power"
     unit: "kW"
   battery6_ond1_P_AC:
+    name: "battery6_ond1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1912
     sensor_type: "active_power"
@@ -2636,32 +2698,39 @@ entech_sensors:
 
   # Batteries status
   lead_battery1_soc:
+    name: "Batteries status
+  lead_battery1_soc"
     <<: [*modbus_entech, *little_endian_float32]
     register: 2002
     sensor_type: "energy_storage"
     unit: "%"
   lead_battery2_soc:
+    name: "lead_battery2_soc"
     <<: [*modbus_entech, *little_endian_float32]
     register: 2022
     sensor_type: "energy_storage"
     unit: "%"
   lead_battery3_soc:
+    name: "lead_battery3_soc"
     <<: [*modbus_entech, *little_endian_float32]
     register: 2042
     sensor_type: "energy_storage"
     unit: "%"
 
   lion_battery1_soc:
+    name: "lion_battery1_soc"
     <<: [*modbus_entech, *little_endian_float32]
     register: 2112
     sensor_type: "energy_storage"
     unit: "%"
   lion_battery2_soc:
+    name: "lion_battery2_soc"
     <<: [*modbus_entech, *little_endian_float32]
     register: 2162
     sensor_type: "energy_storage"
     unit: "%"
   lion_battery3_soc:
+    name: "lion_battery3_soc"
     <<: [*modbus_entech, *little_endian_float32]
     register: 2212
     sensor_type: "energy_storage"
