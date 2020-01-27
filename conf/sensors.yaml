@@ -198,8 +198,8 @@ classes:
   # Entech's sensor bus
   modbus_entech: &modbus_entech
     method: modbus
-    ip: 127.0.0.1
-    port: 5020
+    ip: 192.168.1.2
+    port: 502
     parent: modbus_entech
     location: "outside"
 
