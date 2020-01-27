@@ -33,6 +33,11 @@ classes:
     ip: 127.0.0.1
     port: 5020
     parent: modbus_inrow
+  modbus_inrow_little_endian: &modbus_inrow_little_endian
+    method: modbus
+    ip: 127.0.0.1
+    port: 5021
+    parent: modbus_inrow
 
   socomec_server_room: &socomec_server_room
     <<: *wattmeter
@@ -67,6 +72,58 @@ classes:
     parent: temp_room
     rack: room
     side: top
+
+  # Modbus types
+  big_endian_int16: &big_endian_int16
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: int16
+    protocol: modbus
+  little_endian_int16: &little_endian_int16
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: int16
+    protocol: modbus
+  big_endian_int32: &big_endian_int32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: int32
+    protocol: modbus
+  little_endian_int32: &little_endian_int32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: int32
+    protocol: modbus
+  big_endian_uint16: &big_endian_uint16
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: uint16
+    protocol: modbus
+  little_endian_uint16: &little_endian_uint16
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: uint16
+    protocol: modbus
+  big_endian_uint32: &big_endian_uint32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: uint32
+    protocol: modbus
+  little_endian_uint32: &little_endian_uint32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: uint32
+    protocol: modbus
+  little_endian_float: &little_endian_float32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: float32
+    protocol: modbus
+  big_endian_float32: &big_endian_float32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: float32
+    protocol: modbus
 
 pdus:
   ecotype-1_pdu-Z1.50:
@@ -107,16 +164,98 @@ flukso:
 
 inrow:
   # Group
+
   inrow_group_cool_output:
     name: inrow_group_cool_output
     register: 18476
-    modbus_length: 2
     modbus_multiply_by: 100
     unit: W
     info: 'Group "Cool" output'
     sensor_type: wattmeter
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *big_endian_uint32]
+  inrow_group_cool_output2:
+    name: inrow_group_cool_output2
+    register: 18478
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow, *big_endian_uint16]
+  inrow_group_cool_output3:
+    name: inrow_group_cool_output3
+    register: 18479
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow, *big_endian_int32]
+  inrow_group_cool_output4:
+    name: inrow_group_cool_output4
+    register: 18481
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow, *big_endian_int16]
+  inrow_group_cool_output5:
+    name: inrow_group_cool_output5
+    register: 18482
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow, *big_endian_float32]
+
+  inrow_group_cool_output_little:
+    name: inrow_group_cool_output_little
+    register: 18476
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow_little_endian, *little_endian_uint32]
+  inrow_group_cool_output2_little:
+    name: inrow_group_cool_output2_little
+    register: 18478
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow_little_endian, *little_endian_uint16]
+  inrow_group_cool_output3_little:
+    name: inrow_group_cool_output3_little
+    register: 18479
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow_little_endian, *little_endian_int32]
+  inrow_group_cool_output4_little:
+    name: inrow_group_cool_output4_little
+    register: 18481
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow_little_endian, *little_endian_int16]
+  inrow_group_cool_output5_little:
+    name: inrow_group_cool_output5_little
+    register: 18482
+    modbus_multiply_by: 100
+    unit: W
+    info: 'Group "Cool" output'
+    sensor_type: wattmeter
+    exclude_from_aggregation: true
+    <<: [*modbus_inrow_little_endian, *little_endian_float32]
 
 socomec:
   wattmeter_condensator:

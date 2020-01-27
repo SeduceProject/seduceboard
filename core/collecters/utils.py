@@ -31,6 +31,6 @@ def set_interval(f, args, interval):
         def stop(self):
             self.stop_execution = True
 
-    t = StoppableThread(f, args, interval)
+    t = StoppableThread(f, args, interval,)
     t.start()
     return t

@@ -4,10 +4,11 @@ import threading
 import time
 import traceback
 from pyModbusTCP.client import ModbusClient
+from pymodbus.client.sync import ModbusTcpClient
 
 from core.data.influx import get_influxdb_client
 from core.collecters.utils import set_interval
-
+from pymodbus.payload import BinaryPayloadDecoder
 
 DEBUG = True
 LAST_TIMESTAMP_INSERTED = {}
@@ -35,6 +36,7 @@ def new_modbus_reading(config):
 
     sensor_name = config.get("name", config["generated_sensor_id"])
     sensor_type = config.get("sensor_type")
+    data_type = config.get("type")
     sensor_unit = config.get("unit")
     sensor_location = config.get("location", "not specified")
     divide_factor = config.get("modbus_divide_by", 1)
@@ -42,10 +44,57 @@ def new_modbus_reading(config):
 
     insertion_count = 0
 
-    modbus_client = ModbusClient(host=modbus_ip, port=modbus_port, auto_open=True, auto_close=True)
+    # modbus_client = ModbusClient(host=modbus_ip, port=modbus_port, auto_open=True, auto_close=True)
+
+    read_count_bytes = 0
+    if data_type == "float32":
+        read_count_bytes = 2
+    elif data_type == "int32":
+        read_count_bytes = 2
+    elif data_type == "uint32":
+        read_count_bytes = 2
+    elif data_type == "int16":
+        read_count_bytes = 1
+    elif data_type == "uint16":
+        read_count_bytes = 1
+    else:
+        raise Exception(f"Could not understand how to parse the following data_type '{data_type}'")
+
+    client = ModbusTcpClient(modbus_ip, port=modbus_port)
+    client.connect()
+
+    value = client.read_holding_registers(modbus_register, read_count_bytes, unit=1)
+    client.close()
+
+    # Default byte order
+    default_byteorder = '<'
+    default_wordorder = '<'
+
+    byteorder = config.get("byteorder", default_byteorder)
+    wordorder = config.get("wordorder", default_wordorder)
+
+    decoder = BinaryPayloadDecoder.fromRegisters(value.registers, byteorder=byteorder, wordorder=wordorder)
+
+    decode_func = None
+    if data_type == "float32":
+        decode_func = decoder.decode_32bit_float()
+    elif data_type == "int16":
+        decode_func = decoder.decode_16bit_int()
+    elif data_type == "uint16":
+        decode_func = decoder.decode_16bit_uint()
+    elif data_type == "int32":
+        decode_func = decoder.decode_32bit_int()
+    elif data_type == "uint32":
+        decode_func = decoder.decode_32bit_uint()
+    else:
+        raise Exception(f"Could not understand how to parse the following data_type '{data_type}'")
+
+    decoded = {
+        f'{sensor_name}': decode_func
+    }
 
     try:
-        sensor_value = 1.0 * multiply_factor * modbus_read_int(modbus_client, modbus_register, 2) / divide_factor
+        sensor_value = 1.0 * multiply_factor * decode_func / divide_factor
     except:
         traceback.print_exc()
         print("[%s] failed to read a value from socomec (%s:%s:%s)" % (sensor_name,

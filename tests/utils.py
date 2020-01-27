@@ -214,18 +214,28 @@ class FakeSnmpAgent(threading.Thread):
 
 class FakeModbusAgent(threading.Thread):
 
-    def __init__(self, port=5020):
+    def __init__(self, port=5020, endian="big"):
         threading.Thread.__init__(self)
+        self.setDaemon(True)
 
         self.port = port
         self._stop = threading.Event()
 
+        if endian.lower() == "big":
+            self.endian = Endian.Big
+        else:
+            self.endian = Endian.Little
+
         self.snmpEngine = None
 
     def run(self) -> None:
-        builder = BinaryPayloadBuilder(byteorder=Endian.Big,
-                                       wordorder=Endian.Big)
+        builder = BinaryPayloadBuilder(byteorder=self.endian,
+                                       wordorder=self.endian)
         builder.add_32bit_uint(42)
+        builder.add_16bit_uint(12)
+        builder.add_32bit_int(64)
+        builder.add_16bit_int(128)
+        builder.add_32bit_float(256)
 
         store = ModbusSlaveContext(
             di=ModbusSequentialDataBlock(18476, builder.to_registers()),
@@ -261,6 +271,7 @@ class FakeModbusAgent(threading.Thread):
     # function using _stop function
     def stop(self):
         self.server.shutdown()
+        self.server.server_close()
 
 
 class FakeTemperatureRegistererAgent(threading.Thread):
