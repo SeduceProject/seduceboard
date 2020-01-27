@@ -785,6 +785,9 @@ def db_last_sensors_updates():
 
         corresponding_serie = series.get(sensor)
 
+        if corresponding_serie is None:
+            continue
+
         result += [{
             "time": time,
             "last_value": last_value,
