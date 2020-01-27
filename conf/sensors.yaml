@@ -2399,8 +2399,7 @@ entech_sensors:
 
   # Networks
   net1_active_power:
-    name: "Networks
-  net1_active_power"
+    name: "net1_active_power"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1106
     sensor_type: "active power"
@@ -2572,8 +2571,7 @@ entech_sensors:
 
   # Solar converter
   solar1_sol1_P_AC:
-    name: "Solar converter
-  solar1_sol1_P_AC"
+    name: "solar1_sol1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1406
     sensor_type: "solar_production"
@@ -2659,8 +2657,7 @@ entech_sensors:
 
   # Batteries converter
   battery1_ond1_P_AC:
-    name: "Batteries converter
-  battery1_ond1_P_AC"
+    name: "battery1_ond1_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
     register: 1812
     sensor_type: "active_power"
@@ -2698,8 +2695,7 @@ entech_sensors:
 
   # Batteries status
   lead_battery1_soc:
-    name: "Batteries status
-  lead_battery1_soc"
+    name: "lead_battery1_soc"
     <<: [*modbus_entech, *little_endian_float32]
     register: 2002
     sensor_type: "energy_storage"
