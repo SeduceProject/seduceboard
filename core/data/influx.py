@@ -655,7 +655,11 @@ def db_get_navigation_data(sensor_type, start_date=None, how="daily"):
 
     db_client.close()
 
-    return result
+    if means == [-1]:
+        return db_get_navigation_data(sensor_type, start_date, how="minutely")
+    else:
+        return result
+
 
 
 # def db_wattmeters_data(sensor_type, start_date=None, how="daily"):
