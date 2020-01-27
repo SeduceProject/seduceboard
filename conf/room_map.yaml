@@ -498,14 +498,14 @@ poe_raspberrypi:
   - node23_poe
   - node24_poe
 
-entech_sensors:
+modbus_entech:
   coordinates:
     x: 25%
     y: -5%
   info: Sensors provided by ENTECH
   location: outside
   color: yellow
-  name: entech_sensors
+  name: modbus_entech
   sensors:
     - weather_temp0
     - weather_temp5
