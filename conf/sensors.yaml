@@ -195,6 +195,66 @@ classes:
     array: true
     parent: snmp_poe_pi_seduce
 
+  # Entech's sensor bus
+  modbus_entech: &modbus_entech
+    method: modbus
+    ip: 127.0.0.1
+    port: 5020
+    parent: modbus_entech
+    location: "outside"
+
+  # Modbus types
+  big_endian_int16: &big_endian_int16
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: int16
+    protocol: modbus
+  little_endian_int16: &little_endian_int16
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: int16
+    protocol: modbus
+  big_endian_int32: &big_endian_int32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: int32
+    protocol: modbus
+  little_endian_int32: &little_endian_int32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: int32
+    protocol: modbus
+  big_endian_uint16: &big_endian_uint16
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: uint16
+    protocol: modbus
+  little_endian_uint16: &little_endian_uint16
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: uint16
+    protocol: modbus
+  big_endian_uint32: &big_endian_uint32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: uint32
+    protocol: modbus
+  little_endian_uint32: &little_endian_uint32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: uint32
+    protocol: modbus
+  little_endian_float32: &little_endian_float32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: float32
+    protocol: modbus
+  big_endian_float32: &big_endian_float32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: float32
+    protocol: modbus
+
 inrow:
   # Group
   inrow_group_cool_output:
@@ -206,7 +266,7 @@ inrow:
     info: 'Group "Cool" output'
     sensor_type: wattmeter
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_group_cool_demand:
     name: inrow_group_cool_demand
     register: 1003
@@ -216,7 +276,7 @@ inrow:
     info: 'Group "Cool" demand'
     sensor_type: wattmeter
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
 
   inrow_group_airflow:
     name: inrow_group_airflow
@@ -227,7 +287,7 @@ inrow:
     info: 'Group airflow'
     sensor_type: airflow_meter
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
 
   inrow_group_maximum_inlet_temperature:
     name: inrow_group_maximum_inlet_temperature
@@ -238,7 +298,7 @@ inrow:
     info: 'Group maximum inlet temperature'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_group_minimum_inlet_temperature:
     name: inrow_group_minimum_inlet_temperature
     register: 1021
@@ -248,7 +308,7 @@ inrow:
     info: 'Group minimum inlet temperature'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
 
   inrow_group_cool_setpoint:
     name: inrow_group_cool_setpoint
@@ -259,7 +319,7 @@ inrow:
     info: 'Group cool setpoint'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_group_supply_air_setpoint:
     name: inrow_group_supply_air_setpoint
     register: 1033
@@ -269,7 +329,7 @@ inrow:
     info: 'Group supply air setpoint'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
 
   inrow_group_fanspeed_preference:
     name: inrow_group_fanspeed_preference
@@ -279,7 +339,7 @@ inrow:
     info: 'Group fanspeed preference'
     sensor_type: fanspeed_preference
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_group_maximum_fan_speed:
     name: inrow_group_maximum_fan_speed
     register: 1062
@@ -288,7 +348,7 @@ inrow:
     info: 'Group maximum fanspeed'
     sensor_type: fanspeed
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
 
   inrow_group_humidify_setpoint:
     name: inrow_group_humidify_setpoint
@@ -299,7 +359,7 @@ inrow:
     info: 'Group humidify setpoint'
     sensor_type: humidity_meter
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_group_dehumidify_setpoint:
     name: inrow_group_dehumidify_setpoint
     register: 1027
@@ -309,7 +369,7 @@ inrow:
     info: 'Group dehumidify setpoint'
     sensor_type: humidity_meter
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
 
   # Unit
   inrow_unit_fanspeed:
@@ -320,7 +380,7 @@ inrow:
     modbus_divide_by: 10
     info: Speed of the fans (percentage of the maximum speed)
     sensor_type: fan
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_unit_supply_air_temp:
     register: 1225
     modbus_length: 2
@@ -330,7 +390,7 @@ inrow:
     info: Temperature of the air supplied by the cooling system
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_unit_return_air_temp:
     name: inrow_unit_return_air_temp
     register: 1227
@@ -340,7 +400,7 @@ inrow:
     info: Temperature of the air entering the cooling system
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_unit_cool_demand:
     name: inrow_unit_cool_demand
     register: 1209
@@ -350,7 +410,7 @@ inrow:
     info: '"Cool" demand'
     sensor_type: wattmeter
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_unit_rack_inlet_temperature_1:
     name: inrow_unit_rack_inlet_temperature_1
     register: 1238
@@ -360,7 +420,7 @@ inrow:
     info: 'Unit inlet temperature 1'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_unit_rack_inlet_temperature_2:
     name: inrow_unit_rack_inlet_temperature_2
     register: 1240
@@ -370,7 +430,7 @@ inrow:
     info: 'Unit inlet temperature 2'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
   inrow_unit_rack_inlet_temperature_3:
     name: inrow_unit_rack_inlet_temperature_3
     register: 1242
@@ -380,7 +440,7 @@ inrow:
     info: 'Unit inlet temperature 3'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: *modbus_inrow
+    <<: [*modbus_inrow, *little_endian_int32]
 
 temperature:
   3bf2fa5809fc2cbb:
@@ -2259,3 +2319,350 @@ poe:
     index: 24
     tags:
       - node24
+
+##########################
+# ENTECH's SENSORS
+##########################
+entech_sensors:
+  weather_temp0:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1020
+    sensor_type: "temperature"
+    unit: "C"
+  weather_temp5:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1022
+    sensor_type: "temperature"
+    unit: "C"
+  weather_temp30:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1024
+    sensor_type: "temperature"
+    unit: "C"
+  weather_lux0:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1026
+    sensor_type: "luminosity"
+    unit: "lux"
+  weather_lux5:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1028
+    sensor_type: "luminosity"
+    unit: "lux"
+  weather_lux30:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1030
+    sensor_type: "luminosity"
+    unit: "lux"
+  weather_weather_temp:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1032
+    sensor_type: "temperature"
+    unit: "C"
+  weather_weather_sol:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1034
+    sensor_type: "luminosity"
+    unit: "lux"
+  weather_weather_hygro:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1036
+    sensor_type: "humidity"
+    unit: "%"
+  weather_weather_pres:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1038
+    sensor_type: "pressure"
+    unit: "bar"
+  weather_weather_wind_spd:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1040
+    sensor_type: "wind_speed"
+    unit: "m/s"
+  weather_weather_wind_dir:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1042
+    sensor_type: "wind_direction"
+    unit: "deg"
+
+  # Networks
+  net1_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1106
+    sensor_type: "active power"
+    unit: "W"
+  net1_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1108
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net1_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1110
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  net2_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1136
+    sensor_type: "active power"
+    unit: "W"
+  net2_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1138
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net2_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1140
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  net3_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1166
+    sensor_type: "active power"
+    unit: "W"
+  net3_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1168
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net3_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1170
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  net4_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1196
+    sensor_type: "active power"
+    unit: "W"
+  net4_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1198
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net4_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1200
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  net5_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1216
+    sensor_type: "active power"
+    unit: "W"
+  net5_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1218
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net5_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1220
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  net6_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1246
+    sensor_type: "active power"
+    unit: "W"
+  net6_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1248
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net6_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1250
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  net7_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1276
+    sensor_type: "active power"
+    unit: "W"
+  net7_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1278
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net7_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1280
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  net8_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1306
+    sensor_type: "active power"
+    unit: "W"
+  net8_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1308
+    sensor_type: "reactive power"
+    unit: "VAr"
+  net8_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1310
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  netaux_active_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1346
+    sensor_type: "active power"
+    unit: "W"
+  netaux_reactive_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1348
+    sensor_type: "reactive power"
+    unit: "VAr"
+  netaux_apparent_power:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1350
+    sensor_type: "apparent power"
+    unit: "VA"
+
+  # Solar converter
+  solar1_sol1_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1406
+    sensor_type: "solar_production"
+    unit: "W"
+  solar2_sol2_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1426
+    sensor_type: "solar_production"
+    unit: "W"
+  solar3_sol3_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1446
+    sensor_type: "solar_production"
+    unit: "W"
+  solar4_sol4_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1466
+    sensor_type: "solar_production"
+    unit: "W"
+  solar5_sol5_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1486
+    sensor_type: "solar_production"
+    unit: "W"
+  solar6_sol6_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1506
+    sensor_type: "solar_production"
+    unit: "W"
+  solar7_sol7_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1526
+    sensor_type: "solar_production"
+    unit: "W"
+  solar8_sol8_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1546
+    sensor_type: "solar_production"
+    unit: "W"
+  solar9_sol9_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1566
+    sensor_type: "solar_production"
+    unit: "W"
+  solar10_sol10_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1566
+    sensor_type: "solar_production"
+    unit: "W"
+  solar11_sol11_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1586
+    sensor_type: "solar_production"
+    unit: "W"
+  solar12_sol12_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1606
+    sensor_type: "solar_production"
+    unit: "W"
+  solar13_sol13_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1626
+    sensor_type: "solar_production"
+    unit: "W"
+  solar14_sol14_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1646
+    sensor_type: "solar_production"
+    unit: "W"
+
+  # Batteries converter
+  battery1_ond1_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1812
+    sensor_type: "active_power"
+    unit: "kW"
+  battery2_ond1_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1832
+    sensor_type: "active_power"
+    unit: "kW"
+  battery3_ond1_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1852
+    sensor_type: "active_power"
+    unit: "kW"
+  battery4_ond1_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1872
+    sensor_type: "active_power"
+    unit: "kW"
+  battery5_ond1_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1892
+    sensor_type: "active_power"
+    unit: "kW"
+  battery6_ond1_P_AC:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1912
+    sensor_type: "active_power"
+    unit: "kW"
+
+  # Batteries status
+  lead_battery1_soc:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 2002
+    sensor_type: "energy_storage"
+    unit: "%"
+  lead_battery2_soc:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 2022
+    sensor_type: "energy_storage"
+    unit: "%"
+  lead_battery3_soc:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 2042
+    sensor_type: "energy_storage"
+    unit: "%"
+
+  lion_battery1_soc:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 2112
+    sensor_type: "energy_storage"
+    unit: "%"
+  lion_battery2_soc:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 2162
+    sensor_type: "energy_storage"
+    unit: "%"
+  lion_battery3_soc:
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 2212
+    sensor_type: "energy_storage"
+    unit: "%"
