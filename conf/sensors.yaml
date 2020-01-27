@@ -266,7 +266,7 @@ inrow:
     info: 'Group "Cool" output'
     sensor_type: wattmeter
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_group_cool_demand:
     name: inrow_group_cool_demand
     register: 1003
@@ -276,7 +276,7 @@ inrow:
     info: 'Group "Cool" demand'
     sensor_type: wattmeter
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
 
   inrow_group_airflow:
     name: inrow_group_airflow
@@ -287,7 +287,7 @@ inrow:
     info: 'Group airflow'
     sensor_type: airflow_meter
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
 
   inrow_group_maximum_inlet_temperature:
     name: inrow_group_maximum_inlet_temperature
@@ -298,7 +298,7 @@ inrow:
     info: 'Group maximum inlet temperature'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_group_minimum_inlet_temperature:
     name: inrow_group_minimum_inlet_temperature
     register: 1021
@@ -308,7 +308,7 @@ inrow:
     info: 'Group minimum inlet temperature'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
 
   inrow_group_cool_setpoint:
     name: inrow_group_cool_setpoint
@@ -319,7 +319,7 @@ inrow:
     info: 'Group cool setpoint'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_group_supply_air_setpoint:
     name: inrow_group_supply_air_setpoint
     register: 1033
@@ -329,7 +329,7 @@ inrow:
     info: 'Group supply air setpoint'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
 
   inrow_group_fanspeed_preference:
     name: inrow_group_fanspeed_preference
@@ -339,7 +339,7 @@ inrow:
     info: 'Group fanspeed preference'
     sensor_type: fanspeed_preference
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_group_maximum_fan_speed:
     name: inrow_group_maximum_fan_speed
     register: 1062
@@ -348,7 +348,7 @@ inrow:
     info: 'Group maximum fanspeed'
     sensor_type: fanspeed
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
 
   inrow_group_humidify_setpoint:
     name: inrow_group_humidify_setpoint
@@ -359,7 +359,7 @@ inrow:
     info: 'Group humidify setpoint'
     sensor_type: humidity_meter
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_group_dehumidify_setpoint:
     name: inrow_group_dehumidify_setpoint
     register: 1027
@@ -369,7 +369,7 @@ inrow:
     info: 'Group dehumidify setpoint'
     sensor_type: humidity_meter
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
 
   # Unit
   inrow_unit_fanspeed:
@@ -380,7 +380,7 @@ inrow:
     modbus_divide_by: 10
     info: Speed of the fans (percentage of the maximum speed)
     sensor_type: fan
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_unit_supply_air_temp:
     register: 1225
     modbus_length: 2
@@ -390,7 +390,7 @@ inrow:
     info: Temperature of the air supplied by the cooling system
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_unit_return_air_temp:
     name: inrow_unit_return_air_temp
     register: 1227
@@ -400,7 +400,7 @@ inrow:
     info: Temperature of the air entering the cooling system
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_unit_cool_demand:
     name: inrow_unit_cool_demand
     register: 1209
@@ -410,7 +410,7 @@ inrow:
     info: '"Cool" demand'
     sensor_type: wattmeter
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_unit_rack_inlet_temperature_1:
     name: inrow_unit_rack_inlet_temperature_1
     register: 1238
@@ -420,7 +420,7 @@ inrow:
     info: 'Unit inlet temperature 1'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_unit_rack_inlet_temperature_2:
     name: inrow_unit_rack_inlet_temperature_2
     register: 1240
@@ -430,7 +430,7 @@ inrow:
     info: 'Unit inlet temperature 2'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
   inrow_unit_rack_inlet_temperature_3:
     name: inrow_unit_rack_inlet_temperature_3
     register: 1242
@@ -440,7 +440,7 @@ inrow:
     info: 'Unit inlet temperature 3'
     sensor_type: temperature
     exclude_from_aggregation: true
-    <<: [*modbus_inrow, *little_endian_int32]
+    <<: [*modbus_inrow, *big_endian_int32]
 
 temperature:
   3bf2fa5809fc2cbb:
