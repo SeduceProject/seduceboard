@@ -67,6 +67,8 @@ def new_modbus_reading(config):
         read_count_bytes = 1
     elif data_type == "uint16":
         read_count_bytes = 1
+    elif data_type == "bool":
+        read_count_bytes = 1
     else:
         raise Exception(f"Could not understand how to parse the following data_type '{data_type}'")
 

@@ -117,3 +117,32 @@ def manage_users():
     db.session.expire_all()
     users = DbUser.query.all()
     return render_template("settings.html.jinja2", users=users)
+
+
+@admin_app_blueprint.route("/admin/commands.html")
+@admin_login_required
+def commands():
+    from core.commands.commands import get_commands_arrays, read_modbus_property
+    commands = get_commands_arrays()
+
+    for command_name, property_description in commands.items():
+        for property_name, property_description in property_description.get("properties", {}).items():
+            property_value = read_modbus_property(property_description.get("how"))
+            property_description["last_value"] = property_value
+
+    return render_template("commands.html.jinja2", commands=commands)
+
+
+@admin_app_blueprint.route("/admin/do_action.html&command_name=<command_name>,action_name=<action_name>")
+@admin_login_required
+def do_action(command_name, action_name):
+    from core.commands.commands import get_commands_arrays, modbus_action
+    commands = get_commands_arrays()
+    print("ici")
+
+    action = commands.get(command_name).get("actions").get(action_name)
+    how = action.get("how")
+
+    result = modbus_action(how)
+
+    return redirect(url_for("admin_app.commands"))

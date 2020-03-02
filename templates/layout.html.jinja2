@@ -115,6 +115,7 @@
                                     <a class="dropdown-item" href="#"><i class="fa fa-bell icon"></i> Notifications</a>
                                     {% if current_user.is_admin %}
                                     <a class="dropdown-item" href="{{ url_for("admin_app.manage_users") }}"><i class="fa fa-gear icon"></i> Manage users</a>
+                                    <a class="dropdown-item" href="{{ url_for("admin_app.commands") }}"><i class="fa fa-gear icon"></i> Commands</a>
                                     <a class="dropdown-item" href="{{ url_for("admin_app.continuous_queries_management") }}"><i class="fa fa-gear icon"></i> Continuous queries</a>
                                     <a class="dropdown-item" href="{{ url_for("webapp.rack_temperature_errors_overview") }}"><i class="fa fa-gear icon"></i> Temperature status</a>
                                     {% endif %}

@@ -1,0 +1,125 @@
+{% extends "layout.html.jinja2" %}
+
+{% block navbar %}
+    <ul class="sidebar-menu metismenu" id="sidebar-menu">
+        <li class="active">
+            <a href="{{ url_for("webapp.index") }}">
+                <i class="fa fa-home"></i> Dashboard </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.sensors") }}">
+                <i class="fa fa-cog"></i> Sensors
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.room_overview") }}">
+                <i class="fa fa-map"></i> Room overview
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.rack_temperature_overview") }}">
+                <i class="fa fa-thermometer-half"></i> Rack temperatures
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for("webapp.weighted_tree_consumption") }}">
+                <i class="fa fa-sitemap"></i> Consumption tree
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-bar-chart"></i> Measurements
+                <i class="fa arrow"></i>
+            </a>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for("webapp.measurements_wattmeters") }}"> Wattmeters </a>
+                </li>
+                <li>
+                    <a href="{{ url_for("webapp.measurements_thermometers") }}"> Temperature sensors </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a id="seduce_api_link" href="https://localhost:5000/apidocs/#/">
+                <i class="fa fa-rocket"></i> API
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+
+
+{% block header_css %}
+    .profile_picture {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; width: 30px; height: 30px;
+    }
+{% endblock %}
+
+{% block body %}
+    <article class="content dashboard-page">
+        <div class="title-block">
+            <h1 class="title"> Commands </h1>
+            <p class="title-description"> Interact with the SeDuCe platform</p>
+        </div>
+        <section class="section">
+
+
+            <div class="row">
+                {% for command_name, command in commands.items() %}
+
+
+                    <div class="col-xl-4">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <div class="header-block">
+                                    <p class="title"> {{ command_name }}</p>
+                                </div>
+                            </div>
+                            <div class="card-block">
+
+
+                                <section class="example">
+                                {% if "properties" in command %}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Property</th>
+                                            <th>Value</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for property_name, property in command.properties.items() %}
+                                            <tr>
+                                                <td>{{ property_name }}</td>
+                                                <td>{{ property.last_value }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                                </section>
+
+                            </div>
+
+                            <div class="card-footer">
+                                {% for action_name, action in command.actions.items() %}
+                                    <a class="btn btn-warning"
+                                       href="{{ url_for("admin_app.do_action", command_name=command_name, action_name=action_name) }}">{{ command_name }}.{{ action_name }}()</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                {% endfor %}
+            </div>
+        </section>
+    </article>
+{% endblock %}
+
+{% block end_document %}
+{% endblock %}

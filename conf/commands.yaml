@@ -1,0 +1,538 @@
+classes:
+
+  # Entech's sensor bus
+  modbus_entech: &modbus_entech
+    method: modbus
+    ip: 192.168.1.2
+    port: 502
+    parent: modbus_entech
+    location: "outside"
+
+  # Modbus types
+  big_endian_int16: &big_endian_int16
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: int16
+    protocol: modbus
+  little_endian_int16: &little_endian_int16
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: int16
+    protocol: modbus
+  big_endian_int32: &big_endian_int32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: int32
+    protocol: modbus
+  little_endian_int32: &little_endian_int32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: int32
+    protocol: modbus
+  big_endian_uint16: &big_endian_uint16
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: uint16
+    protocol: modbus
+  little_endian_uint16: &little_endian_uint16
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: uint16
+    protocol: modbus
+  big_endian_uint32: &big_endian_uint32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: uint32
+    protocol: modbus
+  little_endian_uint32: &little_endian_uint32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: uint32
+    protocol: modbus
+  little_endian_float32: &little_endian_float32
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: float32
+    protocol: modbus
+  big_endian_float32: &big_endian_float32
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: float32
+    protocol: modbus
+  little_endian_bool: &little_endian_bool
+    byteorder: '<' # Little endian
+    wordorder: '<' # Little endian
+    type: bool
+    protocol: modbus
+  big_endian_bool: &big_endian_bool
+    byteorder: '>' # Big endian
+    wordorder: '>' # Big endian
+    type: bool
+    protocol: modbus
+
+##########################
+# ENTECH's SENSORS
+##########################
+overall_production:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3000
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3000
+        value: 0
+    toggle_ack:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3001
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3000
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+network1:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3110
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3110
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_bool]
+#        action: write
+#        register: 3111
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3112
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3110
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3111
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network2:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3120
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3120
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_bool]
+#        action: write
+#        register: 3121
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3122
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3120
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3121
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network3:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3130
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3130
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_bool]
+#        action: write
+#        register: 3131
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3132
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3130
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3131
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network4:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3140
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3140
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_bool]
+#        action: write
+#        register: 3141
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3142
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3140
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3141
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network5:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3150
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3150
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_bool]
+#        action: write
+#        register: 3151
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3152
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3150
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3151
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network6:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3160
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3160
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_bool]
+#        action: write
+#        register: 3161
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3162
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3160
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3161
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network7:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3170
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3170
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_bool]
+#        action: write
+#        register: 3171
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3172
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3170
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3171
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network8:
+  actions:
+    activate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3180
+        value: 1
+    deactivate:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3180
+        value: 0
+#    toggle_regulation:
+#      how:
+#        <<: [*modbus_entech, *little_endian_int16]
+#        action: write
+#        register: 3181
+#        value: 1
+    reset_energy_counter:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: write
+        register: 3182
+        value: 1
+  properties:
+    status:
+      how:
+        <<: [*modbus_entech, *little_endian_bool]
+        action: read
+        register: 3180
+        values:
+          active:
+            expected_value: 1
+          inactive:
+            expected_value: 0
+    regulation_mode:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 3181
+        values:
+          nd:
+            expected_value: 0
+          injection_pv:
+            expected_value: 1
+          autoconso_sans_ess:
+            expected_value: 2
+          autoconso_avec_ess:
+            expected_value: 3
+          autoconso_avec_ess_inj_excedent:
+            expected_value: 4
+network9:
+    actions:
+      reset_energy_counter:
+        how:
+          <<: [*modbus_entech, *little_endian_bool]
+          action: write
+          register: 3192
+          value: 1
