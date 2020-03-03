@@ -231,7 +231,7 @@
         subtitle: "Displaying data from wattmeters",
 		sensor_type: "multitree_consumptions",
 		multitree_selected_sensors_getter: function() {
-		    return ["datacenter"];
+		    return ["datacenter", "overall_production"];
         },
         navigator_data_url: "{{ url_for("webapp_api.get_navigation_data", sensor_type="wattmeter", aggregation_preferences="daily,hourly") }}"
     }
