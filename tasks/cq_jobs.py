@@ -46,10 +46,13 @@ def run_job():
                     progress = (time_interval_end_ts - last_run_start_ts) / (
                                 time_interval_end_ts - time_interval_start_ts)
 
-
                 recomputation_job.last_run_end = recomputation_job.last_run_start
                 recomputation_job.last_run_start = recomputation_job.last_run_end - datetime.timedelta(seconds=time_delta)
-                recomputation_job.run()
+
+                if time_delta == 0.0:
+                    recomputation_job.finish()
+                else:
+                    recomputation_job.run()
 
                 db.session.add(recomputation_job)
                 db.session.commit()
@@ -70,6 +73,9 @@ def wait_job():
 
             last_run_start_ts = int(time.mktime(recomputation_job.last_run_start.timetuple()))
             last_run_end_ts = int(time.mktime(recomputation_job.last_run_end.timetuple()))
+
+            last_run_start_ts = max(last_run_start_ts, 0)
+            last_run_end_ts = max(last_run_end_ts, 0)
 
             cq_update_query = cq_generate_update_query(recomputation_job.cq_name, last_run_start_ts, last_run_end_ts)
 
