@@ -127,6 +127,9 @@ def _get_weighted_tree_consumption_data(root_node, level=0, total_consumption=No
     if total_consumption is None:
         total_consumption = current_node_consumption
 
+    if total_consumption == 0:
+        total_consumption = 1
+
     current_node_consumption_percentage = (1.0 * current_node_consumption) / total_consumption
     if current_node_consumption_percentage > 1.0:
         current_node_consumption_percentage = 1.0
