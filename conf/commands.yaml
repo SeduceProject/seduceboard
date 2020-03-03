@@ -4,7 +4,7 @@ classes:
   modbus_entech: &modbus_entech
     method: modbus
     ip: 192.168.1.2
-    port: 502
+    port: 503
     parent: modbus_entech
     location: "outside"
 
@@ -96,7 +96,7 @@ overall_production:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3000
         values:
@@ -104,6 +104,11 @@ overall_production:
             expected_value: 1
           inactive:
             expected_value: 0
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1000
 network1:
   actions:
     activate:
@@ -133,7 +138,7 @@ network1:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3110
         values:
@@ -157,6 +162,11 @@ network1:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1001
 network2:
   actions:
     activate:
@@ -186,7 +196,7 @@ network2:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3120
         values:
@@ -210,6 +220,30 @@ network2:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1002
+        values:
+          0:
+            expected_value: 0
+          1:
+            expected_value: 1
+          2:
+            expected_value: 2
+          3:
+            expected_value: 3
+          4:
+            expected_value: 4
+          5:
+            expected_value: 5
+          6:
+            expected_value: 6
+          7:
+            expected_value: 7
+          8:
+            expected_value: 8
 network3:
   actions:
     activate:
@@ -239,7 +273,7 @@ network3:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3130
         values:
@@ -263,6 +297,11 @@ network3:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1003
 network4:
   actions:
     activate:
@@ -292,7 +331,7 @@ network4:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3140
         values:
@@ -316,6 +355,11 @@ network4:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1004
 network5:
   actions:
     activate:
@@ -345,7 +389,7 @@ network5:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3150
         values:
@@ -369,6 +413,11 @@ network5:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1005
 network6:
   actions:
     activate:
@@ -398,7 +447,7 @@ network6:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3160
         values:
@@ -422,6 +471,11 @@ network6:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1006
 network7:
   actions:
     activate:
@@ -451,7 +505,7 @@ network7:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3170
         values:
@@ -475,6 +529,11 @@ network7:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1007
 network8:
   actions:
     activate:
@@ -504,7 +563,7 @@ network8:
   properties:
     status:
       how:
-        <<: [*modbus_entech, *little_endian_bool]
+        <<: [*modbus_entech, *big_endian_bool]
         action: read
         register: 3180
         values:
@@ -528,6 +587,11 @@ network8:
             expected_value: 3
           autoconso_avec_ess_inj_excedent:
             expected_value: 4
+    grafcet:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1008
 network9:
     actions:
       reset_energy_counter:

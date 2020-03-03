@@ -87,16 +87,17 @@ def read_modbus_property(how):
     elif data_type == "uint32":
         decode_func = decoder.decode_32bit_uint()
     elif data_type == "bool":
-        decode_func = decoder.decode_bits()[0]
+        decode_func = decoder.decode_16bit_uint()
     else:
         raise Exception(f"Could not understand how to parse the following data_type '{data_type}'")
 
     decoded = decode_func
 
-    for value, value_dict in how.get("values").items():
+    for value, value_dict in how.get("values", {}).items():
+
         expected_value = value_dict.get("expected_value")
         if expected_value == decoded:
             return value
 
-    return "unknown"
+    return decode_func
 
