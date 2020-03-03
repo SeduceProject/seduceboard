@@ -1,6 +1,7 @@
 # from core.data.influx import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
 # from influxdb import InfluxDBClient
 from core.data.multitree import get_nodes
+from core.data.production import get_nodes as get_production_nodes
 from core.data.influx import get_influxdb_client, get_influxdb_parameters
 import re
 
@@ -47,7 +48,7 @@ def list_continuous_queries():
 
     cqs = list(db_client.query(query, database=db_name).get_points())
 
-    multitree_nodes = get_nodes()
+    multitree_nodes = get_nodes() + get_production_nodes()
     multitree_nodes_cq_ids = [n.get("id") for n in multitree_nodes if "target" not in n]
 
     for cq in cqs:
@@ -134,6 +135,19 @@ def list_expected_cqs_names():
         if "simplified_children" in node:
             simplified_children += node.get("simplified_children")
     for node in multitree_nodes:
+        if node.get("id") in simplified_children:
+            continue
+        if "electrical_mgmt_board" in node.get("id"):
+            continue
+        expected_cqs_names += ["cq_%s_%s" % (node.get("id"), duration) for duration in ["30s", "1m", "1h", "1d"]]
+
+    # Add production queries
+    production_nodes = get_production_nodes()
+    simplified_children = []
+    for node in production_nodes:
+        if "simplified_children" in node:
+            simplified_children += node.get("simplified_children")
+    for node in production_nodes:
         if node.get("id") in simplified_children:
             continue
         if "electrical_mgmt_board" in node.get("id"):

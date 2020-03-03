@@ -27,6 +27,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ url_for("webapp.weighted_tree_production") }}">
+                <i class="fa fa-sitemap"></i> Production tree
+            </a>
+        </li>
+        <li>
             <a href="#">
                 <i class="fa fa-bar-chart"></i> Measurements
                 <i class="fa arrow"></i>
@@ -72,8 +77,9 @@
     <article class="content dashboard-page">
         <div class="title-block">
             <h1 class="title"> Continous Queries Management </h1>
-            <p class="title-description"> Continuous queries are in charge of aggregating data collected during a period
-                of time</p>
+            <p class="title-description"> Continuous queries are in charge of aggregating data collected during a period of time</p>
+            <a href="{{ url_for("admin_app.continuous_query_recreate_production_queries") }}" class="btn btn-danger">Recreate production queries</a>
+            <a href="{{ url_for("admin_app.continuous_query_recreate_consumption_queries") }}" class="btn btn-danger">Recreate consumption queries</a>
         </div>
 
         {# Show multitree sensors #}
@@ -92,6 +98,7 @@
                                         </div>
                                         <div class="card-block">
                                             <div class="card-block">
+                                                <br>
                                                 {% for cq in missing_cqs %}
                                                     <span class="badge badge-secondary">{{ cq }}</span>
                                                 {% endfor %}

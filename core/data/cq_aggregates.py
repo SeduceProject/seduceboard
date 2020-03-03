@@ -316,7 +316,7 @@ def cqs_recompute_data():
     return True
 
 
-def multitree_get_cqs_and_series_names(cq_name):
+def cq_get_cqs_and_series_names(cq_name):
 
     series = []
     cqs = []
@@ -349,11 +349,11 @@ def multitree_get_cqs_and_series_names(cq_name):
     }
 
 
-def multitree_drop_cqs_and_series_names(cq_name):
+def cq_drop_cqs_and_series_names(cq_name):
     db_name = get_influxdb_parameters().get("database")
     db_client = get_influxdb_client()
 
-    multitree_data = multitree_get_cqs_and_series_names(cq_name)
+    multitree_data = cq_get_cqs_and_series_names(cq_name)
     series = multitree_data["series"]
     cqs = multitree_data["cqs"]
 
@@ -377,7 +377,7 @@ def multitree_drop_cqs_and_series_names(cq_name):
     db_client.close()
 
 
-def multitree_create_continuous_query(cq_name, sub_query_sets):
+def cq_create_continuous_query(cq_name, sub_query_sets):
     db_name = get_influxdb_parameters().get("database")
     db_client = get_influxdb_client()
 
@@ -461,7 +461,7 @@ def multitree_create_continuous_query(cq_name, sub_query_sets):
     return True
 
 
-def multitree_rebuild_continuous_query(cq_name, sub_query_sets):
+def cq_rebuild_continuous_query(cq_name, sub_query_sets):
     db_name = get_influxdb_parameters().get("database")
     db_client = get_influxdb_client()
 
@@ -574,9 +574,9 @@ def multitree_build_nested_query_and_dependencies(node, recreate_all):
     # #print(pseudo_query)
 
     if recreate_all:
-        multitree_create_continuous_query(cq_name, sub_query_sets)
+        cq_create_continuous_query(cq_name, sub_query_sets)
     else:
-        multitree_rebuild_continuous_query(cq_name, sub_query_sets)
+        cq_rebuild_continuous_query(cq_name, sub_query_sets)
 
     return {"query_name": cq_name, "sub_query_sets": sub_query_sets}
 
@@ -605,7 +605,7 @@ def multitree_drop_nested_query_and_dependencies(node, recreate_all):
     pseudo_query = "drop %s *" % (cq_name)
     # #print(pseudo_query)
 
-    multitree_drop_cqs_and_series_names(cq_name)
+    cq_drop_cqs_and_series_names(cq_name)
 
     return {"query_name": cq_name, "sub_query_sets": sub_query_sets}
 
@@ -619,4 +619,78 @@ def cq_multitree_recreate_all(recreate_all=False):
 
     for root_node in get_root_nodes():
         multitree_build_nested_query_and_dependencies(root_node, recreate_all)
+    return True
+
+
+def production_build_nested_query_and_dependencies(node, recreate_all):
+    from core.data.production import get_root_nodes, get_tree, get_node_by_id
+
+    current_node = node["node"] if "node" in node else node
+    current_tree = get_tree(current_node)
+
+    cq_name = "cq_%s" % (current_node["id"])
+    sub_query_sets = []
+
+    if "target" in current_node:
+        sub_query_sets = [current_node["target"]]
+    else:
+        if False and "simplified_children" in current_node:
+            for child in current_node["simplified_children"]:
+                child_node = get_node_by_id(child)
+                infos = production_build_nested_query_and_dependencies(child_node, recreate_all)
+                sub_query_sets += infos["sub_query_sets"]
+        else:
+            for child in current_tree["children"]:
+                infos = production_build_nested_query_and_dependencies(child, recreate_all)
+                sub_query_sets += infos["sub_query_sets"]
+
+    pseudo_query = "insert into %s * from sensors where sensor in [%s]" % (cq_name, ",".join(sub_query_sets))
+    # #print(pseudo_query)
+
+    if recreate_all:
+        cq_create_continuous_query(cq_name, sub_query_sets)
+    else:
+        cq_rebuild_continuous_query(cq_name, sub_query_sets)
+
+    return {"query_name": cq_name, "sub_query_sets": sub_query_sets}
+
+
+def production_drop_nested_query_and_dependencies(node, recreate_all):
+    from core.data.production import get_root_nodes, get_tree, get_node_by_id
+
+    current_node = node["node"] if "node" in node else node
+    current_tree = get_tree(current_node)
+    cq_name = "cq_%s" % (current_node["id"])
+    sub_query_sets = []
+
+    if "target" in current_node:
+        sub_query_sets = [current_node["target"]]
+    else:
+        if "simplified_children" in current_node:
+            for child in current_node["simplified_children"]:
+                child_node = get_node_by_id(child)
+                infos = production_drop_nested_query_and_dependencies(child_node, recreate_all)
+                sub_query_sets += infos["sub_query_sets"]
+
+        for child in current_tree["children"]:
+            infos = production_drop_nested_query_and_dependencies(child, recreate_all)
+            sub_query_sets += infos["sub_query_sets"]
+
+    pseudo_query = "drop %s *" % (cq_name)
+    # #print(pseudo_query)
+
+    cq_drop_cqs_and_series_names(cq_name)
+
+    return {"query_name": cq_name, "sub_query_sets": sub_query_sets}
+
+
+def cq_production_recreate_all(recreate_all=False):
+    from core.data.production import get_root_nodes
+
+    if recreate_all:
+        for root_node in get_root_nodes():
+            production_drop_nested_query_and_dependencies(root_node, recreate_all)
+
+    for root_node in get_root_nodes():
+        production_build_nested_query_and_dependencies(root_node, recreate_all)
     return True

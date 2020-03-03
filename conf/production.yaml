@@ -1,0 +1,145 @@
+overall_production:
+  children:
+  - network1
+  - network2
+  - network3
+  - network4
+  - network5
+  - network6
+  - network7
+  - network8
+  id: overall_production
+  name: Overall production
+  root: true
+network1:
+  children:
+  - sol1
+  - sol2
+  - battery1
+  id: network1
+  name: network1
+network2:
+  children:
+  - sol3
+  - sol4
+  - battery2
+  id: network2
+  name: network2
+network3:
+  children:
+  - sol5
+  - sol6
+  - battery3
+  id: network3
+  name: network3
+network4:
+  children:
+  - sol7
+  - sol8
+  - battery4
+  id: network4
+  name: network4
+network5:
+  children:
+  - sol9
+  - sol10
+  - battery5
+  id: network5
+  name: network5
+network6:
+  children:
+  - sol11
+  - sol12
+  - battery6
+  id: network6
+  name: network6
+network7:
+  children:
+  - sol13
+  id: network7
+  name: network7
+network8:
+  children:
+  - sol14
+  id: network8
+  name: network8
+sol1:
+  id: sol1
+  name: sol1
+  target: solar1_sol1_P_AC
+sol2:
+  id: sol2
+  name: sol2
+  target: solar2_sol2_P_AC
+sol3:
+  id: sol3
+  name: sol3
+  target: solar3_sol3_P_AC
+sol4:
+  id: sol4
+  name: sol4
+  target: solar4_sol4_P_AC
+sol5:
+  id: sol5
+  name: sol5
+  target: solar5_sol5_P_AC
+sol6:
+  id: sol6
+  name: sol6
+  target: solar6_sol6_P_AC
+sol7:
+  id: sol7
+  name: sol7
+  target: solar7_sol7_P_AC
+sol8:
+  id: sol8
+  name: sol8
+  target: solar8_sol8_P_AC
+sol9:
+  id: sol9
+  name: sol9
+  target: solar9_sol9_P_AC
+sol10:
+  id: sol10
+  name: sol10
+  target: solar10_sol10_P_AC
+sol11:
+  id: sol11
+  name: sol11
+  target: solar11_sol11_P_AC
+sol12:
+  id: sol12
+  name: sol12
+  target: solar12_sol12_P_AC
+sol13:
+  id: sol13
+  name: sol13
+  target: solar13_sol13_P_AC
+sol14:
+  id: sol14
+  name: sol14
+  target: solar14_sol14_P_AC
+battery1:
+  id: battery1
+  name: battery1
+  target: battery1_ond1_P_AC
+battery2:
+  id: battery2
+  name: battery2
+  target: battery2_ond1_P_AC
+battery3:
+  id: battery3
+  name: battery3
+  target: battery3_ond1_P_AC
+battery4:
+  id: battery4
+  name: battery4
+  target: battery4_ond1_P_AC
+battery5:
+  id: battery5
+  name: battery5
+  target: battery5_ond1_P_AC
+battery6:
+  id: battery6
+  name: battery6
+  target: battery6_ond1_P_AC

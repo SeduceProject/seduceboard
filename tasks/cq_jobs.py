@@ -10,6 +10,7 @@ from core.data.influx import influx_run_query
 
 
 MAX_EXECUTION_TIME_PER_RUN = 5.0
+MAX_TIME_DELTA = 3600 * 24 * 30 * 6
 
 @celery.task()
 def run_job():
@@ -34,9 +35,22 @@ def run_job():
                 else:
                     time_delta = 12 * 3600
 
+                time_delta = min(time_delta, MAX_TIME_DELTA)
+
+                if recomputation_job.last_run_start is None:
+                    progress = 0
+                else:
+                    time_interval_start_ts = float(time.mktime(recomputation_job.time_interval_start.timetuple()))
+                    time_interval_end_ts = float(time.mktime(recomputation_job.time_interval_end.timetuple()))
+                    last_run_start_ts = float(time.mktime(recomputation_job.last_run_start.timetuple()))
+                    progress = (time_interval_end_ts - last_run_start_ts) / (
+                                time_interval_end_ts - time_interval_start_ts)
+
+
                 recomputation_job.last_run_end = recomputation_job.last_run_start
                 recomputation_job.last_run_start = recomputation_job.last_run_end - datetime.timedelta(seconds=time_delta)
                 recomputation_job.run()
+
                 db.session.add(recomputation_job)
                 db.session.commit()
         db.session.remove()

@@ -133,6 +133,12 @@ def weighted_tree_consumption():
     return render_template("weighted_tree_consumption.html.jinja2")
 
 
+@webapp_blueprint.route("/weighted_tree_production")
+@flask_login.login_required
+def weighted_tree_production():
+    return render_template("weighted_tree_production.html.jinja2")
+
+
 @webapp_blueprint.route("/rack_temperature_overview.html")
 @flask_login.login_required
 def rack_temperature_overview():

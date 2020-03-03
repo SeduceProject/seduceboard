@@ -49,6 +49,22 @@ def continuous_query_diagnostic():
     return render_template("continuous_query_diagnostic.html.jinja2", missing_cqs=missing_cqs, unknown_cqs=unknown_cqs)
 
 
+@admin_app_blueprint.route("/admin/continuous_queries/production/recreate")
+@admin_login_required
+def continuous_query_recreate_production_queries():
+    from core.data.cq_aggregates import cq_production_recreate_all
+    cq_production_recreate_all(recreate_all=True)
+    return redirect(url_for("admin_app.continuous_query_diagnostic"))
+
+
+@admin_app_blueprint.route("/admin/continuous_queries/consumption/recreate")
+@admin_login_required
+def continuous_query_recreate_consumption_queries():
+    from core.data.cq_aggregates import cq_multitree_recreate_all
+    cq_multitree_recreate_all(recreate_all=True)
+    return redirect(url_for("admin_app.continuous_query_diagnostic"))
+
+
 @admin_app_blueprint.route("/admin/continuous_queries/prepare_rerun")
 @admin_login_required
 def prepare_rerun_continuous_query():

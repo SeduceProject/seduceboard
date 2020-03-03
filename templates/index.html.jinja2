@@ -30,6 +30,11 @@
         </a>
     </li>
     <li>
+        <a href="{{ url_for("webapp.weighted_tree_production") }}">
+            <i class="fa fa-sitemap"></i> Production tree
+        </a>
+    </li>
+    <li>
         <a href="#">
             <i class="fa fa-bar-chart"></i> Measurements
             <i class="fa arrow"></i>
@@ -103,6 +108,19 @@
                                 <div class="stat">
                                     <div class="value"> {{datacenter_consumption | default(-1)  | round(2) }} W</div>
                                     <div class="name"> Instant consumption</div>
+                                </div>
+                                <div class="">
+                                    <span class="line" id="power_sparkline"></span>
+                                    <!--&lt;!&ndash;<div class="progress-bar" style="width: 75%;"></div>&ndash;&gt;-->
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6  stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value"> {{datacenter_production | default(-1)  | round(2) }} W</div>
+                                    <div class="name"> Instant production</div>
                                 </div>
                                 <div class="">
                                     <span class="line" id="power_sparkline"></span>

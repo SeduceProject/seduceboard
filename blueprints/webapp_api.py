@@ -12,6 +12,7 @@ from core.data.influx import db_last_temperature_values
 from core.data.influx import db_last_sensors_updates
 from core.data.influx import db_rack_side_temperature_data
 from core.data.multitree import get_datacenter_weighted_tree_consumption_data
+from core.data.production import get_datacenter_weighted_tree_production_data
 from core.data.redis_counters import redis_get_sensors_data
 from core.data.redis_counters import redis_increment_sensor_error_count
 from core.data.influx import db_get_running_queries
@@ -306,6 +307,12 @@ def last_sensors_updates():
 @flask_login.login_required
 def weighted_tree_consumption_data():
     return jsonify(get_datacenter_weighted_tree_consumption_data())
+
+
+@webapp_api_blueprint.route("/weighted_tree_production_data")
+@flask_login.login_required
+def weighted_tree_production_data():
+    return jsonify(get_datacenter_weighted_tree_production_data())
 
 
 @webapp_api_blueprint.route("/rack_temperature/sensors")

@@ -43,9 +43,9 @@ def setup_periodic_tasks(sender, **kwargs):
 
 if __name__ == "__main__":
     while True:
-        send_confirmation_email()
-        send_authorization_email()
-        detect_unresponsive_temperature_sensors()
+        # send_confirmation_email()
+        # send_authorization_email()
+        # detect_unresponsive_temperature_sensors()
         run_job()
         wait_job()
         finish_job()
