@@ -13,6 +13,7 @@ from core.data.sensors import get_sensors_arrays_with_children
 from core.data.influx import db_last_sensors_updates
 
 from core.data.multitree import get_node_by_id, _get_last_node_consumption
+from core.data.production import get_node_by_id as get_node_by_id_prod, _get_last_node_consumption as _get_last_node_consumption_prod
 from core.data.influx import db_last_temperature_mean
 from core.data.influx import db_aggregated_multitree_sensor_data
 from core.data.influx import db_sensor_data
@@ -44,8 +45,10 @@ def validate(date_text):
 @flask_login.login_required
 def index():
     datacenter_node = get_node_by_id("datacenter")
+    datacenter_production_node = get_node_by_id_prod("overall_production")
     cluster_hardware = get_node_by_id("hardware_cluster")
     datacenter_consumption = _get_last_node_consumption(datacenter_node)
+    datacenter_production = _get_last_node_consumption_prod(datacenter_production_node)
     cluster_hardware_consumption = _get_last_node_consumption(cluster_hardware)
     #
     # pue_ratio = datacenter_consumption / cluster_hardware_consumption
@@ -88,6 +91,7 @@ def index():
     return render_template("index.html.jinja2",
                            pue_ratio=pue_ratio,
                            datacenter_consumption=datacenter_consumption,
+                           datacenter_production=datacenter_production,
                            cluster_hardware_consumption=cluster_hardware_consumption,
                            last_temperature_mean=last_temperature_mean,
                            last_external_temperature_mean=last_external_temperature_mean,
