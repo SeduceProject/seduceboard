@@ -262,18 +262,22 @@
         data: {
             datasets: [{
                 data: [
-                    {{ datacenter_consumption -  cluster_hardware_consumption }},
-                    {{ cluster_hardware_consumption }},
+{#                    {{ datacenter_consumption -  cluster_hardware_consumption }},#}
+{#                    {{ cluster_hardware_consumption }},#}
+                    {{ datacenter_consumption -  datacenter_production }},
+                    {{ datacenter_production }},
                 ],
                 backgroundColor: [
+                    {#window.chartColors.red,#}
+                    {#window.chartColors.blue#}
                     window.chartColors.red,
-                    window.chartColors.blue
+                    window.chartColors.green
                 ],
                 label: 'Dataset 1'
             }],
             labels: [
-                "Non IT equipment",
-                "IT equipment",
+                "Classic",
+                "Solar",
             ]
         },
         options: {
@@ -283,7 +287,7 @@
             },
             title: {
                 display: true,
-                text: 'ecotype.nantes.grid5000.fr ({{ datacenter_consumption | round(2) }} W)'
+                text: 'Ecotype cluster ({{ datacenter_consumption | round(2) }} W)'
             },
             animation: {
                 animateScale: true,
