@@ -264,7 +264,11 @@
                 data: [
 {#                    {{ datacenter_consumption -  cluster_hardware_consumption }},#}
 {#                    {{ cluster_hardware_consumption }},#}
-                    {{ (datacenter_consumption -  datacenter_production) | round(2) }},
+                    {% if (datacenter_consumption -  datacenter_production) > 0 %}
+                    {{ (datacenter_consumption -  datacenter_production) | round(2)  }},
+                    {% else %}
+                        0,
+                    {% endif %}
                     {{ datacenter_production | round(2) }},
                 ],
                 backgroundColor: [
