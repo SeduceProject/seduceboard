@@ -119,11 +119,11 @@
                                     <i class="fa fa-bolt"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> {{datacenter_production | default(-1)  | round(2) }} W</div>
+                                    <div class="value"> {{datacenter_production | default(0)  | round(2) }} W</div>
                                     <div class="name"> Instant production</div>
                                 </div>
                                 <div class="">
-                                    <span class="line" id="power_sparkline"></span>
+                                    <span class="line" id="production_sparkline"></span>
                                     <!--&lt;!&ndash;<div class="progress-bar" style="width: 75%;"></div>&ndash;&gt;-->
                                 </div>
                             </div>
@@ -145,8 +145,8 @@
                                     <i class="fa fa-microchip"></i>
                                 </div>
                                 <div class="stat">
-                                    <div class="value"> 198 </div>
-                                    <div class="name"> Sensors</div>
+                                    <div class="value"> {{ sensors_count }} </div>
+                                    <div class="name"> Active sensors</div>
                                 </div>
                                 <div class="progress stat-progress">
                                     <div class="progress-bar" style="width: 49%;"></div>
@@ -283,7 +283,7 @@
             },
             title: {
                 display: true,
-                text: 'ecotype.nantes.grid5000.fr ({{ datacenter_consumption }} W)'
+                text: 'ecotype.nantes.grid5000.fr ({{ datacenter_consumption | round(2) }} W)'
             },
             animation: {
                 animateScale: true,
@@ -366,6 +366,7 @@
         let internal_temperature_last_week_url = "/rack/front/temperatures/aggregated/hourly?start_date=now()-2d&only_mean=true";
         let temperature_last_week_url = "/data/generated/external_temperature/hourly?start_date=now()-2d";
         let power_last_week_url = "multitree_sensor_data/datacenter/aggregated/hourly?start_date=now()-2d";
+        let production_last_week_url = "multitree_sensor_data/overall_production/aggregated/hourly?start_date=now()-2d";
         let pue_last_week_url = "data/generated/pue/hourly?start_date=now()-2d";
 
         let internal_temperature_sparkline = $("#inside_temperature_sparkline");
@@ -417,6 +418,25 @@
                 return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
             }
             let sparkline = power_sparkline.sparkline(filtered_data, {
+                fillColor: 'rgb(228, 228, 228)',
+                lineColor: 'rgb(87, 188, 210)',
+                lineWidth: 2,
+                width: "100%",
+                tooltipFormatter: selectValueForTooltip
+            });
+        });
+
+        let production_sparkline = $("#production_sparkline");
+        $.getJSON(production_last_week_url, function (data) {
+            console.log("Updating the sparkline for power production");
+            let filtered_data = data["means"].filter(x => x != null);
+
+            function selectValueForTooltip(sparkline, options, fields) {
+                let date = new Date(data["timestamps"][fields["x"]]);
+                let datestring = date.toDateString()+" "+date.toLocaleTimeString()
+                return datestring+": <b>"+fields["y"].toFixed(2)+"</b>";
+            }
+            let sparkline = production_sparkline.sparkline(filtered_data, {
                 fillColor: 'rgb(228, 228, 228)',
                 lineColor: 'rgb(87, 188, 210)',
                 lineWidth: 2,

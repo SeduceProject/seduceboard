@@ -10,7 +10,7 @@ from core.data.influx import influx_run_query
 
 
 MAX_EXECUTION_TIME_PER_RUN = 5.0
-MAX_TIME_DELTA = 3600 * 24 * 30 * 6
+MAX_TIME_DELTA = 3600 * 24 * 30 * 1
 
 @celery.task()
 def run_job():

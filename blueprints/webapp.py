@@ -17,7 +17,7 @@ from core.data.influx import db_last_temperature_mean
 from core.data.influx import db_aggregated_multitree_sensor_data
 from core.data.influx import db_sensor_data
 
-from core.data.sensors import get_sensors_in_sensor_array
+from core.data.sensors import get_sensors_in_sensor_array, get_sensors_count
 from core.data.redis_counters import redis_clear_error_count
 
 from core.data.sensors import get_sensors_arrays, get_sensor_by_name, get_sensors_array_by_name, get_sensors_array_from_sensor_name
@@ -83,12 +83,15 @@ def index():
     else:
         last_external_temperature_mean = "No external temperature sensor"
 
+    sensors_count = get_sensors_count()
+
     return render_template("index.html.jinja2",
                            pue_ratio=pue_ratio,
                            datacenter_consumption=datacenter_consumption,
                            cluster_hardware_consumption=cluster_hardware_consumption,
                            last_temperature_mean=last_temperature_mean,
-                           last_external_temperature_mean=last_external_temperature_mean)
+                           last_external_temperature_mean=last_external_temperature_mean,
+                           sensors_count=sensors_count)
 
 
 @webapp_blueprint.route("/sensors.html")

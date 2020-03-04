@@ -25,6 +25,11 @@ def get_sensors_arrays():
     return room_data
 
 
+def get_sensors_count():
+    sensors_data = load_sensors_data()
+    return sum([len(sensors) for c, sensors in sensors_data.items() if c != "classes"])
+
+
 def get_sensors_array_by_name(name):
     room_data = load_sensors_arrays_data()
     return room_data.get(name, None)
