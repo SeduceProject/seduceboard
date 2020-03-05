@@ -2627,31 +2627,31 @@ entech_sensors:
   solar10_sol10_P_AC:
     name: "solar10_sol10_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
-    register: 1566
+    register: 1586
     sensor_type: "solar_production"
     unit: "W"
   solar11_sol11_P_AC:
     name: "solar11_sol11_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
-    register: 1586
+    register: 1606
     sensor_type: "solar_production"
     unit: "W"
   solar12_sol12_P_AC:
     name: "solar12_sol12_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
-    register: 1606
+    register: 1626
     sensor_type: "solar_production"
     unit: "W"
   solar13_sol13_P_AC:
     name: "solar13_sol13_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
-    register: 1626
+    register: 1646
     sensor_type: "solar_production"
     unit: "W"
   solar14_sol14_P_AC:
     name: "solar14_sol14_P_AC"
     <<: [*modbus_entech, *little_endian_float32]
-    register: 1646
+    register: 1666
     sensor_type: "solar_production"
     unit: "W"
 
@@ -2692,6 +2692,130 @@ entech_sensors:
     register: 1912
     sensor_type: "active_power"
     unit: "kW"
+
+  # Solar converter
+  solar1_sol1_I_AC:
+    name: "solar1_sol1_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1404
+    sensor_type: "solar_production"
+    unit: "A"
+  solar2_sol2_I_AC:
+    name: "solar2_sol2_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1424
+    sensor_type: "solar_production"
+    unit: "A"
+  solar3_sol3_I_AC:
+    name: "solar3_sol3_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1444
+    sensor_type: "solar_production"
+    unit: "A"
+  solar4_sol4_I_AC:
+    name: "solar4_sol4_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1464
+    sensor_type: "solar_production"
+    unit: "A"
+  solar5_sol5_I_AC:
+    name: "solar5_sol5_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1484
+    sensor_type: "solar_production"
+    unit: "A"
+  solar6_sol6_I_AC:
+    name: "solar6_sol6_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1504
+    sensor_type: "solar_production"
+    unit: "A"
+  solar7_sol7_I_AC:
+    name: "solar7_sol7_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1524
+    sensor_type: "solar_production"
+    unit: "A"
+  solar8_sol8_I_AC:
+    name: "solar8_sol8_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1544
+    sensor_type: "solar_production"
+    unit: "A"
+  solar9_sol9_I_AC:
+    name: "solar9_sol9_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1564
+    sensor_type: "solar_production"
+    unit: "A"
+  solar10_sol10_I_AC:
+    name: "solar10_sol10_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1584
+    sensor_type: "solar_production"
+    unit: "A"
+  solar11_sol11_I_AC:
+    name: "solar11_sol11_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1604
+    sensor_type: "solar_production"
+    unit: "A"
+  solar12_sol12_I_AC:
+    name: "solar12_sol12_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1624
+    sensor_type: "solar_production"
+    unit: "A"
+  solar13_sol13_I_AC:
+    name: "solar13_sol13_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1644
+    sensor_type: "solar_production"
+    unit: "A"
+  solar14_sol14_I_AC:
+    name: "solar14_sol14_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1664
+    sensor_type: "solar_production"
+    unit: "A"
+
+  # Batteries converter
+  battery1_ond1_I_AC:
+    name: "battery1_ond1_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1810
+    sensor_type: "active_power"
+    unit: "A"
+  battery2_ond1_I_AC:
+    name: "battery2_ond1_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1830
+    sensor_type: "active_power"
+    unit: "A"
+  battery3_ond1_I_AC:
+    name: "battery3_ond1_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1850
+    sensor_type: "active_power"
+    unit: "A"
+  battery4_ond1_I_AC:
+    name: "battery4_ond1_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1870
+    sensor_type: "active_power"
+    unit: "A"
+  battery5_ond1_I_AC:
+    name: "battery5_ond1_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1890
+    sensor_type: "active_power"
+    unit: "A"
+  battery6_ond1_I_AC:
+    name: "battery6_ond1_I_AC"
+    <<: [*modbus_entech, *little_endian_float32]
+    register: 1910
+    sensor_type: "active_power"
+    unit: "A"
 
   # Batteries status
   lead_battery1_soc:

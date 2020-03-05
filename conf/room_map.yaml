@@ -572,3 +572,23 @@ modbus_entech:
     - lion_battery1_soc
     - lion_battery2_soc
     - lion_battery3_soc
+    - solar1_sol1_I_AC
+    - solar2_sol2_I_AC
+    - solar3_sol3_I_AC
+    - solar4_sol4_I_AC
+    - solar5_sol5_I_AC
+    - solar6_sol6_I_AC
+    - solar7_sol7_I_AC
+    - solar8_sol8_I_AC
+    - solar9_sol9_I_AC
+    - solar10_sol10_I_AC
+    - solar11_sol11_I_AC
+    - solar12_sol12_I_AC
+    - solar13_sol13_I_AC
+    - solar14_sol14_I_AC
+    - battery1_ond1_I_AC
+    - battery2_ond1_I_AC
+    - battery3_ond1_I_AC
+    - battery4_ond1_I_AC
+    - battery5_ond1_I_AC
+    - battery6_ond1_I_AC
