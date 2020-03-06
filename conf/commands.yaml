@@ -167,6 +167,11 @@ network1:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
         register: 1001
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1100
 network2:
   actions:
     activate:
@@ -224,26 +229,12 @@ network2:
       how:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
-        register: 1002
-        values:
-          0:
-            expected_value: 0
-          1:
-            expected_value: 1
-          2:
-            expected_value: 2
-          3:
-            expected_value: 3
-          4:
-            expected_value: 4
-          5:
-            expected_value: 5
-          6:
-            expected_value: 6
-          7:
-            expected_value: 7
-          8:
-            expected_value: 8
+        register: 1003
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1130
 network3:
   actions:
     activate:
@@ -302,6 +293,11 @@ network3:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
         register: 1003
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1160
 network4:
   actions:
     activate:
@@ -360,6 +356,11 @@ network4:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
         register: 1004
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1190
 network5:
   actions:
     activate:
@@ -418,6 +419,11 @@ network5:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
         register: 1005
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1210
 network6:
   actions:
     activate:
@@ -476,6 +482,11 @@ network6:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
         register: 1006
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1240
 network7:
   actions:
     activate:
@@ -534,6 +545,11 @@ network7:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
         register: 1007
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1270
 network8:
   actions:
     activate:
@@ -592,11 +608,8 @@ network8:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
         register: 1008
-network9:
-    actions:
-      reset_energy_counter:
-        how:
-          <<: [*modbus_entech, *little_endian_bool]
-          action: write
-          register: 3192
-          value: 1
+    alarm_status:
+      how:
+        <<: [*modbus_entech, *big_endian_int16]
+        action: read
+        register: 1300
