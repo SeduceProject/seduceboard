@@ -229,7 +229,7 @@ network2:
       how:
         <<: [*modbus_entech, *big_endian_int16]
         action: read
-        register: 1003
+        register: 1002
     alarm_status:
       how:
         <<: [*modbus_entech, *big_endian_int16]
