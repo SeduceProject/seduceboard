@@ -395,6 +395,9 @@ def _get_aggregate_multitree_serie_name(name, how):
 def db_aggregated_multitree_sensor_data(sensor_name, start_date=None, end_date=None, how="daily"):
     db_client = get_influxdb_client()
 
+    if sensor_name == "datacenter":
+        print("ici")
+
     serie_name = _get_aggregate_multitree_serie_name(sensor_name, how)
 
     time_range_criterion = ""
@@ -438,7 +441,7 @@ def db_aggregated_multitree_sensor_data(sensor_name, start_date=None, end_date=N
             sums.append(point['sum'])
             means.append(point['mean'])
             medians.append(point['median'])
-            stddevs.append(point['stddev'])
+            stddevs.append(point.get('stddev', 0))
             counts.append(point['count'])
             mins.append(point['min'])
             maxs.append(point['max'])
