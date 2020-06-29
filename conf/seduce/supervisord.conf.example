@@ -1,0 +1,234 @@
+[unix_http_server]
+file=/tmp/supervisor.sock   ; the path to the socket file
+
+[inet_http_server]         ; inet (TCP) server disabled by default
+port=0.0.0.0:9001        ; ip_address:port specifier, *:port for all iface
+
+[supervisord]
+logfile=/tmp/supervisord.log ; main log file; default $CWD/supervisord.log
+logfile_maxbytes=50MB        ; max main logfile bytes b4 rotation; default 50MB
+logfile_backups=10           ; # of main logfile backups; 0 means none, default 10
+loglevel=info                ; log level; default info; others: debug,warn,trace
+pidfile=/tmp/supervisord.pid ; supervisord pidfile; default supervisord.pid
+nodaemon=false               ; start in foreground if true; default false
+minfds=1024                  ; min. avail startup file descriptors; default 1024
+minprocs=200                 ; min. avail process descriptors;default 200
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  for a unix socket
+
+[program:influxdb]
+user=root
+command=influxd -config /etc/influxdb/influxdb.conf
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/influxdb.err.log
+stdout_logfile=/tmp/influxdb.out.log
+directory=/root
+environment=USER=/root,HOME=/root,PYTHONPATH=/root
+
+[program:redis]
+user=root
+command=redis-server --save '' --dbfilename '' --appendonly no --appendfsync no
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/redis.err.log
+stdout_logfile=/tmp/redis.out.log
+directory=/root
+environment=USER=/root,HOME=/root,PYTHONPATH=/root
+
+[program:frontend]
+user=root
+command=gunicorn bin.app:app -b 0.0.0.0:8081 --timeout 600 --log-level=DEBUG --worker-class gevent --workers 8
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/frontend.err.log
+stdout_logfile=/tmp/frontend.out.log
+directory=/root/seduceboard
+
+[program:api]
+user=root
+command=gunicorn bin.api:app -b 0.0.0.0:6000 --timeout 600 --log-level=DEBUG --worker-class gevent --workers 8
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/api.err.log
+stdout_logfile=/tmp/api.out.log
+directory=/root/seduceboard
+
+[program:temperature_registerer]
+user=root
+# command=gunicorn temperature_registerer:app -b 0.0.0.0:8080
+command=python3 -m bin.temperature_registerer
+stopasgroup=true
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/temperature_registerer.err.log
+stdout_logfile=/tmp/temperature_registerer.out.log
+directory=/root/seduceboard
+
+[program:sensors_crawler]
+user=root
+command=python3 -m bin.sensors_crawler
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/sensors_crawler.err.log
+stdout_logfile=/tmp/sensors_crawler.out.log
+directory=/root/seduceboard
+
+[program:modbus_crawler_inrow]
+user=root
+command=python3 -m bin.modbus_crawler --sensor_bus=inrow
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/modbus_crawler.err.log
+stdout_logfile=/tmp/modbus_crawler.out.log
+directory=/root/seduceboard
+
+[program:modbus_crawler_entech]
+user=root
+command=python3 -m bin.modbus_crawler --sensor_bus=entech
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/modbus_crawler.err.log
+stdout_logfile=/tmp/modbus_crawler.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_10]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.10
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_10.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_10.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_11]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.11
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_11.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_11.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_20]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.20
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_20.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_20.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_21]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.21
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_21.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_21.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_40]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.40
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_40.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_40.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_41]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.41
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_41.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_41.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_50]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.50
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_50.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_50.out.log
+directory=/root/seduceboard
+
+[program:pdu_crawler_z1_51]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=pdu-Z1.51
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/pdu_crawler_z1_51.err.log
+stdout_logfile=/tmp/pdu_crawler_z1_51.out.log
+directory=/root/seduceboard
+
+[program:poe_crawler]
+user=root
+command=python3 -m bin.snmp_crawler --pdu=poe --mode=iterative --group_calls_factor=4
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/poe_crawler.err.log
+stdout_logfile=/tmp/poe_crawler.out.log
+directory=/root/seduceboard
+
+[program:celery_beat]
+user=root
+command=celery -A bin.celery_tasks beat -l info
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/celery_tasks_beat.err.log
+stdout_logfile=/tmp/celery_tasks_beat.out.log
+directory=/root/seduceboard
+
+[program:celery_worker]
+user=root
+command=celery -A bin.celery_tasks worker
+redirect_stderr=true
+autostart=false
+autorestart=true
+umask=0
+stderr_logfile=/tmp/celery_tasks_worker.err.log
+stdout_logfile=/tmp/celery_tasks_worker.out.log
+directory=/root/seduceboard
