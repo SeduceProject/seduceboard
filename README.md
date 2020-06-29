@@ -1,5 +1,6 @@
 # SeDuCe Dashboard
 
+[https://seduceboard.readthedocs.io](https://seduceboard.readthedocs.io)
 
 ## Installation
 
