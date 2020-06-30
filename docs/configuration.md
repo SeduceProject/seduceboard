@@ -1,5 +1,51 @@
 # Configuration
 
+## /etc/supervisord.conf
+
+This configuration file is based on the template [seduce.conf.example](https://github.com/SeduceProject/seduceboard/blob/master/conf/seduce/seduce.conf.example)
+
+```editorconfig
+[frontend]
+listen = 0.0.0.0
+port = 8081
+public_address = 127.0.0.1
+
+[api]
+listen = 0.0.0.0
+port = 5000
+public_address = 127.0.0.1
+
+[mail]
+smtp_address = smtp.gmail.com
+smtp_port = 587
+account = EMAIL_ACCOUNT
+password = EMAIL_PASSWORD
+
+[admin]
+user = admin
+password = ADMIN_PASSWORD
+
+[influx]
+address = 127.0.0.1
+port = 8086
+
+[redis]
+address = 127.0.0.1
+port = 6379
+
+[bot]
+token = TELEGRAM_API_KEY
+
+[db]
+connection_url = jdbc:sqlite:/Users/jonathan/Documents/workspace/ds18b20/test.db
+```
+
+Fill the previous template file and store it in one of the following path:
+
+- `/etc/seduce.conf`
+- `~/seduce.conf`
+- `conf/seduce/seduce.conf`
+
 ## conf/sensors.yaml
 
 This file contains all:
