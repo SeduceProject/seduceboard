@@ -1,17 +1,13 @@
-# Introduction
+# Overview
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+The SeDuCe dashboard is the web application that powers the SeDuCe platform. In this document each aspects of the dashboard is detailed:
 
-## Commands
+- [Architecture](/architecture)
+- [Configuration](/configuration)
+- [Deployment](/deployment)
+- [Development](/development)
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+When deployed, the dashboard results in the following screenshots:
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+![screenshot of the login page](img/screenshots/screen1.png)
+![screenshot of the home page](img/screenshots/screen2.png)

@@ -1,7 +1,9 @@
 # Development
 
-## Develop
+## Add a new web end point
 
-## Debug
+## Add a new periodic task
 
-## Deploy
+# Debug
+
+# Deploy
