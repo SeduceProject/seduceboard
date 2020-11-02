@@ -8,10 +8,13 @@ import requests
 from pyModbusTCP.client import ModbusClient
 from core.data.influx import get_influxdb_client
 from core.collecters.utils import set_interval
+from logger_conf import setup_logger
 
 
 DEBUG = True
 LAST_TIMESTAMP_INSERTED = {}
+
+LOGGER = setup_logger("SENSORS", '/tmp/sensors-crawler.log')
 
 
 def new_flukso_reading(config):
@@ -60,18 +63,18 @@ def new_flukso_reading(config):
                 failure = not db_client.write_points(data, time_precision="s")
                 LAST_TIMESTAMP_INSERTED[flukso_name] = measure[0]
             except :
-                traceback.print_exc()
+                LOGGER.exception("write failure")
                 failure = True
 
             db_client.close()
 
             if failure:
-                print("[%s] failed to insert rows in the database" % (flukso_name))
+                LOGGER.error("[%s] failed to insert rows in the database" % (flukso_name))
                 return {"status": "failure", "reason": "could not write in the DB"}
             else:
                 insertion_count += 1
 
-    print("[%s] %s rows have been inserted in the database" % (flukso_name, insertion_count))
+    LOGGER.info("[%s] %s rows have been inserted in the database" % (flukso_name, insertion_count))
     return {"status": "success", "update_count": insertion_count}
 
 
@@ -113,7 +116,7 @@ def new_socomec_reading(config):
     try:
         socomec_value = socomec_read_int(modbus_client, socomec_address, 2)
     except:
-        print("[%s] failed to read a value from socomec (%s:%s:%s)" % (socomec_name,
+        LOGGER.exception("[%s] failed to read a value from socomec (%s:%s:%s)" % (socomec_name,
                                                                        socomec_ip,
                                                                        socomec_unit_id,
                                                                        socomec_address))
@@ -121,7 +124,7 @@ def new_socomec_reading(config):
                                                                                       socomec_unit_id,
                                                                                       socomec_address)}
     if not socomec_value >= 0:
-        print("[%s] failed to read an accurate (%s) value from socomec (%s:%s:%s)" % (socomec_name,
+        LOGGER.error("[%s] failed to read an accurate (%s) value from socomec (%s:%s:%s)" % (socomec_name,
                                                                                       socomec_value,
                                                                                       socomec_ip,
                                                                                       socomec_unit_id,
@@ -148,18 +151,18 @@ def new_socomec_reading(config):
     try:
         failure = not db_client.write_points(data, time_precision="s")
     except :
-        traceback.print_exc()
+        LOGGER.exception("write failure")
         failure = True
 
     db_client.close()
 
     if failure:
-        print("[%s] failed to insert rows in the database" % (socomec_name))
+        LOGGER.error("[%s] failed to insert rows in the database" % (socomec_name))
         return {"status": "failure", "reason": "could not write in the DB"}
     else:
         insertion_count += 1
 
-    print("[%s] %s rows have been inserted in the database" % (socomec_name, insertion_count))
+    LOGGER.info("[%s] %s rows have been inserted in the database" % (socomec_name, insertion_count))
     return {"status": "success", "update_count": insertion_count}
 
 

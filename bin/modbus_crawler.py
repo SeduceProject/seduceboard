@@ -7,18 +7,19 @@ from pymodbus.client.sync import ModbusTcpClient
 from pymodbus.payload import BinaryPayloadDecoder
 from core.collecters.utils import set_interval
 from core.data.influx import get_influxdb_client
+from logger_conf import setup_logger
 import threading
 
 DEBUG = True
 LAST_TIMESTAMP_INSERTED = {}
 FLUSH_FREQUENCY_SECONDS = 1.0
 ACQUISITION_WINDOW_DURATION = 1.0
-
 RECORDS = []
 CONNECTION_POOL = {}
 
 influx_lock = threading.Lock()
 
+LOGGER = setup_logger("MODBUS", '/tmp/modbus-crawler.log')
 
 def modbus_read_int(client, address, nb_char):
     result = 0
@@ -34,6 +35,7 @@ def modbus_read_int(client, address, nb_char):
 
 
 def new_modbus_reading(config):
+    time.sleep(1)
     global influx_lock
     global RECORDS
     global CONNECTION_POOL
@@ -49,8 +51,9 @@ def new_modbus_reading(config):
     sensor_location = config.get("location", "not specified")
     divide_factor = config.get("modbus_divide_by", 1)
     multiply_factor = config.get("modbus_multiply_by", 1)
+    #print('%s: %s' % (sensor_name, modbus_register))
 
-    print(f">> {sensor_name}")
+    #print(f">> {sensor_name}")
 
     insertion_count = 0
 
@@ -90,7 +93,7 @@ def new_modbus_reading(config):
     wordorder = config.get("wordorder", default_wordorder)
 
     if not hasattr(value, "registers"):
-        print(f"ERROR with {sensor_name}")
+        LOGGER.error(f"ERROR with {sensor_name}")
 
     decoder = BinaryPayloadDecoder.fromRegisters(value.registers, byteorder=byteorder, wordorder=wordorder)
 
@@ -111,12 +114,12 @@ def new_modbus_reading(config):
     decoded = {
         f'{sensor_name}': decode_func
     }
+    #print(decode_func)
 
     try:
         sensor_value = 1.0 * multiply_factor * decode_func / divide_factor
     except:
-        traceback.print_exc()
-        print("[%s] failed to read a value from socomec (%s:%s:%s)" % (sensor_name,
+        LOGGER.exception("[%s] failed to read a value from socomec (%s:%s:%s)" % (sensor_name,
                                                                        modbus_ip,
                                                                        sensor_unit,
                                                                        modbus_register))
@@ -124,7 +127,7 @@ def new_modbus_reading(config):
                                                                                       sensor_unit,
                                                                                       modbus_register)}
     if sensor_value is None:
-        print("[%s] failed to read an accurate value (%s)"
+        LOGGER.error("[%s] failed to read an accurate value (%s)"
               " from socomec (%s:%s)" % (sensor_name,
                                             sensor_value,
                                             modbus_ip,
@@ -168,9 +171,9 @@ def flush_records(args):
 
     try:
         db_client.write_points(flush_data, time_precision="s")
-        print("[influx] %s rows have been inserted in the database" % (len(flush_data)))
+        LOGGER.info("%s rows have been inserted in the database" % len(flush_data))
     except :
-        traceback.print_exc()
+        LOGGER.exception("Writing failure: ")
 
     db_client.close()
 
@@ -191,9 +194,9 @@ Options:
     arguments = docopt(help)
 
     selected_sensors = get_modbus_sensors()
-
     if arguments.get("--sensor_bus", "*") not in ["*", None]:
         parent_pattern = arguments["--sensor_bus"]
+        LOGGER = setup_logger("MODBUS-%s" % parent_pattern.upper(), '/tmp/modbus-crawler.log')
         selected_sensors = [sensor for sensor in selected_sensors if parent_pattern in sensor.get("parent", '')]
 
     selected_sensors = selected_sensors

@@ -2,7 +2,8 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from core.data.influx import get_influxdb_client
-from core.data.redis_counters import redis_increment_sensor_error_count
+from logger_conf import setup_root_logger
+import logging
 import sys
 import time
 import threading
@@ -37,7 +38,6 @@ def temperature_list():
         timestamp = int(time.time())
 
         if temperature > 75 or temperature < -10:
-            redis_increment_sensor_error_count(filtered_sensor_name)
             return jsonify({"status": "failure", "reason": "incorrect temperature value %d (%s)" % (temperature, filtered_sensor_name)})
 
         data += [{
@@ -75,9 +75,9 @@ def flush_records():
 
     try:
         db_client.write_points(flush_data, time_precision="s")
-        print("[influx] %s rows have been inserted in the database" % (len(flush_data)))
+        LOGGER.info("[influx] %s rows have been inserted in the database" % (len(flush_data)))
     except :
-        traceback.print_exc()
+        LOGGER.exception("write failure")
 
     db_client.close()
 
@@ -85,8 +85,10 @@ def flush_records():
 
 
 if __name__ == "__main__":
+    setup_root_logger("/tmp/temperature-registerer.log")
+    LOGGER = logging.getLogger()
 
-    print("Running the \"temperature registerer\" server")
+    LOGGER.info("Running the \"temperature registerer\" server")
 
     app.jinja_env.auto_reload = DEBUG
     app.run(host="0.0.0.0", port=8080, debug=DEBUG)

@@ -36,6 +36,7 @@ login_manager.init_app(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = load_config().get("db").get("connection_url")
 
 db = SQLAlchemy(app)
+print(db)
 migrate = Migrate(app, db)
 
 app.register_blueprint(webapp_blueprint)

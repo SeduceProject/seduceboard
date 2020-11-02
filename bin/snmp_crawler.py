@@ -6,10 +6,10 @@ import subprocess
 import time
 import threading
 from core.config.crawlers_config import get_snmp_sensors
-
-from docopt import docopt
 from core.data.influx import get_influxdb_client
 from core.collecters.utils import set_interval
+from docopt import docopt
+from logger_conf import setup_logger
 
 
 NO_PAUSE = -1
@@ -21,6 +21,7 @@ LAST_TIMESTAMP_INSERTED = {}
 
 RECORDS = []
 
+LOGGER = setup_logger("SNMP", '/tmp/snmp-crawler.log')
 influx_lock = threading.Lock()
 
 
@@ -29,7 +30,7 @@ def process_one_outlet(sensor_name, sensor_location, timestamp, sensor_value, se
     try:
         float(sensor_value)
     except:
-        print("something wrong happened here :-(")
+        LOGGER.exception("something wrong happened here :-(")
 
     data = [{
         "measurement": "sensors",
@@ -60,9 +61,9 @@ def flush_records(args):
 
     try:
         db_client.write_points(flush_data, time_precision="s")
-        print("[influx] %s rows have been inserted in the database" % (len(flush_data)))
+        LOGGER.info("%s rows have been inserted in the database" % (len(flush_data)))
     except :
-        traceback.print_exc()
+        LOGGER.exception("write failure")
 
     db_client.close()
 
@@ -95,7 +96,7 @@ def read_all_sensors(raw_snmp_sensors, group_calls_factor=1):
 
         oids = chunks(list(oids), group_calls_factor)
 
-        print("Crawling %s" % (sensors_names))
+        LOGGER.info("Crawling %s" % (sensors_names))
 
         timestamp = int(time.time())
 
@@ -108,7 +109,7 @@ def read_all_sensors(raw_snmp_sensors, group_calls_factor=1):
         try:
             snmp_output = subprocess.check_output(snmpget_cmd, shell=True)
         except subprocess.CalledProcessError:
-            print("There was an error when contacting the sensor, I will wait %s seconds" % (SENSOR_ERROR_PAUSE_S))
+            LOGGER.exception("There was an error when contacting the sensor, I will wait %s seconds" % (SENSOR_ERROR_PAUSE_S))
             time.sleep(SENSOR_ERROR_PAUSE_S)
             return True
 
@@ -131,7 +132,7 @@ def read_all_sensors(raw_snmp_sensors, group_calls_factor=1):
                 continue
 
             sensor_value = float(outlet_value)
-            print(sensor_value)
+            #print(sensor_value)
 
             [corresponding_sensor] = [sensor for sensor in snmp_sensors if ".%s.%s" % (sensor.get("oid"), sensor.get("index")) == address]
 
@@ -184,6 +185,7 @@ Options:
         sys.exit(0)
     else:
         pdu_candidate = arguments["--pdu"]
+        LOGGER = setup_logger("SNMP-%s" % pdu_candidate.upper(), '/tmp/snmp-crawler.log')
 
         selected_sensors = [sensor for sensor in snmp_sensors if pdu_candidate in sensor.get("name")]
 

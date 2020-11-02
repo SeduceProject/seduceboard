@@ -1,9 +1,10 @@
 from flask import Flask, jsonify
+from flask import request
 from flasgger import Swagger
 from core.data.influx import *
-from flask import request
-import arrow
 from core.config.rack_config import extract_nodes_configuration
+from logger_conf import setup_root_logger
+import arrow
 
 app = Flask(__name__)
 app.config['SWAGGER'] = {
@@ -480,5 +481,6 @@ def infrastructure():
 
 
 if __name__ == "__main__":
+    setup_root_logger("/tmp/api.log")
     app.run(host="0.0.0.0", port=5069, debug=DEBUG, threaded=True)
 
