@@ -1,0 +1,13 @@
+[Unit]
+Description=Monitoring API
+ 
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/seduceboard
+ExecStart=/usr/bin/python3 -m bin.api
+Restart=on-failure
+ 
+[Install]
+WantedBy=multi-user.target

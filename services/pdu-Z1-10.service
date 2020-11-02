@@ -1,0 +1,13 @@
+[Unit]
+Description=PDU Z1.10
+ 
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/seduceboard
+ExecStart=/usr/bin/python3 -m bin.snmp_crawler --pdu=pdu-Z1.10
+Restart=on-failure
+ 
+[Install]
+WantedBy=multi-user.target

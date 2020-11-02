@@ -1,0 +1,14 @@
+[Unit]
+Description=Inrow Crawler
+ 
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/seduceboard
+ExecStart=/usr/bin/python3 -m bin.modbus_crawler --sensor_bus=inrow
+Restart=on-failure
+ 
+[Install]
+WantedBy=multi-user.target
+

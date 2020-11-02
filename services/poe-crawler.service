@@ -1,0 +1,13 @@
+[Unit]
+Description=POE Crawler
+ 
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/seduceboard
+ExecStart=/usr/bin/python3 -m bin.snmp_crawler --pdu=poe --mode=iterative --group_calls_factor=4
+Restart=on-failure
+ 
+[Install]
+WantedBy=multi-user.target
