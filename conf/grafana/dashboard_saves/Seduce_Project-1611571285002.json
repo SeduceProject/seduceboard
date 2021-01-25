@@ -35,7 +35,7 @@
       },
       "id": 4,
       "options": {
-        "content": "<h2>Select your dashboard</h2><br/>\n\n<p>The <a href=\"https://grafana.seduce.fr/d/EDREADFSQFAER/energy\">Energy Panel</a> shows both\nthe power production (PV panels) and the power consumption (servers and switches).</p>\n<p>The <a href=\"https://grafana.seduce.fr/d/dgF-CQpGkfdqsfdq/temperatures\">Temperature Panel</a> shows both\nthe power production (PV panels) and the power consumption (servers and switches).</p>\n<div style=\"width: 650px; margin-left: 30px; text-align: center;\">\n    <h4>Server and Temperature Sensors Organization</h4>\n    <!-- Image directory: /usr/share/grafana/public/img-->\n    <img src=\"/public/img/seduce_rack.png\" width=\"600px\">\n</div>",
+        "content": "<h2>Select your dashboard</h2><br/>\n\n<p>The <a href=\"https://grafana.seduce.fr/d/EDREADFSQFAER/energy\">Energy Panel</a> shows both\nthe power production (PV panels) and the power consumption (servers and switches).</p>\n<p>The <a href=\"https://grafana.seduce.fr/d/dgF-CQpGkfdqsfdq/temperatures\">Temperature Panel</a> shows both\nthe temperatures inside the racks and both the incoming and the outcoming air temperatures of the servers.</p>\n<div style=\"width: 650px; margin-left: 30px; text-align: center;\">\n    <h4>Server and Temperature Sensors Organization</h4>\n    <!-- Image directory: /usr/share/grafana/public/img-->\n    <img src=\"/public/img/seduce_rack.png\" width=\"600px\">\n</div>",
         "mode": "html"
       },
       "pluginVersion": "7.1.0",
@@ -78,7 +78,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Dashboard Information",
+      "title": "Server Information",
       "type": "text"
     },
     {
@@ -236,5 +236,5 @@
   "timezone": "",
   "title": "Seduce Project",
   "uid": "TSY_RlpGz",
-  "version": 10
+  "version": 11
 }
