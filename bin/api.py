@@ -5,6 +5,7 @@ from core.data.influx import *
 from core.config.rack_config import extract_nodes_configuration
 from logger_conf import setup_root_logger
 import arrow
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SWAGGER'] = {
@@ -253,11 +254,14 @@ def measurements(sensor_id):
         description: "A sensor ID"
         required: true
         type: string
+        schema:
+            example: "3b00065909fc2caf"
       - name: "start_date"
         in: "query"
-        description: "A start date (epochTime)"
+        description: "A start date (YY-MM-DD-hh-mm)"
         required: true
         type: string
+        pattern: "^([0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})$"
       - name: "end_date"
         in: "query"
         description: "A end date (epochTime)"
@@ -277,16 +281,12 @@ def measurements(sensor_id):
             }
     """
     from core.data.influx import db_sensor_data
-    start_date = request.args["start_date"]
-    end_date = request.args["end_date"]
+    start_date = datetime.strptime(request.args["start_date"],  '%y-%m-%d-%H-%M')
+    end_date = datetime.strptime(request.args["end_date"],  '%y-%m-%d-%H-%M')
 
-    if "s" not in start_date:
-        start_date = "%ss" % start_date
-
-    if "s" not in end_date:
-        end_date = "%ss" % end_date
-
-    result = db_sensor_data(sensor_id, start_date=start_date, end_date=end_date)
+    result = db_sensor_data(sensor_id,
+            start_date="%ds" % start_date.timestamp(),
+            end_date="%ds" % end_date.timestamp())
 
     result["epoch_ts"] = [arrow.get(ts).timestamp for ts in result.get("timestamps")]
 
