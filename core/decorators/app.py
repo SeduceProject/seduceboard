@@ -45,5 +45,5 @@ def shutdown_session(exception=None):
 @app.context_processor
 def inject_dict_for_all_templates():
     from core.config.config_loader import load_config
-    api_public_address = load_config().get("api", {}).get("public_address", "localhost:5000")
+    api_public_address = load_config().get("api", {}).get("public_address", "api.seduce.fr")
     return dict(api_public_address=api_public_address)

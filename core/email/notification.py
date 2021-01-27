@@ -13,7 +13,7 @@ TOKEN_LENGTH = 50
 
 def send_confirmation_request(user):
     email_configuration = get_email_configuration()
-    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "api.seduce.fr")
 
     token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
 
@@ -56,7 +56,7 @@ Seduce administrators
 
 def send_authorization_request(user):
     email_configuration = get_email_configuration()
-    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "api.seduce.fr")
 
     token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
 
@@ -114,7 +114,7 @@ Seduce system
 
 def send_authorization_confirmation(user):
     email_configuration = get_email_configuration()
-    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "api.seduce.fr")
 
     fromaddr = email_configuration.get("email")
     toaddr = user.email
@@ -152,7 +152,7 @@ Seduce system
 
 def send_reset_password_link(user):
     email_configuration = get_email_configuration()
-    frontend_public_address = load_config().get("frontend", {}).get("public_address", "localhost:5000")
+    frontend_public_address = load_config().get("frontend", {}).get("public_address", "api.seduce.fr")
 
     token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(TOKEN_LENGTH))
 
