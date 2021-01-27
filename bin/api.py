@@ -258,15 +258,16 @@ def measurements(sensor_id):
             example: "3b00065909fc2caf"
       - name: "start_date"
         in: "query"
-        description: "A start date (YY-MM-DD-hh-mm)"
+        description: "Start date (YY-MM-DD-hh-mm)"
         required: true
         type: string
         pattern: "^([0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})$"
       - name: "end_date"
         in: "query"
-        description: "A end date (epochTime)"
+        description: "End date (YY-MM-DD-hh-mm)"
         required: true
         type: string
+        pattern: "^([0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})$"
     responses:
       200:
         description: A object containing what kind of sensors are part of the Seduce infrastructure.
