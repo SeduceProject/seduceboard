@@ -4,7 +4,6 @@ from flasgger import Swagger
 from core.data.influx import *
 from core.config.rack_config import extract_nodes_configuration
 from logger_conf import setup_root_logger
-import arrow
 from datetime import datetime
 
 app = Flask(__name__)
@@ -284,13 +283,9 @@ def measurements(sensor_id):
     from core.data.influx import db_sensor_data
     start_date = datetime.strptime(request.args["start_date"],  '%y-%m-%d-%H-%M')
     end_date = datetime.strptime(request.args["end_date"],  '%y-%m-%d-%H-%M')
-
     result = db_sensor_data(sensor_id,
             start_date="%ds" % start_date.timestamp(),
             end_date="%ds" % end_date.timestamp())
-
-    result["epoch_ts"] = [arrow.get(ts).timestamp for ts in result.get("timestamps")]
-
     return jsonify(result)
 
 
