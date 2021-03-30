@@ -1,42 +1,19 @@
-flask
-natsort
-flask_profiler
-#influxdb
-#git+https://github.com/influxdata/influxdb-python.git
+# Modbus crawlers
+docopt
 influxdb
 pymodbus
+# Sensor crawlers
 pyModbusTCP
+# API
 flasgger
-pysnmp==4.4.2
-exscript
-docopt
-pyserial
-python-telegram-bot
-redis==3.2.0
-scrapy
-gTTS
-requests
-html2text
-gunicorn
-supervisor
-flask-login
-validators
-itsdangerous
-celery
-transitions
+flask
+# Dashboard
 flask_bcrypt
-#SQLAlchemy==0.9.10
-SQLAlchemy>=1.3.11
-#Flask-SQLAlchemy==2.1
-Flask-SQLAlchemy
-paho-mqtt
-redlock
+flask_login
+flask_migrate
+flask_profiler
+flask_sqlalchemy
 numpy
-influxdb
-pyyaml
-oyaml
 pyinstrument
-Flask-Migrate
-Arrow
-nose
-requests_mock
+redis
+transitions
