@@ -26,6 +26,9 @@ def validate(date_text):
 @admin_app_blueprint.route("/admin/continuous_queries")
 @admin_login_required
 def continuous_queries_management():
+    # Print password to send it to users
+    #from database import bcrypt
+    #print(bcrypt.generate_password_hash("seducedashboard2021"))
     cqs = list_continuous_queries()
     return render_template("continuous_queries.html.jinja2", continuous_queries=cqs)
 
