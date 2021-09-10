@@ -464,39 +464,6 @@ sensors_inrow:
   - inrow_unit_rack_inlet_temperature_1
   - inrow_unit_rack_inlet_temperature_2
   - inrow_unit_rack_inlet_temperature_3
-poe_raspberrypi:
-  coordinates:
-    x: 15.5%
-    y: 20%
-  info: Power over Ethernet consumption of the raspberry pi cluster
-  location: B232
-  color: blue
-  name: poe_raspberrypi
-  sensors:
-  - node1_poe
-  - node2_poe
-  - node3_poe
-  - node4_poe
-  - node5_poe
-  - node6_poe
-  - node7_poe
-  - node8_poe
-  - node9_poe
-  - node10_poe
-  - node11_poe
-  - node12_poe
-  - node13_poe
-  - node14_poe
-  - node15_poe
-  - node16_poe
-  - node17_poe
-  - node18_poe
-  - node19_poe
-  - node20_poe
-  - node21_poe
-  - node22_poe
-  - node23_poe
-  - node24_poe
 
 modbus_entech:
   coordinates:
