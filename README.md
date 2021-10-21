@@ -1,4 +1,7 @@
 # SeDuCe Dashboard
+To run the dashboard web interface, please use the [Dashboard
+Project](https://github.com/SeduceProject/dashboard).
+The [bin/app.py](/bin/app.py) web interface is deprecated !
 
 [https://seduceboard.readthedocs.io](https://seduceboard.readthedocs.io)
 
