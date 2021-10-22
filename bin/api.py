@@ -9,6 +9,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SWAGGER'] = {
     'title': 'SeDuCe API',
+    'description': '<h3><a href="https://doc.seduce.fr/seduceapi">More Documentation and Examples</a></h3>',
     'uiversion': 3
 }
 swagger = Swagger(app)
